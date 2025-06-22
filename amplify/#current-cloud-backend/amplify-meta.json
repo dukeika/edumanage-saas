@@ -42,7 +42,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/auth/edumanagesaasda694ea8-cloudformation-template.json",
         "logicalId": "authedumanagesaasda694ea8"
       },
-      "lastPushTimeStamp": "2025-06-22T13:52:53.095Z",
+      "lastPushTimeStamp": "2025-06-22T14:43:04.757Z",
       "output": {
         "UserPoolId": "eu-west-2_OuXc4ZpsU",
         "AppClientIDWeb": "2ojmkpj241a2jmsd02scen1eck",
@@ -55,6 +55,40 @@
         "UserPoolName": "edumanagesaasda694ea8_userpool_da694ea8"
       },
       "lastPushDirHash": "k3w4mPX68DRSJ8rySVCKK8OLq/A="
+    }
+  },
+  "api": {
+    "edumanagesaas": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "edumanagesaasda694ea8",
+          "attributes": [
+            "UserPoolId"
+          ]
+        }
+      ],
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authedumanagesaasda694ea8"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        },
+        "GraphQLAPIIdOutput": "qv5r6e7crvbvdcwi2pck2uak24",
+        "GraphQLAPIEndpointOutput": "https://gj3enzgrgvhufk5imqqbf442ny.appsync-api.eu-west-2.amazonaws.com/graphql"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apiedumanagesaas"
+      },
+      "lastPushTimeStamp": "2025-06-22T14:43:10.840Z",
+      "lastPushDirHash": "b4O6yCdEj6Lf2BbBmpFkkyJQABU="
     }
   }
 }

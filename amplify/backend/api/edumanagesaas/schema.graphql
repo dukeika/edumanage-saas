@@ -1,0 +1,49 @@
+type School
+  @model
+  @auth(
+    rules: [
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, update, delete, read]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+    ]
+  ) {
+  id: ID!
+  name: String!
+  address: String
+  academicYears: [AcademicYear] @hasMany(indexName: "bySchool", fields: ["id"])
+  classes: [Class] @hasMany(indexName: "bySchool", fields: ["id"])
+  admins: [String] # Cognito usernames
+  owner: String
+}
+
+type AcademicYear
+  @model
+  @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
+  id: ID!
+  schoolID: ID! @index(name: "bySchool")
+  yearLabel: String!
+  terms: [Term] @hasMany(indexName: "byAcademicYear", fields: ["id"])
+}
+
+type Term
+  @model
+  @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
+  id: ID!
+  academicYearID: ID! @index(name: "byAcademicYear")
+  termLabel: String!
+  startDate: AWSDate
+  endDate: AWSDate
+}
+
+type Class
+  @model
+  @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
+  id: ID!
+  schoolID: ID! @index(name: "bySchool")
+  name: String!
+  teacherID: ID
+  studentIDs: [ID]
+}

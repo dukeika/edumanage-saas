@@ -4,6 +4,7 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import TeacherDashboard from "../pages/teacher/TeacherDashboard";
 import StudentDashboard from "../pages/student/StudentDashboard";
 import ParentDashboard from "../pages/parent/ParentDashboard";
+import SchoolSetup from "../pages/admin/SchoolSetup";
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,7 @@ const AppRoutes = () => {
       <Route path="/student" element={<StudentDashboard />} />
       <Route path="/parent" element={<ParentDashboard />} />
       <Route path="*" element={<Navigate to="/admin" />} />
+      <Route path="/admin/setup" element={<SchoolSetup />} />
     </Routes>
   );
 };
