@@ -1,0 +1,10 @@
+node_modules/
+build/
+dist/
+.env
+amplify/# Amplify backend state
+.aws-sam/
+cdk.out/
+.idea/
+.vscode/
+.DS_Store
