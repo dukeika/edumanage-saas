@@ -15,6 +15,12 @@
       "auth": {
         "edumanagesaasda694ea8": {}
       },
+      "function": {
+        "adminCreateUser": {
+          "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
+          "s3Key": "amplify-builds/adminCreateUser-576845436f516e56536e-build.zip"
+        }
+      },
       "api": {
         "edumanagesaas": {}
       }

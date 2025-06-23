@@ -21,8 +21,20 @@ export const getSchool = /* GraphQL */ `query GetSchool($id: ID!) {
       nextToken
       __typename
     }
-    admins
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
     owner
+    admins
     createdAt
     updatedAt
     __typename
@@ -39,8 +51,8 @@ export const listSchools = /* GraphQL */ `query ListSchools(
       id
       name
       address
-      admins
       owner
+      admins
       createdAt
       updatedAt
       __typename
@@ -56,8 +68,18 @@ export const listSchools = /* GraphQL */ `query ListSchools(
 export const getAcademicYear = /* GraphQL */ `query GetAcademicYear($id: ID!) {
   getAcademicYear(id: $id) {
     id
-    schoolID
     yearLabel
+    schoolID
+    school {
+      id
+      name
+      address
+      owner
+      admins
+      createdAt
+      updatedAt
+      __typename
+    }
     terms {
       nextToken
       __typename
@@ -80,8 +102,8 @@ export const listAcademicYears = /* GraphQL */ `query ListAcademicYears(
   listAcademicYears(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      schoolID
       yearLabel
+      schoolID
       createdAt
       updatedAt
       owner
@@ -98,10 +120,23 @@ export const listAcademicYears = /* GraphQL */ `query ListAcademicYears(
 export const getTerm = /* GraphQL */ `query GetTerm($id: ID!) {
   getTerm(id: $id) {
     id
-    academicYearID
     termLabel
     startDate
     endDate
+    academicYearID
+    academicYear {
+      id
+      yearLabel
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     owner
@@ -117,10 +152,10 @@ export const listTerms = /* GraphQL */ `query ListTerms(
   listTerms(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      academicYearID
       termLabel
       startDate
       endDate
+      academicYearID
       createdAt
       updatedAt
       owner
@@ -134,10 +169,39 @@ export const listTerms = /* GraphQL */ `query ListTerms(
 export const getClass = /* GraphQL */ `query GetClass($id: ID!) {
   getClass(id: $id) {
     id
-    schoolID
     name
+    schoolID
+    school {
+      id
+      name
+      address
+      owner
+      admins
+      createdAt
+      updatedAt
+      __typename
+    }
     teacherID
-    studentIDs
+    students {
+      nextToken
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    subjects {
+      nextToken
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     owner
@@ -153,10 +217,9 @@ export const listClasses = /* GraphQL */ `query ListClasses(
   listClasses(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      schoolID
       name
+      schoolID
       teacherID
-      studentIDs
       createdAt
       updatedAt
       owner
@@ -170,24 +233,61 @@ export const listClasses = /* GraphQL */ `query ListClasses(
   APITypes.ListClassesQueryVariables,
   APITypes.ListClassesQuery
 >;
-export const academicYearsBySchoolID = /* GraphQL */ `query AcademicYearsBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelAcademicYearFilterInput
+export const getStudent = /* GraphQL */ `query GetStudent($id: ID!) {
+  getStudent(id: $id) {
+    id
+    name
+    classID
+    schoolID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    school {
+      id
+      name
+      address
+      owner
+      admins
+      createdAt
+      updatedAt
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    owner
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetStudentQueryVariables,
+  APITypes.GetStudentQuery
+>;
+export const listStudents = /* GraphQL */ `query ListStudents(
+  $filter: ModelStudentFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  academicYearsBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
+  listStudents(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      name
+      classID
       schoolID
-      yearLabel
       createdAt
       updatedAt
       owner
@@ -198,62 +298,300 @@ export const academicYearsBySchoolID = /* GraphQL */ `query AcademicYearsBySchoo
   }
 }
 ` as GeneratedQuery<
-  APITypes.AcademicYearsBySchoolIDQueryVariables,
-  APITypes.AcademicYearsBySchoolIDQuery
+  APITypes.ListStudentsQueryVariables,
+  APITypes.ListStudentsQuery
 >;
-export const termsByAcademicYearID = /* GraphQL */ `query TermsByAcademicYearID(
-  $academicYearID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelTermFilterInput
+export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
+  getUser(id: $id) {
+    id
+    email
+    name
+    role
+    schoolID
+    school {
+      id
+      name
+      address
+      owner
+      admins
+      createdAt
+      updatedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    owner
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetUserQueryVariables, APITypes.GetUserQuery>;
+export const listUsers = /* GraphQL */ `query ListUsers(
+  $filter: ModelUserFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  termsByAcademicYearID(
-    academicYearID: $academicYearID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
+  listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      academicYearID
+      email
+      name
+      role
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.ListUsersQueryVariables, APITypes.ListUsersQuery>;
+export const getSubject = /* GraphQL */ `query GetSubject($id: ID!) {
+  getSubject(id: $id) {
+    id
+    name
+    classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    owner
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetSubjectQueryVariables,
+  APITypes.GetSubjectQuery
+>;
+export const listSubjects = /* GraphQL */ `query ListSubjects(
+  $filter: ModelSubjectFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listSubjects(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      classID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListSubjectsQueryVariables,
+  APITypes.ListSubjectsQuery
+>;
+export const getAssessment = /* GraphQL */ `query GetAssessment($id: ID!) {
+  getAssessment(id: $id) {
+    id
+    title
+    assessmentDate
+    classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    subjectID
+    subject {
+      id
+      name
+      classID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    termID
+    term {
+      id
       termLabel
       startDate
       endDate
+      academicYearID
       createdAt
       updatedAt
       owner
       __typename
     }
-    nextToken
+    grades {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
     __typename
   }
 }
 ` as GeneratedQuery<
-  APITypes.TermsByAcademicYearIDQueryVariables,
-  APITypes.TermsByAcademicYearIDQuery
+  APITypes.GetAssessmentQueryVariables,
+  APITypes.GetAssessmentQuery
 >;
-export const classesBySchoolID = /* GraphQL */ `query ClassesBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelClassFilterInput
+export const listAssessments = /* GraphQL */ `query ListAssessments(
+  $filter: ModelAssessmentFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  classesBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
+  listAssessments(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      schoolID
+      title
+      assessmentDate
+      classID
+      subjectID
+      termID
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListAssessmentsQueryVariables,
+  APITypes.ListAssessmentsQuery
+>;
+export const getGrade = /* GraphQL */ `query GetGrade($id: ID!) {
+  getGrade(id: $id) {
+    id
+    studentID
+    student {
+      id
       name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessmentID
+    assessment {
+      id
+      title
+      assessmentDate
+      classID
+      subjectID
+      termID
+      createdAt
+      updatedAt
+      __typename
+    }
+    score
+    classID
+    class {
+      id
+      name
+      schoolID
       teacherID
-      studentIDs
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<APITypes.GetGradeQueryVariables, APITypes.GetGradeQuery>;
+export const listGrades = /* GraphQL */ `query ListGrades(
+  $filter: ModelGradeFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listGrades(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      studentID
+      assessmentID
+      score
+      classID
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListGradesQueryVariables,
+  APITypes.ListGradesQuery
+>;
+export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
+  getAttendance(id: $id) {
+    id
+    studentID
+    classID
+    date
+    status
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    createdAt
+    updatedAt
+    owner
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetAttendanceQueryVariables,
+  APITypes.GetAttendanceQuery
+>;
+export const listAttendances = /* GraphQL */ `query ListAttendances(
+  $filter: ModelAttendanceFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listAttendances(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      studentID
+      classID
+      date
+      status
       createdAt
       updatedAt
       owner
@@ -264,6 +602,64 @@ export const classesBySchoolID = /* GraphQL */ `query ClassesBySchoolID(
   }
 }
 ` as GeneratedQuery<
-  APITypes.ClassesBySchoolIDQueryVariables,
-  APITypes.ClassesBySchoolIDQuery
+  APITypes.ListAttendancesQueryVariables,
+  APITypes.ListAttendancesQuery
+>;
+export const getAnnouncement = /* GraphQL */ `query GetAnnouncement($id: ID!) {
+  getAnnouncement(id: $id) {
+    id
+    title
+    message
+    audience
+    targetID
+    createdBy
+    schoolID
+    school {
+      id
+      name
+      address
+      owner
+      admins
+      createdAt
+      updatedAt
+      __typename
+    }
+    classID
+    createdAt
+    updatedAt
+    owner
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.GetAnnouncementQueryVariables,
+  APITypes.GetAnnouncementQuery
+>;
+export const listAnnouncements = /* GraphQL */ `query ListAnnouncements(
+  $filter: ModelAnnouncementFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listAnnouncements(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      title
+      message
+      audience
+      targetID
+      createdBy
+      schoolID
+      classID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListAnnouncementsQueryVariables,
+  APITypes.ListAnnouncementsQuery
 >;

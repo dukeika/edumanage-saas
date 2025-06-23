@@ -13,37 +13,144 @@ type School
   id: ID!
   name: String!
   address: String
-  academicYears: [AcademicYear] @hasMany(indexName: "bySchool", fields: ["id"])
-  classes: [Class] @hasMany(indexName: "bySchool", fields: ["id"])
-  admins: [String] # Cognito usernames
+  academicYears: [AcademicYear] @hasMany(fields: ["id"])
+  classes: [Class] @hasMany(fields: ["id"])
+  students: [Student] @hasMany(fields: ["id"])
+  users: [User] @hasMany(fields: ["id"])
+  announcements: [Announcement] @hasMany(fields: ["id"])
   owner: String
+  admins: [String]
 }
 
 type AcademicYear
   @model
   @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
   id: ID!
-  schoolID: ID! @index(name: "bySchool")
   yearLabel: String!
-  terms: [Term] @hasMany(indexName: "byAcademicYear", fields: ["id"])
+  schoolID: ID!
+  school: School @belongsTo(fields: ["schoolID"])
+  terms: [Term] @hasMany(fields: ["id"])
 }
 
 type Term
   @model
   @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
   id: ID!
-  academicYearID: ID! @index(name: "byAcademicYear")
   termLabel: String!
   startDate: AWSDate
   endDate: AWSDate
+  academicYearID: ID!
+  academicYear: AcademicYear @belongsTo(fields: ["academicYearID"])
+  assessments: [Assessment] @hasMany(fields: ["id"])
 }
 
 type Class
   @model
   @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
   id: ID!
-  schoolID: ID! @index(name: "bySchool")
   name: String!
+  schoolID: ID!
+  school: School @belongsTo(fields: ["schoolID"])
   teacherID: ID
-  studentIDs: [ID]
+  students: [Student] @hasMany(fields: ["id"])
+  attendances: [Attendance] @hasMany(fields: ["id"])
+  subjects: [Subject] @hasMany(fields: ["id"])
+  assessments: [Assessment] @hasMany(fields: ["id"])
+  grades: [Grade] @hasMany(fields: ["id"])
+}
+
+type Student
+  @model
+  @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
+  id: ID!
+  name: String!
+  classID: ID!
+  schoolID: ID!
+  class: Class @belongsTo(fields: ["classID"])
+  school: School @belongsTo(fields: ["schoolID"])
+  attendances: [Attendance] @hasMany(fields: ["id"])
+  grades: [Grade] @hasMany(fields: ["id"])
+}
+
+type User @model @auth(rules: [{ allow: owner }, { allow: private }]) {
+  id: ID!
+  email: AWSEmail!
+  name: String!
+  role: String! # Admin, Teacher, Student, Parent
+  schoolID: ID!
+  school: School @belongsTo(fields: ["schoolID"])
+}
+
+type Subject
+  @model
+  @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
+  id: ID!
+  name: String!
+  classID: ID!
+  class: Class @belongsTo(fields: ["classID"])
+  assessments: [Assessment] @hasMany(fields: ["id"])
+}
+
+type Assessment @model {
+  id: ID!
+  title: String!
+  assessmentDate: AWSDate!
+  classID: ID!
+  class: Class @belongsTo(fields: ["classID"])
+  subjectID: ID!
+  subject: Subject @belongsTo(fields: ["subjectID"])
+  termID: ID!
+  term: Term @belongsTo(fields: ["termID"])
+  grades: [Grade] @hasMany(fields: ["id"]) # ✅ Add this
+}
+
+type Grade @model {
+  id: ID!
+  studentID: ID!
+  student: Student @belongsTo(fields: ["studentID"])
+  assessmentID: ID!
+  assessment: Assessment @belongsTo(fields: ["assessmentID"])
+  score: Float!
+  classID: ID!
+  class: Class @belongsTo(fields: ["classID"])
+}
+
+type Attendance
+  @model
+  @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
+  id: ID!
+  studentID: ID!
+  classID: ID!
+  date: AWSDate!
+  status: String!
+  student: Student @belongsTo(fields: ["studentID"])
+  class: Class @belongsTo(fields: ["classID"])
+}
+
+type Announcement
+  @model
+  @auth(rules: [{ allow: owner }, { allow: groups, groupsField: "admins" }]) {
+  id: ID!
+  title: String!
+  message: String!
+  audience: String
+  targetID: ID
+  createdBy: ID!
+  schoolID: ID!
+  school: School @belongsTo(fields: ["schoolID"])
+  classID: ID
+  createdAt: AWSDateTime!
+}
+
+input CreateCognitoUserInput {
+  email: AWSEmail!
+  name: String!
+  role: String!
+  schoolID: ID!
+  userPoolId: String!
+}
+
+type Mutation {
+  createCognitoUser(input: CreateCognitoUserInput!): User
+    @function(name: "adminCreateUser-${env}")
 }

@@ -1,58 +1,59 @@
+// src/pages/admin/ClassForm.tsx
 import React, { useState } from "react";
-import { TextField, Button, Box, Typography, Paper } from "@mui/material";
-import { generateClient } from "aws-amplify/api";
+import { TextField, Button, Paper, Box, Typography } from "@mui/material";
 import { createClass } from "../../graphql/mutations";
+import { generateClient } from "aws-amplify/api";
+import { useCurrentUser } from "../../utils/useCurrentUser";
 
 const client = generateClient();
 
-const ClassForm = ({ schoolID }: { schoolID: string }) => {
-  const [className, setClassName] = useState("");
-  const [teacherID, setTeacherID] = useState("");
-  const [success, setSuccess] = useState("");
+type ClassFormProps = {
+  schoolID: string;
+};
 
-  const handleSubmit = async () => {
+const ClassForm = ({ schoolID }: ClassFormProps) => {
+  const { user, loading } = useCurrentUser();
+  const [name, setName] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user?.schoolID) return alert("Missing schoolID");
+
     try {
-      const input = { name: className, schoolID, teacherID };
-      const response = await client.graphql({
+      await client.graphql({
         query: createClass,
-        variables: { input },
+        variables: {
+          input: {
+            name,
+            schoolID: user.schoolID,
+          },
+        },
       });
-      setSuccess(`Class "${response.data.createClass.name}" created!`);
-      setClassName("");
-      setTeacherID("");
+      setName("");
+      alert("Class Created");
     } catch (err) {
-      console.error("Error:", err);
+      console.error("Error creating class:", err);
     }
   };
 
+  if (loading) return <p>Loading user...</p>;
+
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h6">Create Class & Assign Teacher</Typography>
-      <Paper sx={{ mt: 2, p: 3 }}>
+    <Paper elevation={2} sx={{ p: 3 }}>
+      <Typography variant="h6">Create Class</Typography>
+      <Box component="form" onSubmit={handleSubmit}>
         <TextField
-          label="Class Name (e.g., JSS1A)"
           fullWidth
-          value={className}
-          onChange={(e) => setClassName(e.target.value)}
-          sx={{ mb: 2 }}
+          label="Class Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          margin="normal"
         />
-        <TextField
-          label="Teacher ID (Cognito User ID)"
-          fullWidth
-          value={teacherID}
-          onChange={(e) => setTeacherID(e.target.value)}
-          sx={{ mb: 2 }}
-        />
-        <Button variant="contained" onClick={handleSubmit}>
-          Create Class
+        <Button type="submit" variant="contained">
+          Create
         </Button>
-        {success && (
-          <Typography sx={{ mt: 2 }} color="green">
-            {success}
-          </Typography>
-        )}
-      </Paper>
-    </Box>
+      </Box>
+    </Paper>
   );
 };
 

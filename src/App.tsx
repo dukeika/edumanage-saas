@@ -1,32 +1,37 @@
-import React from "react";
-import { BrowserRouter, Navigate } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ClassFormPage from "./pages/admin/ClassFormPage";
+import ClassListPage from "./pages/admin/ClassListPage";
+import AcademicYearFormPage from "./pages/admin/AcademicYearFormPage";
+import SubjectFormPage from "./pages/admin/SubjectFormPage";
+import AssessmentFormPage from "./pages/admin/AssessmentFormPage";
+import GradeEntryFormPage from "./pages/admin/GradeEntryFormPage";
 
 function App() {
-  // Simulated logged-in user (replace later with Cognito)
-  const currentUser = {
-    role: "parent", // Change this to admin, student, parent for testing
-  };
-
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        {currentUser.role === "admin" ? (
-          <Navigate to="/admin" />
-        ) : currentUser.role === "teacher" ? (
-          <Navigate to="/teacher" />
-        ) : currentUser.role === "student" ? (
-          <Navigate to="/student" />
-        ) : (
-          <Navigate to="/parent" />
-        )}
-        <AppRoutes />
-      </BrowserRouter>
-    </ThemeProvider>
+    <Router>
+      <Routes>
+        {/* ✅ Default route for "/" */}
+        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+
+        {/* ✅ Admin Routes */}
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/class-form" element={<ClassFormPage />} />
+        <Route path="/admin/class-list" element={<ClassListPage />} />
+        <Route
+          path="/admin/academic-year-form"
+          element={<AcademicYearFormPage />}
+        />
+        <Route path="/admin/subject-form" element={<SubjectFormPage />} />
+        <Route path="/admin/assessment-form" element={<AssessmentFormPage />} />
+        <Route path="/admin/grade-entry" element={<GradeEntryFormPage />} />
+      </Routes>
+    </Router>
   );
 }
 

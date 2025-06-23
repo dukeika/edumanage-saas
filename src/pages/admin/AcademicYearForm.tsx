@@ -1,51 +1,60 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Typography, Paper } from "@mui/material";
-import { generateClient } from "aws-amplify/api";
+import { TextField, Button, Box, Paper, Typography } from "@mui/material";
 import { createAcademicYear } from "../../graphql/mutations";
+import { generateClient } from "aws-amplify/api";
+import { useCurrentUser } from "../../utils/useCurrentUser";
 
 const client = generateClient();
 
-const AcademicYearForm = ({ schoolID }: { schoolID: string }) => {
-  const [yearLabel, setYearLabel] = useState("");
-  const [success, setSuccess] = useState("");
+export interface AcademicYearFormProps {
+  schoolID: string;
+}
 
-  const handleSubmit = async () => {
+const AcademicYearForm = ({ schoolID }: AcademicYearFormProps) => {
+  const { user, loading } = useCurrentUser();
+  const [yearLabel, setYearLabel] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
-      const input = { yearLabel, schoolID };
-      const response = await client.graphql({
+      await client.graphql({
         query: createAcademicYear,
-        variables: { input },
+        variables: {
+          input: {
+            yearLabel,
+            schoolID,
+          },
+        },
       });
-      setSuccess(
-        `Academic Year "${response.data.createAcademicYear.yearLabel}" created!`
-      );
+
       setYearLabel("");
-    } catch (err) {
-      console.error("Error:", err);
+      alert("Academic year created successfully");
+    } catch (error) {
+      console.error("Error creating academic year:", error);
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <div>Not authenticated</div>;
+
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h6">Add Academic Year</Typography>
-      <Paper sx={{ mt: 2, p: 3 }}>
+    <Paper sx={{ p: 4, mt: 4 }}>
+      <Typography variant="h6" gutterBottom>
+        Create Academic Year
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} display="flex" gap={2}>
         <TextField
-          label="Academic Year (e.g., 2024/2025)"
-          fullWidth
+          label="Year Label"
           value={yearLabel}
           onChange={(e) => setYearLabel(e.target.value)}
-          sx={{ mb: 2 }}
+          required
         />
-        <Button variant="contained" onClick={handleSubmit}>
-          Create Academic Year
+        <Button type="submit" variant="contained">
+          Create
         </Button>
-        {success && (
-          <Typography sx={{ mt: 2 }} color="green">
-            {success}
-          </Typography>
-        )}
-      </Paper>
-    </Box>
+      </Box>
+    </Paper>
   );
 };
 

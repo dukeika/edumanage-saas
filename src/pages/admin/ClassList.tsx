@@ -4,6 +4,9 @@ import { listClasses } from "../../graphql/queries";
 import { Box, Typography, Paper, List, ListItem, Divider } from "@mui/material";
 
 const client = generateClient();
+type ClassListProps = {
+  schoolID: string;
+};
 
 type ClassItem = {
   id: string;
@@ -12,7 +15,7 @@ type ClassItem = {
   teacherID?: string | null;
 };
 
-const ClassList = ({ schoolID }: { schoolID: string }) => {
+const ClassList = ({ schoolID }: ClassListProps) => {
   const [classes, setClasses] = useState<ClassItem[]>([]);
 
   const fetchClasses = async () => {
