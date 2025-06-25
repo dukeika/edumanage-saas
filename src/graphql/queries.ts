@@ -443,6 +443,7 @@ export const getAssessment = /* GraphQL */ `query GetAssessment($id: ID!) {
     }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -465,6 +466,7 @@ export const listAssessments = /* GraphQL */ `query ListAssessments(
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -499,6 +501,7 @@ export const getGrade = /* GraphQL */ `query GetGrade($id: ID!) {
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     score

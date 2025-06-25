@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "edumanagesaas",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authedumanagesaasda694ea8",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

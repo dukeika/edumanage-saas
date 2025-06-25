@@ -1,43 +1,61 @@
+// src/pages/admin/SubjectForm.tsx
 import React, { useState } from "react";
-import { TextField, Button, Box, Paper, Typography } from "@mui/material";
+import { TextField, Button, Paper, Typography, Box } from "@mui/material";
 import { generateClient } from "aws-amplify/api";
-import { createSubject } from "../../graphql/mutations";
+import { customCreateSubject } from "../../graphql/customMutations";
 
 const client = generateClient();
 
-type Props = {
+type SubjectFormProps = {
   classID: string;
 };
 
-const SubjectForm: React.FC<Props> = ({ classID }) => {
+const SubjectForm: React.FC<SubjectFormProps> = ({ classID }) => {
   const [name, setName] = useState("");
 
-  const handleSubmit = async () => {
-    await client.graphql({
-      query: createSubject,
-      variables: {
-        input: {
-          name,
-          classID,
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!classID) {
+      alert("❌ Class ID is missing.");
+      return;
+    }
+
+    try {
+      const result = await client.graphql({
+        query: customCreateSubject,
+        variables: {
+          input: {
+            name,
+            classID,
+          },
         },
-      },
-    });
-    setName("");
+      });
+
+      console.log("✅ Subject created:", result);
+      alert("Subject created successfully!");
+      setName("");
+    } catch (err) {
+      console.error("❌ Error creating subject:", err);
+      alert("Error creating subject");
+    }
   };
 
   return (
-    <Paper sx={{ p: 3, mb: 2 }}>
-      <Typography variant="h6">Add Subject</Typography>
-      <Box>
+    <Paper sx={{ p: 4, mt: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Add New Subject
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit}>
         <TextField
           fullWidth
           label="Subject Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          sx={{ mb: 2 }}
+          margin="normal"
         />
-        <Button variant="contained" onClick={handleSubmit}>
-          Add Subject
+        <Button type="submit" variant="contained">
+          Create Subject
         </Button>
       </Box>
     </Paper>

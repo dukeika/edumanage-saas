@@ -868,6 +868,7 @@ export const createAssessment = /* GraphQL */ `mutation CreateAssessment(
     }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -922,6 +923,7 @@ export const updateAssessment = /* GraphQL */ `mutation UpdateAssessment(
     }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -976,6 +978,7 @@ export const deleteAssessment = /* GraphQL */ `mutation DeleteAssessment(
     }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -1010,6 +1013,7 @@ export const createGrade = /* GraphQL */ `mutation CreateGrade(
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     score
@@ -1060,6 +1064,7 @@ export const updateGrade = /* GraphQL */ `mutation UpdateGrade(
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     score
@@ -1110,6 +1115,7 @@ export const deleteGrade = /* GraphQL */ `mutation DeleteGrade(
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     score

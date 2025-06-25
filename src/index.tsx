@@ -1,17 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { Amplify } from "aws-amplify"; // ✅ Corrected here
-import awsconfig from "./aws-exports";
+import { BrowserRouter } from "react-router-dom";
+import { Amplify } from "aws-amplify";
+import amplifyconfig from "./amplifyconfiguration.json"; // ✅ path might be ./src/...
 
-Amplify.configure(awsconfig); // ✅ This now works correctly
+Amplify.configure(amplifyconfig);
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-
-root.render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );

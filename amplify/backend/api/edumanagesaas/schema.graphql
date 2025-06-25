@@ -5,9 +5,10 @@ type School
       {
         allow: owner
         ownerField: "owner"
-        operations: [create, update, delete, read]
+        operations: [create, read, update, delete]
       }
       { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] } # ✅ This allows signed-in users to read
     ]
   ) {
   id: ID!
@@ -91,7 +92,19 @@ type Subject
   assessments: [Assessment] @hasMany(fields: ["id"])
 }
 
-type Assessment @model {
+type Assessment
+  @model
+  @auth(
+    rules: [
+      { allow: owner, operations: [create, read, update, delete] }
+      {
+        allow: groups
+        groupsField: "admins"
+        operations: [create, read, update, delete]
+      }
+      { allow: private, operations: [read] }
+    ]
+  ) {
   id: ID!
   title: String!
   assessmentDate: AWSDate!
@@ -101,7 +114,7 @@ type Assessment @model {
   subject: Subject @belongsTo(fields: ["subjectID"])
   termID: ID!
   term: Term @belongsTo(fields: ["termID"])
-  grades: [Grade] @hasMany(fields: ["id"]) # ✅ Add this
+  grades: [Grade] @hasMany(fields: ["id"])
 }
 
 type Grade @model {

@@ -796,8 +796,9 @@ export const onDeleteSubject = /* GraphQL */ `subscription OnDeleteSubject(
 >;
 export const onCreateAssessment = /* GraphQL */ `subscription OnCreateAssessment(
   $filter: ModelSubscriptionAssessmentFilterInput
+  $owner: String
 ) {
-  onCreateAssessment(filter: $filter) {
+  onCreateAssessment(filter: $filter, owner: $owner) {
     id
     title
     assessmentDate
@@ -840,6 +841,7 @@ export const onCreateAssessment = /* GraphQL */ `subscription OnCreateAssessment
     }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -849,8 +851,9 @@ export const onCreateAssessment = /* GraphQL */ `subscription OnCreateAssessment
 >;
 export const onUpdateAssessment = /* GraphQL */ `subscription OnUpdateAssessment(
   $filter: ModelSubscriptionAssessmentFilterInput
+  $owner: String
 ) {
-  onUpdateAssessment(filter: $filter) {
+  onUpdateAssessment(filter: $filter, owner: $owner) {
     id
     title
     assessmentDate
@@ -893,6 +896,7 @@ export const onUpdateAssessment = /* GraphQL */ `subscription OnUpdateAssessment
     }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -902,8 +906,9 @@ export const onUpdateAssessment = /* GraphQL */ `subscription OnUpdateAssessment
 >;
 export const onDeleteAssessment = /* GraphQL */ `subscription OnDeleteAssessment(
   $filter: ModelSubscriptionAssessmentFilterInput
+  $owner: String
 ) {
-  onDeleteAssessment(filter: $filter) {
+  onDeleteAssessment(filter: $filter, owner: $owner) {
     id
     title
     assessmentDate
@@ -946,6 +951,7 @@ export const onDeleteAssessment = /* GraphQL */ `subscription OnDeleteAssessment
     }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -977,6 +983,7 @@ export const onCreateGrade = /* GraphQL */ `subscription OnCreateGrade($filter: 
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     score
@@ -1024,6 +1031,7 @@ export const onUpdateGrade = /* GraphQL */ `subscription OnUpdateGrade($filter: 
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     score
@@ -1071,6 +1079,7 @@ export const onDeleteGrade = /* GraphQL */ `subscription OnDeleteGrade($filter: 
       termID
       createdAt
       updatedAt
+      owner
       __typename
     }
     score

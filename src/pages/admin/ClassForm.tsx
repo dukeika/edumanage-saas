@@ -1,9 +1,8 @@
 // src/pages/admin/ClassForm.tsx
 import React, { useState } from "react";
 import { TextField, Button, Paper, Box, Typography } from "@mui/material";
-import { createClass } from "../../graphql/mutations";
 import { generateClient } from "aws-amplify/api";
-import { useCurrentUser } from "../../utils/useCurrentUser";
+import { customCreateClass } from "../../graphql/customMutations"; // ✅ custom mutation
 
 const client = generateClient();
 
@@ -12,31 +11,34 @@ type ClassFormProps = {
 };
 
 const ClassForm = ({ schoolID }: ClassFormProps) => {
-  const { user, loading } = useCurrentUser();
   const [name, setName] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.schoolID) return alert("Missing schoolID");
+    if (!schoolID) {
+      alert("Missing schoolID");
+      return;
+    }
 
     try {
-      await client.graphql({
-        query: createClass,
+      const result = await client.graphql({
+        query: customCreateClass, // ✅ use safe mutation
         variables: {
           input: {
             name,
-            schoolID: user.schoolID,
+            schoolID,
           },
         },
       });
-      setName("");
+
+      console.log("✅ Created class result:", result);
       alert("Class Created");
+      setName("");
     } catch (err) {
-      console.error("Error creating class:", err);
+      console.error("❌ Error creating class:", err);
+      alert("Error creating class");
     }
   };
-
-  if (loading) return <p>Loading user...</p>;
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>

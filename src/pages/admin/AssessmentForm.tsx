@@ -1,21 +1,23 @@
+// src/pages/admin/AssessmentForm.tsx
 import React, { useState } from "react";
 import { TextField, Button, Paper, Box, Typography } from "@mui/material";
-import { createAssessment } from "../../graphql/mutations";
 import { generateClient } from "aws-amplify/api";
+import { customCreateAssessment } from "../../graphql/customMutations";
+import { useCurrentUser } from "../../utils/useCurrentUser";
 
 const client = generateClient();
 
-export interface AssessmentFormProps {
+type AssessmentFormProps = {
   classID: string;
   subjectID: string;
   termID: string;
-}
+};
 
-const AssessmentForm = ({
+const AssessmentForm: React.FC<AssessmentFormProps> = ({
   classID,
   subjectID,
   termID,
-}: AssessmentFormProps) => {
+}) => {
   const [title, setTitle] = useState("");
   const [assessmentDate, setAssessmentDate] = useState("");
 
@@ -23,8 +25,8 @@ const AssessmentForm = ({
     e.preventDefault();
 
     try {
-      await client.graphql({
-        query: createAssessment,
+      const result = await client.graphql({
+        query: customCreateAssessment,
         variables: {
           input: {
             title,
@@ -36,11 +38,12 @@ const AssessmentForm = ({
         },
       });
 
+      console.log("✅ Assessment created:", result);
+      alert("Assessment created successfully");
       setTitle("");
       setAssessmentDate("");
-      alert("Assessment created successfully");
     } catch (error) {
-      console.error("Error creating assessment:", error);
+      console.error("❌ Error creating assessment:", error);
     }
   };
 

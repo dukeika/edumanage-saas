@@ -42,7 +42,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/auth/edumanagesaasda694ea8-cloudformation-template.json",
         "logicalId": "authedumanagesaasda694ea8"
       },
-      "lastPushTimeStamp": "2025-06-25T02:53:02.877Z",
+      "lastPushTimeStamp": "2025-06-23T14:02:35.930Z",
       "output": {
         "UserPoolId": "eu-west-2_OuXc4ZpsU",
         "AppClientIDWeb": "2ojmkpj241a2jmsd02scen1eck",
@@ -54,7 +54,7 @@
         "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost/\"],\"LogoutURLs\":[\"https://localhost/\"]}",
         "UserPoolName": "edumanagesaasda694ea8_userpool_da694ea8"
       },
-      "lastPushDirHash": "WFqBbYWSXZ/06ufF/Q5S6ea7des="
+      "lastPushDirHash": "k3w4mPX68DRSJ8rySVCKK8OLq/A="
     }
   },
   "api": {
@@ -87,8 +87,8 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiedumanagesaas"
       },
-      "lastPushTimeStamp": "2025-06-25T02:53:05.789Z",
-      "lastPushDirHash": "NNRgkiZ1TRXc3JwVEcOrTZrNvoQ="
+      "lastPushTimeStamp": "2025-06-23T14:02:35.945Z",
+      "lastPushDirHash": "3l5xuiKKfs/sbOFyG1kAD1bw8gU="
     }
   },
   "function": {
@@ -96,19 +96,19 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
-      "lastBuildTimeStamp": "2025-06-24T08:02:25.427Z",
+      "lastBuildTimeStamp": "2025-06-22T15:30:37.057Z",
       "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2025-06-24T08:02:25.459Z",
-      "distZipFilename": "adminCreateUser-384352356e4e6c79394e-build.zip",
+      "lastPackageTimeStamp": "2025-06-22T15:30:37.110Z",
+      "distZipFilename": "adminCreateUser-576845436f516e56536e-build.zip",
       "s3Bucket": {
         "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
-        "s3Key": "amplify-builds/adminCreateUser-384352356e4e6c79394e-build.zip"
+        "s3Key": "amplify-builds/adminCreateUser-576845436f516e56536e-build.zip"
       },
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/function/adminCreateUser-cloudformation-template.json",
         "logicalId": "functionadminCreateUser"
       },
-      "lastPushTimeStamp": "2025-06-25T02:53:02.885Z",
+      "lastPushTimeStamp": "2025-06-23T14:02:35.954Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::624914081304:role/edumanagesaasLambdaRole754f667f-dev",
         "Region": "eu-west-2",
@@ -116,7 +116,7 @@
         "Name": "adminCreateUser-dev",
         "LambdaExecutionRole": "edumanagesaasLambdaRole754f667f-dev"
       },
-      "lastPushDirHash": "38DbFogPN4jPgJTVmG1AfbmkYI4="
+      "lastPushDirHash": "ii4CxOPQaLxpN42TLk3MWkwE7/Y="
     }
   }
 }
