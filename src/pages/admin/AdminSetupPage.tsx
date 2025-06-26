@@ -28,7 +28,7 @@ const AdminSetupPage: React.FC = () => {
 
       <SubjectForm classID={classID} />
       <AssessmentForm classID={classID} subjectID={subjectID} termID={termID} />
-      <GradeEntryForm classID={classID} assessmentID={assessmentID} />
+      <GradeEntryForm />
     </Container>
   );
 };

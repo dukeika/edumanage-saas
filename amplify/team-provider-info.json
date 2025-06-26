@@ -9,20 +9,32 @@
       "UnauthRoleName": "amplify-edumanagesaas-dev-ca37e-unauthRole",
       "StackName": "amplify-edumanagesaas-dev-ca37e",
       "StackId": "arn:aws:cloudformation:eu-west-2:624914081304:stack/amplify-edumanagesaas-dev-ca37e/ce067c50-4f68-11f0-824c-0af9f42065fb",
-      "AmplifyAppId": "d2brvqp7qvf3ov"
+      "AmplifyAppId": "d2brvqp7qvf3ov",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "auth": {
         "edumanagesaasda694ea8": {}
       },
+      "api": {
+        "edumanagesaas": {},
+        "adminUpdateUserAttribute": {}
+      },
       "function": {
+        "edumanagesaasbd4fcb4d": {},
         "adminCreateUser": {
           "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
-          "s3Key": "amplify-builds/adminCreateUser-576845436f516e56536e-build.zip"
+          "s3Key": "amplify-builds/adminCreateUser-384352356e4e6c79394e-build.zip"
+        },
+        "adminUpdateUserAttributes": {
+          "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
+          "s3Key": "amplify-builds/adminUpdateUserAttributes-7250726c46335565582b-build.zip"
+        },
+        "adminUpdateUserAttribute": {
+          "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
+          "s3Key": "amplify-builds/adminUpdateUserAttribute-3759783966344c314c68-build.zip",
+          "authEdumanagesaasda694Ea8Userpoolid": "eu-west-2_OuXc4ZpsU"
         }
-      },
-      "api": {
-        "edumanagesaas": {}
       }
     }
   }

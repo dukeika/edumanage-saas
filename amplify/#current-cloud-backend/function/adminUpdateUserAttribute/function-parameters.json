@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "auth": {
+      "edumanagesaasda694ea8": [
+        "create",
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "authEdumanagesaasda694Ea8Userpoolid",
+      "environmentVariableName": "AUTH_EDUMANAGESAASDA694EA8_USERPOOLID"
+    }
+  ]
+}

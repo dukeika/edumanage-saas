@@ -1,9 +1,10 @@
+// src/index.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { Amplify } from "aws-amplify";
-import amplifyconfig from "./amplifyconfiguration.json"; // ✅ path might be ./src/...
+import amplifyconfig from "./amplifyconfiguration.json";
+import App from "./App";
 
 Amplify.configure(amplifyconfig);
 

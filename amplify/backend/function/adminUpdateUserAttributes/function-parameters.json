@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "auth": {
+      "edumanagesaasda694ea8": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

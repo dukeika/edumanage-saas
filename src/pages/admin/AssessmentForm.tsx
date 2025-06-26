@@ -25,7 +25,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({
     e.preventDefault();
 
     try {
-      const result = await client.graphql({
+      const result: any = await client.graphql({
         query: customCreateAssessment,
         variables: {
           input: {
@@ -38,12 +38,22 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({
         },
       });
 
-      console.log("✅ Assessment created:", result);
-      alert("Assessment created successfully");
+      const assessment = result?.data?.createAssessment;
+
+      if (assessment) {
+        console.log("✅ Assessment created:", assessment);
+        console.log("🆔 Assessment ID:", assessment.id); // <-- This is key!
+        alert("Assessment created successfully!");
+      } else {
+        console.warn("⚠️ No assessment returned from mutation:", result);
+        alert("Assessment created but no data was returned.");
+      }
+
       setTitle("");
       setAssessmentDate("");
     } catch (error) {
       console.error("❌ Error creating assessment:", error);
+      alert("Error creating assessment");
     }
   };
 

@@ -1,14 +1,27 @@
-// src/components/RequireAuth.tsx
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import React from "react";
+import React, { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useCurrentUser } from "../utils/useCurrentUser";
 
-const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { authStatus } = useAuthenticator();
+interface RequireAuthProps {
+  allowedRoles: string[];
+  children: ReactNode;
+}
 
-  if (authStatus !== "authenticated") {
-    return <div>Redirecting to login...</div>;
+const RequireAuth: React.FC<RequireAuthProps> = ({
+  allowedRoles,
+  children,
+}) => {
+  const { user, loading } = useCurrentUser();
+  if (loading) return <div>Checking authentication…</div>;
+  if (!user) return <Navigate to="/" replace />;
+  if (!allowedRoles.includes(user.userRole || "")) {
+    return (
+      <div style={{ padding: 20, textAlign: "center" }}>
+        <h2>Unauthorized</h2>
+        <p>You don’t have permission to view this page.</p>
+      </div>
+    );
   }
-
   return <>{children}</>;
 };
 

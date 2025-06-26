@@ -1,5 +1,19 @@
 {
   "api": {
+    "adminUpdateUserAttribute": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "adminUpdateUserAttribute"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "edumanagesaas": {
       "dependsOn": [
         {
@@ -58,6 +72,34 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "adminUpdateUserAttribute": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "edumanagesaasda694ea8"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "adminUpdateUserAttributes": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "edumanagesaasda694ea8"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -74,6 +116,46 @@
         {
           "category": "function",
           "resourceName": "adminCreateUser"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttribute_authEdumanagesaasda694Ea8Userpoolid": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttribute_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttribute_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttributes_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttributes"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttributes_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttributes"
         }
       ]
     }

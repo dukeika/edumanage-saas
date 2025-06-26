@@ -19,6 +19,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "aws-amplify": "^6.15.1",
+    "axios": "^1.10.0",
     "graphql": "^16.11.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -52,6 +53,12 @@
     ]
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
     "@types/react-router-dom": "^5.3.3"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "updateUsers.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

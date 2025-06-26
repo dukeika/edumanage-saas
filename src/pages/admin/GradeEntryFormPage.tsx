@@ -14,7 +14,7 @@ const GradeEntryFormPage = () => {
   if (!user || !classID || !assessmentID)
     return <div>Missing required data</div>;
 
-  return <GradeEntryForm classID={classID} assessmentID={assessmentID} />;
+  return <GradeEntryForm />;
 };
 
 export default GradeEntryFormPage;

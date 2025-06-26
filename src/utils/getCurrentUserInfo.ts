@@ -1,46 +1,45 @@
 // src/utils/getCurrentUserInfo.ts
-
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
 
-export type CurrentUser = {
+export interface CurrentUser {
   id: string;
   email: string;
   name: string;
+  userRole?: string;
   schoolID?: string;
   classID?: string;
-  subjectID?: string;
   academicYearID?: string;
   termID?: string;
+  subjectID?: string;
   assessmentID?: string;
-  userRole?: string;
-};
+  studentID?: string;
+  teacherID?: string;
+  childID?: string;
+}
 
 export const getCurrentUserInfo = async (): Promise<CurrentUser | null> => {
   try {
     const user = await getCurrentUser();
     const session = await fetchAuthSession();
-
-    const idToken = session.tokens?.idToken?.toString();
-    if (!idToken) throw new Error("No ID token found");
-
-    const base64Payload = idToken.split(".")[1];
-    const payload = JSON.parse(atob(base64Payload));
-    console.log("✅ Decoded ID Token payload: ", payload);
+    const idToken = session.tokens?.idToken?.toString() || "";
+    const payload = JSON.parse(atob(idToken.split(".")[1]));
 
     return {
-      id: user.userId,
-      email: payload["email"],
-      name: payload["name"] || payload["cognito:username"],
+      id: payload.sub,
+      email: payload.email,
+      name: payload.name || payload["cognito:username"],
+      userRole: payload["custom:userRole"],
       schoolID: payload["custom:schoolID"],
-      classID: payload["custom:classID"], // Must be the actual class ID
-      subjectID: payload["custom:subjectID"],
+      classID: payload["custom:classID"],
       academicYearID: payload["custom:academicYearID"],
       termID: payload["custom:termID"],
+      subjectID: payload["custom:subjectID"],
       assessmentID: payload["custom:assessmentID"],
-      userRole: payload["custom:userRole"],
+      studentID: payload["custom:studentID"],
+      teacherID: payload["custom:teacherID"],
+      childID: payload["custom:childID"],
     };
-  } catch (error) {
-    console.error("❌ Error fetching user info", error);
+  } catch {
     return null;
   }
 };

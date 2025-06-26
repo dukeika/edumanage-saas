@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/updateuser": {
+      "name": "/updateuser",
+      "lambdaFunction": "adminUpdateUserAttribute",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
