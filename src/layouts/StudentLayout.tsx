@@ -1,27 +1,73 @@
-// src/layouts/StudentLayout.tsx
 import React from "react";
-import { Outlet } from "react-router-dom";
-import { Box, AppBar, Toolbar, Typography, IconButton } from "@mui/material";
+import { Outlet, NavLink } from "react-router-dom";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import RequireRole from "../components/RequireRole";
+
+const drawerWidth = 240;
 
 const StudentLayout: React.FC = () => {
   const { signOut } = useAuthenticator();
 
   return (
-    <Box>
-      <AppBar position="static">
+    <Box sx={{ display: "flex" }}>
+      <AppBar position="fixed" sx={{ zIndex: (t) => t.zIndex.drawer + 1 }}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Student Portal
+            EduManage Student
           </Typography>
-          <IconButton color="inherit" onClick={signOut}>
+          <IconButton color="inherit" onClick={() => signOut?.()}>
             <LogoutIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ p: 2 }}>
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
+        }}
+      >
+        <Toolbar />
+        <List>
+          <RequireRole roles={["Student"]}>
+            <ListItemButton
+              component={NavLink}
+              to="/student"
+              end
+              sx={{ "&.active": { backgroundColor: "action.selected" } }}
+            >
+              <ListItemText primary="Dashboard" />
+            </ListItemButton>
+          </RequireRole>
+
+          <RequireRole roles={["Student"]}>
+            <ListItemButton
+              component={NavLink}
+              to="/student/profile"
+              sx={{ "&.active": { backgroundColor: "action.selected" } }}
+            >
+              <ListItemText primary="My Profile" />
+            </ListItemButton>
+          </RequireRole>
+        </List>
+      </Drawer>
+
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Toolbar />
         <Outlet />
       </Box>
     </Box>

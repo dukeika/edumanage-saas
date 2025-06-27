@@ -1,104 +1,74 @@
-// src/pages/admin/GradeEntryForm.tsx
-import React, { useState, useEffect } from "react";
-import { TextField, Button, Paper, Typography, Box, Grid } from "@mui/material";
-import { generateClient } from "aws-amplify/api";
-import { listStudents } from "../../graphql/queries";
-import { customCreateGrade } from "../../graphql/customMutations";
+import React, { useState } from "react";
+import { Box, Typography, Button, TextField } from "@mui/material";
 import { useCurrentUser } from "../../utils/useCurrentUser";
+import RequireRole from "../../components/RequireRole";
+import { generateClient } from "@aws-amplify/api";
+import { customCreateGrade } from "../../graphql/customMutations";
 
-const client = generateClient();
+interface Props {
+  students: { id: string; name: string }[];
+}
 
-const GradeEntryForm: React.FC = () => {
-  const { user, loading } = useCurrentUser();
-  const [students, setStudents] = useState<any[]>([]);
-  const [scores, setScores] = useState<{ [studentID: string]: number }>({});
-
-  useEffect(() => {
-    const fetchStudents = async () => {
-      if (!user?.classID) return;
-      try {
-        const res: any = await client.graphql({
-          query: listStudents,
-          variables: {
-            filter: { classID: { eq: user.classID } },
-          },
-        });
-        const studentList = res?.data?.listStudents?.items || [];
-        studentList.sort((a: { name: string }, b: { name: string }) =>
-          a.name.localeCompare(b.name)
-        );
-        setStudents(studentList);
-      } catch (err) {
-        console.error("Error fetching students:", err);
-      }
-    };
-
-    fetchStudents();
-  }, [user?.classID]);
-
-  const handleScoreChange = (id: string, value: number) => {
-    setScores((prev) => ({ ...prev, [id]: value }));
-  };
+const GradeEntryForm: React.FC<Props> = ({ students }) => {
+  const { user } = useCurrentUser();
+  const [scores, setScores] = useState<Record<string, number>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.assessmentID || !user?.classID) {
-      alert("Missing assessmentID or classID");
+    if (!user?.classID || !user?.assessmentID) {
+      alert("Missing classID or assessmentID");
       return;
     }
 
-    try {
-      for (const student of students) {
-        await client.graphql({
+    const client = generateClient();
+    await Promise.all(
+      students.map((s) =>
+        client.graphql({
           query: customCreateGrade,
           variables: {
             input: {
-              studentID: student.id,
+              studentID: s.id,
               classID: user.classID,
               assessmentID: user.assessmentID,
-              score: scores[student.id] || 0,
+              score: scores[s.id] ?? 0,
             },
           },
-        });
-      }
-      alert("✅ Grades submitted successfully");
-      setScores({});
-    } catch (err) {
-      console.error("❌ Error submitting grades:", err);
-      alert("Error submitting grades");
-    }
+        })
+      )
+    );
+
+    alert("Grades submitted!");
   };
 
-  if (loading) return <div>Loading user...</div>;
-  if (!user?.classID || !user?.assessmentID)
-    return <div>Missing classID or assessmentID</div>;
-
   return (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h4" gutterBottom>
         Enter Grades
       </Typography>
-      <Box component="form" onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          {students.map((student) => (
-            <Grid size={{ xs: 12, md: 6 }} key={student.id}>
+
+      <RequireRole roles={["Admin", "Teacher"]}>
+        <form onSubmit={handleSubmit}>
+          {students.map((s) => (
+            <Box key={s.id} sx={{ mb: 2 }}>
+              <Typography>{s.name}</Typography>
               <TextField
-                fullWidth
-                label={student.name}
                 type="number"
-                value={scores[student.id] ?? ""}
+                value={scores[s.id] ?? ""}
                 onChange={(e) =>
-                  handleScoreChange(student.id, Number(e.target.value))
+                  setScores({
+                    ...scores,
+                    [s.id]: parseFloat(e.target.value) || 0,
+                  })
                 }
               />
-            </Grid>
+            </Box>
           ))}
-        </Grid>
-        <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-          Submit Grades
-        </Button>
-      </Box>
-    </Paper>
+          <Button type="submit" variant="contained">
+            Save Grades
+          </Button>
+        </form>
+      </RequireRole>
+    </Box>
   );
 };
 

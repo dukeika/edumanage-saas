@@ -1,34 +1,28 @@
-import React, { useState } from "react";
-import { Container, Typography } from "@mui/material";
-import AcademicYearForm from "./AcademicYearForm";
-import TermForm from "./TermForm";
-import ClassForm from "./ClassForm";
-import ClassList from "./ClassList";
+// src/pages/admin/AdminSetupPage.tsx
+import React from "react";
+import { Container } from "@mui/material";
 import SubjectForm from "./SubjectForm";
 import AssessmentForm from "./AssessmentForm";
 import GradeEntryForm from "./GradeEntryForm";
+import { useCurrentUser } from "../../utils/useCurrentUser";
+
+// dummy data for now; replace with your actual fetch
+const dummyStudents = [
+  { id: "s1", name: "Alice" },
+  { id: "s2", name: "Bob" },
+];
 
 const AdminSetupPage: React.FC = () => {
-  const [schoolID, setSchoolID] = useState("demo-school-id");
-  const [classID, setClassID] = useState("demo-class-id");
-  const [subjectID, setSubjectID] = useState("demo-subject-id");
-  const [termID, setTermID] = useState("demo-term-id");
-  const [assessmentID, setAssessmentID] = useState("demo-assessment-id");
+  const { user } = useCurrentUser();
+  const classID = user?.classID ?? "";
+  const subjectID = user?.subjectID ?? "";
+  const termID = user?.termID ?? "";
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        Admin Setup Panel
-      </Typography>
-
-      <AcademicYearForm schoolID={schoolID} />
-      <TermForm academicYearID={termID} />
-      <ClassForm schoolID={schoolID} />
-      <ClassList schoolID={schoolID} />
-
+    <Container sx={{ p: 4 }}>
       <SubjectForm classID={classID} />
       <AssessmentForm classID={classID} subjectID={subjectID} termID={termID} />
-      <GradeEntryForm />
+      <GradeEntryForm students={dummyStudents} />
     </Container>
   );
 };

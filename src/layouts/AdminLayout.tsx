@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import {
   Box,
   AppBar,
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import RequireRole from "../components/RequireRole";
 
 const drawerWidth = 240;
 
@@ -26,7 +27,7 @@ const AdminLayout: React.FC = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             EduManage Admin
           </Typography>
-          <IconButton color="inherit" onClick={signOut}>
+          <IconButton color="inherit" onClick={() => signOut?.()}>
             <LogoutIcon />
           </IconButton>
         </Toolbar>
@@ -42,15 +43,36 @@ const AdminLayout: React.FC = () => {
       >
         <Toolbar />
         <List>
-          {[
-            ["/admin", "Dashboard"],
-            ["/admin/setup", "School Setup"],
-            ["/admin/class-list", "Classes"],
-          ].map(([to, text]) => (
-            <ListItemButton key={to} component={Link} to={to}>
-              <ListItemText primary={text} />
+          <RequireRole roles={["Admin"]}>
+            <ListItemButton
+              component={NavLink}
+              to="/admin"
+              end
+              sx={{ "&.active": { backgroundColor: "action.selected" } }}
+            >
+              <ListItemText primary="Dashboard" />
             </ListItemButton>
-          ))}
+          </RequireRole>
+
+          <RequireRole roles={["Admin"]}>
+            <ListItemButton
+              component={NavLink}
+              to="/admin/setup"
+              sx={{ "&.active": { backgroundColor: "action.selected" } }}
+            >
+              <ListItemText primary="School Setup" />
+            </ListItemButton>
+          </RequireRole>
+
+          <RequireRole roles={["Admin"]}>
+            <ListItemButton
+              component={NavLink}
+              to="/admin/class-list"
+              sx={{ "&.active": { backgroundColor: "action.selected" } }}
+            >
+              <ListItemText primary="Classes" />
+            </ListItemButton>
+          </RequireRole>
         </List>
       </Drawer>
 

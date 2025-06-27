@@ -1,10 +1,11 @@
-import React, { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+// src/components/RequireAuth.tsx
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { useCurrentUser } from "../utils/useCurrentUser";
 
 interface RequireAuthProps {
   allowedRoles: string[];
-  children: ReactNode;
+  children: React.ReactNode; // ← use React.ReactNode instead of JSX.Element
 }
 
 const RequireAuth: React.FC<RequireAuthProps> = ({
@@ -12,16 +13,23 @@ const RequireAuth: React.FC<RequireAuthProps> = ({
   children,
 }) => {
   const { user, loading } = useCurrentUser();
-  if (loading) return <div>Checking authentication…</div>;
-  if (!user) return <Navigate to="/" replace />;
-  if (!allowedRoles.includes(user.userRole || "")) {
-    return (
-      <div style={{ padding: 20, textAlign: "center" }}>
-        <h2>Unauthorized</h2>
-        <p>You don’t have permission to view this page.</p>
-      </div>
-    );
+  const location = useLocation();
+
+  if (loading) {
+    // still checking auth—render nothing or a spinner if you prefer
+    return null;
   }
+
+  if (!user) {
+    // not signed in
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (!allowedRoles.includes(user.userRole || "")) {
+    // signed in but wrong role
+    return <Navigate to="/unauthorized" replace />;
+  }
+
   return <>{children}</>;
 };
 

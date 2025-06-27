@@ -1,14 +1,34 @@
-import React from "react";
-import TermForm from "./TermForm";
-import { useCurrentUser } from "../../utils/useCurrentUser";
+import React, { useState } from "react";
+import { Box, Typography, TextField, Button } from "@mui/material";
+import RequireRole from "../../components/RequireRole";
 
-const TermFormPage = () => {
-  const { user, loading } = useCurrentUser();
+const TermFormPage: React.FC = () => {
+  const [termLabel, setTermLabel] = useState("");
 
-  if (loading) return <div>Loading...</div>;
-  if (!user?.academicYearID) return <div>Academic Year ID not found</div>;
+  const handleSave = () => {
+    alert("Term saved!");
+  };
 
-  return <TermForm academicYearID={user.academicYearID} />;
+  return (
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        New Term
+      </Typography>
+
+      <RequireRole roles={["Admin"]}>
+        <TextField
+          fullWidth
+          label="Term Label"
+          value={termLabel}
+          onChange={(e) => setTermLabel(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <Button variant="contained" onClick={handleSave}>
+          Save Term
+        </Button>
+      </RequireRole>
+    </Box>
+  );
 };
 
 export default TermFormPage;

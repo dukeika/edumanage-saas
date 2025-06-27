@@ -27,7 +27,6 @@ export const createCognitoUser = /* GraphQL */ `mutation CreateCognitoUser($inpu
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -43,6 +42,8 @@ export const createSchool = /* GraphQL */ `mutation CreateSchool(
     id
     name
     address
+    owner
+    admins
     academicYears {
       nextToken
       __typename
@@ -63,8 +64,6 @@ export const createSchool = /* GraphQL */ `mutation CreateSchool(
       nextToken
       __typename
     }
-    owner
-    admins
     createdAt
     updatedAt
     __typename
@@ -82,6 +81,8 @@ export const updateSchool = /* GraphQL */ `mutation UpdateSchool(
     id
     name
     address
+    owner
+    admins
     academicYears {
       nextToken
       __typename
@@ -102,8 +103,6 @@ export const updateSchool = /* GraphQL */ `mutation UpdateSchool(
       nextToken
       __typename
     }
-    owner
-    admins
     createdAt
     updatedAt
     __typename
@@ -121,6 +120,8 @@ export const deleteSchool = /* GraphQL */ `mutation DeleteSchool(
     id
     name
     address
+    owner
+    admins
     academicYears {
       nextToken
       __typename
@@ -141,8 +142,6 @@ export const deleteSchool = /* GraphQL */ `mutation DeleteSchool(
       nextToken
       __typename
     }
-    owner
-    admins
     createdAt
     updatedAt
     __typename
@@ -176,7 +175,6 @@ export const createAcademicYear = /* GraphQL */ `mutation CreateAcademicYear(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -208,7 +206,6 @@ export const updateAcademicYear = /* GraphQL */ `mutation UpdateAcademicYear(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -240,7 +237,6 @@ export const deleteAcademicYear = /* GraphQL */ `mutation DeleteAcademicYear(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -264,7 +260,6 @@ export const createTerm = /* GraphQL */ `mutation CreateTerm(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     assessments {
@@ -273,7 +268,6 @@ export const createTerm = /* GraphQL */ `mutation CreateTerm(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -297,7 +291,6 @@ export const updateTerm = /* GraphQL */ `mutation UpdateTerm(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     assessments {
@@ -306,7 +299,6 @@ export const updateTerm = /* GraphQL */ `mutation UpdateTerm(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -330,7 +322,6 @@ export const deleteTerm = /* GraphQL */ `mutation DeleteTerm(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     assessments {
@@ -339,62 +330,12 @@ export const deleteTerm = /* GraphQL */ `mutation DeleteTerm(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
 ` as GeneratedMutation<
   APITypes.DeleteTermMutationVariables,
   APITypes.DeleteTermMutation
->;
-export const createClass = /* GraphQL */ `mutation CreateClass(
-  $input: CreateClassInput!
-  $condition: ModelClassConditionInput
-) {
-  createClass(input: $input, condition: $condition) {
-    id
-    name
-    schoolID
-    school {
-      id
-      name
-      address
-      owner
-      admins
-      createdAt
-      updatedAt
-      __typename
-    }
-    teacherID
-    students {
-      nextToken
-      __typename
-    }
-    attendances {
-      nextToken
-      __typename
-    }
-    subjects {
-      nextToken
-      __typename
-    }
-    assessments {
-      nextToken
-      __typename
-    }
-    grades {
-      nextToken
-      __typename
-    }
-    createdAt
-    updatedAt
-    owner
-    __typename
-  }
-}
-` as GeneratedMutation<
-  APITypes.CreateClassMutationVariables,
-  APITypes.CreateClassMutation
 >;
 export const updateClass = /* GraphQL */ `mutation UpdateClass(
   $input: UpdateClassInput!
@@ -533,7 +474,6 @@ export const createStudent = /* GraphQL */ `mutation CreateStudent(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -580,7 +520,6 @@ export const updateStudent = /* GraphQL */ `mutation UpdateStudent(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -627,7 +566,6 @@ export const deleteStudent = /* GraphQL */ `mutation DeleteStudent(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -657,7 +595,6 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -687,7 +624,6 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -717,7 +653,6 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -749,7 +684,6 @@ export const createSubject = /* GraphQL */ `mutation CreateSubject(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -781,7 +715,6 @@ export const updateSubject = /* GraphQL */ `mutation UpdateSubject(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -813,7 +746,6 @@ export const deleteSubject = /* GraphQL */ `mutation DeleteSubject(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -847,7 +779,6 @@ export const createAssessment = /* GraphQL */ `mutation CreateAssessment(
       classID
       createdAt
       updatedAt
-      owner
       __typename
     }
     termID
@@ -859,7 +790,6 @@ export const createAssessment = /* GraphQL */ `mutation CreateAssessment(
       academicYearID
       createdAt
       updatedAt
-      owner
       __typename
     }
     grades {
@@ -868,7 +798,6 @@ export const createAssessment = /* GraphQL */ `mutation CreateAssessment(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -902,7 +831,6 @@ export const updateAssessment = /* GraphQL */ `mutation UpdateAssessment(
       classID
       createdAt
       updatedAt
-      owner
       __typename
     }
     termID
@@ -914,7 +842,6 @@ export const updateAssessment = /* GraphQL */ `mutation UpdateAssessment(
       academicYearID
       createdAt
       updatedAt
-      owner
       __typename
     }
     grades {
@@ -923,7 +850,6 @@ export const updateAssessment = /* GraphQL */ `mutation UpdateAssessment(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -957,7 +883,6 @@ export const deleteAssessment = /* GraphQL */ `mutation DeleteAssessment(
       classID
       createdAt
       updatedAt
-      owner
       __typename
     }
     termID
@@ -969,7 +894,6 @@ export const deleteAssessment = /* GraphQL */ `mutation DeleteAssessment(
       academicYearID
       createdAt
       updatedAt
-      owner
       __typename
     }
     grades {
@@ -978,7 +902,6 @@ export const deleteAssessment = /* GraphQL */ `mutation DeleteAssessment(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -1000,7 +923,6 @@ export const createGrade = /* GraphQL */ `mutation CreateGrade(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     assessmentID
@@ -1013,7 +935,6 @@ export const createGrade = /* GraphQL */ `mutation CreateGrade(
       termID
       createdAt
       updatedAt
-      owner
       __typename
     }
     score
@@ -1051,7 +972,6 @@ export const updateGrade = /* GraphQL */ `mutation UpdateGrade(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     assessmentID
@@ -1064,7 +984,6 @@ export const updateGrade = /* GraphQL */ `mutation UpdateGrade(
       termID
       createdAt
       updatedAt
-      owner
       __typename
     }
     score
@@ -1102,7 +1021,6 @@ export const deleteGrade = /* GraphQL */ `mutation DeleteGrade(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     assessmentID
@@ -1115,7 +1033,6 @@ export const deleteGrade = /* GraphQL */ `mutation DeleteGrade(
       termID
       createdAt
       updatedAt
-      owner
       __typename
     }
     score
@@ -1156,7 +1073,6 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     class {
@@ -1171,7 +1087,6 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -1196,7 +1111,6 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     class {
@@ -1211,7 +1125,6 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -1236,7 +1149,6 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
       schoolID
       createdAt
       updatedAt
-      owner
       __typename
     }
     class {
@@ -1251,7 +1163,6 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
     }
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -1284,7 +1195,6 @@ export const createAnnouncement = /* GraphQL */ `mutation CreateAnnouncement(
     classID
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -1317,7 +1227,6 @@ export const updateAnnouncement = /* GraphQL */ `mutation UpdateAnnouncement(
     classID
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -1350,11 +1259,59 @@ export const deleteAnnouncement = /* GraphQL */ `mutation DeleteAnnouncement(
     classID
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
 ` as GeneratedMutation<
   APITypes.DeleteAnnouncementMutationVariables,
   APITypes.DeleteAnnouncementMutation
+>;
+export const createClass = /* GraphQL */ `mutation CreateClass(
+  $input: CreateClassInput!
+  $condition: ModelClassConditionInput
+) {
+  createClass(input: $input, condition: $condition) {
+    id
+    name
+    schoolID
+    school {
+      id
+      name
+      address
+      owner
+      admins
+      createdAt
+      updatedAt
+      __typename
+    }
+    teacherID
+    students {
+      nextToken
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    subjects {
+      nextToken
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    owner
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateClassMutationVariables,
+  APITypes.CreateClassMutation
 >;

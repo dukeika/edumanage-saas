@@ -1,79 +1,93 @@
 // src/pages/admin/AdminDashboard.tsx
 import React, { useEffect, useState } from "react";
 import { Box, Paper, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { generateClient } from "aws-amplify/api";
-import {
-  listClasses,
-  listStudents,
-  listAnnouncements,
-} from "../../graphql/queries";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 
-const client = generateClient();
+interface Counts {
+  students: number;
+  classes: number;
+  announcements: number;
+  attendance: number;
+}
 
 const AdminDashboard: React.FC = () => {
-  const { user, loading: userLoading } = useCurrentUser();
-  const [counts, setCounts] = useState({
-    classes: 0,
+  const { user, loading } = useCurrentUser(); // your hook
+  const [busy, setBusy] = useState(true);
+  const [counts, setCounts] = useState<Counts>({
     students: 0,
+    classes: 0,
     announcements: 0,
+    attendance: 0,
   });
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user?.schoolID) {
-      Promise.all([
-        client.graphql({
-          query: listClasses,
-          variables: { filter: { schoolID: { eq: user.schoolID } } },
-        }),
-        client.graphql({
-          query: listStudents,
-          variables: { filter: { schoolID: { eq: user.schoolID } } },
-        }),
-        client.graphql({
-          query: listAnnouncements,
-          variables: { filter: { schoolID: { eq: user.schoolID } } },
-        }),
-      ])
-        .then(([cRes, sRes, aRes]: any[]) => {
-          const cls = cRes.data.listClasses.items || [];
-          const stu = sRes.data.listStudents.items || [];
-          const ann = aRes.data.listAnnouncements.items || [];
+    // once auth is ready…
+    if (!loading) {
+      setBusy(false);
+
+      if (user?.schoolID) {
+        // if/when you have a schoolID and AppSync seeded, you can re-enable this:
+        /*
+        setBusy(true);
+        const client = generateClient();
+        Promise.all([
+          client.graphql({ query: listStudents,     variables:{ filter:{ schoolID:{ eq:user.schoolID } } } }),
+          client.graphql({ query: listClasses,      variables:{ filter:{ schoolID:{ eq:user.schoolID } } } }),
+          client.graphql({ query: listAnnouncements,variables:{ filter:{ schoolID:{ eq:user.schoolID } } } }),
+          client.graphql({ query: listAttendances,  variables:{ filter:{ classID:{ beginsWith:user.schoolID } } } }),
+        ])
+        .then(([sRes, cRes, aRes, atRes]: any) => {
           setCounts({
-            classes: cls.length,
-            students: stu.length,
-            announcements: ann.length,
+            students:    sRes.data.listStudents.items.length,
+            classes:     cRes.data.listClasses.items.length,
+            announcements:aRes.data.listAnnouncements.items.length,
+            attendance:  atRes.data.listAttendances.items.length,
           });
         })
-        .finally(() => setLoading(false));
+        .catch(console.error)
+        .finally(() => setBusy(false));
+        */
+      } else {
+        console.warn("No schoolID present; showing default zero counts.");
+      }
     }
-  }, [user]);
+  }, [loading, user]);
 
-  if (userLoading || loading) {
-    return <Typography>Loading dashboard…</Typography>;
+  if (loading || busy) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography variant="h5">Loading dashboard…</Typography>
+      </Box>
+    );
   }
+
+  const cards = [
+    { label: "Students", count: counts.students },
+    { label: "Classes", count: counts.classes },
+    { label: "Announcements", count: counts.announcements },
+    { label: "Attendance", count: counts.attendance },
+  ];
 
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Welcome, {user?.name}
+        Welcome, {user?.name || "Admin"}
       </Typography>
-      <Grid container spacing={3}>
-        {[
-          { label: "Classes", count: counts.classes },
-          { label: "Students", count: counts.students },
-          { label: "Announcements", count: counts.announcements },
-        ].map(({ label, count }) => (
-          <Grid size={{ xs: 12, md: 6 }} key={label}>
-            <Paper sx={{ p: 3, textAlign: "center" }}>
-              <Typography variant="h5">{count}</Typography>
-              <Typography>{label}</Typography>
-            </Paper>
-          </Grid>
+
+      <Box
+        sx={{
+          display: "grid",
+          gap: 3,
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+        }}
+      >
+        {cards.map(({ label, count }) => (
+          <Paper key={label} sx={{ p: 3, textAlign: "center" }}>
+            <Typography variant="h3">{count}</Typography>
+            <Typography>{label}</Typography>
+          </Paper>
         ))}
-      </Grid>
+      </Box>
     </Box>
   );
 };

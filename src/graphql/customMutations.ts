@@ -111,3 +111,12 @@ export const customCreateAnnouncement = /* GraphQL */ `
     }
   }
 `;
+// just stub definitions so your imports resolve
+export const createAnnouncement = /* GraphQL */ `
+  mutation CreateAnnouncement($input: CreateAnnouncementInput!) {
+    createAnnouncement(input: $input) {
+      id
+      title
+    }
+  }
+`;

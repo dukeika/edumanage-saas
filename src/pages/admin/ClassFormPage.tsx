@@ -1,14 +1,36 @@
-import React from "react";
-import ClassForm from "./ClassForm";
-import { useCurrentUser } from "../../utils/useCurrentUser";
+import React, { useState } from "react";
+import { Box, Typography, TextField, Button } from "@mui/material";
+import RequireRole from "../../components/RequireRole";
 
-const ClassFormPage = () => {
-  const { user, loading } = useCurrentUser();
+const ClassFormPage: React.FC = () => {
+  const [name, setName] = useState("");
 
-  if (loading) return <div>Loading...</div>;
-  if (!user?.schoolID) return <div>School ID not available</div>;
+  const handleSave = () => {
+    // your save logic…
+    alert("Class saved!");
+  };
 
-  return <ClassForm schoolID={user.schoolID} />;
+  return (
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        {name ? "Edit Class" : "New Class"}
+      </Typography>
+
+      {/* Only Admins see the form */}
+      <RequireRole roles={["Admin"]}>
+        <TextField
+          fullWidth
+          label="Class Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <Button variant="contained" onClick={handleSave}>
+          Save Class
+        </Button>
+      </RequireRole>
+    </Box>
+  );
 };
 
 export default ClassFormPage;

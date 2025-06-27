@@ -2,16 +2,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { Amplify } from "aws-amplify";
-import amplifyconfig from "./amplifyconfiguration.json";
-import App from "./App";
-
-Amplify.configure(amplifyconfig);
+import AppRoutes from "./routes/AppRoutes";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      {/* Bypass Authenticator so we can see your routes */}
+      <AppRoutes />
     </BrowserRouter>
   </React.StrictMode>
 );

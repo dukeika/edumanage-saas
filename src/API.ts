@@ -15,13 +15,13 @@ export type School = {
   id: string,
   name: string,
   address?: string | null,
+  owner?: string | null,
+  admins?: Array< string | null > | null,
   academicYears?: ModelAcademicYearConnection | null,
   classes?: ModelClassConnection | null,
   students?: ModelStudentConnection | null,
   users?: ModelUserConnection | null,
   announcements?: ModelAnnouncementConnection | null,
-  owner?: string | null,
-  admins?: Array< string | null > | null,
   createdAt: string,
   updatedAt: string,
 };
@@ -41,7 +41,6 @@ export type AcademicYear = {
   terms?: ModelTermConnection | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type ModelTermConnection = {
@@ -61,7 +60,6 @@ export type Term = {
   assessments?: ModelAssessmentConnection | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type ModelAssessmentConnection = {
@@ -84,7 +82,6 @@ export type Assessment = {
   grades?: ModelGradeConnection | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type Class = {
@@ -101,7 +98,6 @@ export type Class = {
   grades?: ModelGradeConnection | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type ModelStudentConnection = {
@@ -122,7 +118,6 @@ export type Student = {
   grades?: ModelGradeConnection | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type ModelAttendanceConnection = {
@@ -142,7 +137,6 @@ export type Attendance = {
   class?: Class | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type ModelGradeConnection = {
@@ -180,7 +174,6 @@ export type Subject = {
   assessments?: ModelAssessmentConnection | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type ModelClassConnection = {
@@ -205,7 +198,6 @@ export type User = {
   school?: School | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type ModelAnnouncementConnection = {
@@ -227,7 +219,6 @@ export type Announcement = {
   classID?: string | null,
   createdAt: string,
   updatedAt: string,
-  owner?: string | null,
 };
 
 export type CreateClassInput = {
@@ -381,7 +372,6 @@ export type ModelAcademicYearConditionInput = {
   not?: ModelAcademicYearConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelIDInput = {
@@ -420,7 +410,6 @@ export type ModelTermConditionInput = {
   not?: ModelTermConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type UpdateTermInput = {
@@ -444,7 +433,6 @@ export type ModelClassConditionInput = {
   not?: ModelClassConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type UpdateClassInput = {
@@ -467,7 +455,7 @@ export type ModelStudentConditionInput = {
   not?: ModelStudentConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
+  id?: ModelStringInput | null,
 };
 
 export type UpdateStudentInput = {
@@ -499,7 +487,7 @@ export type ModelUserConditionInput = {
   not?: ModelUserConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
+  id?: ModelStringInput | null,
 };
 
 export type UpdateUserInput = {
@@ -522,7 +510,6 @@ export type ModelSubjectConditionInput = {
   not?: ModelSubjectConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type UpdateSubjectInput = {
@@ -546,7 +533,6 @@ export type ModelAssessmentConditionInput = {
   not?: ModelAssessmentConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type UpdateAssessmentInput = {
@@ -608,7 +594,6 @@ export type ModelAttendanceConditionInput = {
   not?: ModelAttendanceConditionInput | null,
   createdAt?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type UpdateAttendanceInput = {
@@ -636,7 +621,6 @@ export type ModelAnnouncementConditionInput = {
   or?: Array< ModelAnnouncementConditionInput | null > | null,
   not?: ModelAnnouncementConditionInput | null,
   updatedAt?: ModelStringInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type UpdateAnnouncementInput = {
@@ -683,7 +667,6 @@ export type ModelAcademicYearFilterInput = {
   and?: Array< ModelAcademicYearFilterInput | null > | null,
   or?: Array< ModelAcademicYearFilterInput | null > | null,
   not?: ModelAcademicYearFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelTermFilterInput = {
@@ -697,7 +680,6 @@ export type ModelTermFilterInput = {
   and?: Array< ModelTermFilterInput | null > | null,
   or?: Array< ModelTermFilterInput | null > | null,
   not?: ModelTermFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelClassFilterInput = {
@@ -710,7 +692,6 @@ export type ModelClassFilterInput = {
   and?: Array< ModelClassFilterInput | null > | null,
   or?: Array< ModelClassFilterInput | null > | null,
   not?: ModelClassFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelStudentFilterInput = {
@@ -723,7 +704,6 @@ export type ModelStudentFilterInput = {
   and?: Array< ModelStudentFilterInput | null > | null,
   or?: Array< ModelStudentFilterInput | null > | null,
   not?: ModelStudentFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelUserFilterInput = {
@@ -737,7 +717,6 @@ export type ModelUserFilterInput = {
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelSubjectFilterInput = {
@@ -749,7 +728,6 @@ export type ModelSubjectFilterInput = {
   and?: Array< ModelSubjectFilterInput | null > | null,
   or?: Array< ModelSubjectFilterInput | null > | null,
   not?: ModelSubjectFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelAssessmentFilterInput = {
@@ -764,7 +742,6 @@ export type ModelAssessmentFilterInput = {
   and?: Array< ModelAssessmentFilterInput | null > | null,
   or?: Array< ModelAssessmentFilterInput | null > | null,
   not?: ModelAssessmentFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelGradeFilterInput = {
@@ -791,7 +768,6 @@ export type ModelAttendanceFilterInput = {
   and?: Array< ModelAttendanceFilterInput | null > | null,
   or?: Array< ModelAttendanceFilterInput | null > | null,
   not?: ModelAttendanceFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelAnnouncementFilterInput = {
@@ -808,13 +784,13 @@ export type ModelAnnouncementFilterInput = {
   and?: Array< ModelAnnouncementFilterInput | null > | null,
   or?: Array< ModelAnnouncementFilterInput | null > | null,
   not?: ModelAnnouncementFilterInput | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionSchoolFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
   address?: ModelSubscriptionStringInput | null,
+  admins?: ModelSubscriptionStringInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionSchoolFilterInput | null > | null,
@@ -860,7 +836,6 @@ export type ModelSubscriptionAcademicYearFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAcademicYearFilterInput | null > | null,
   or?: Array< ModelSubscriptionAcademicYearFilterInput | null > | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionTermFilterInput = {
@@ -873,23 +848,20 @@ export type ModelSubscriptionTermFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionTermFilterInput | null > | null,
   or?: Array< ModelSubscriptionTermFilterInput | null > | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionClassFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
-  schoolID?: ModelSubscriptionIDInput | null,
   teacherID?: ModelSubscriptionIDInput | null,
   createdAt?: ModelSubscriptionStringInput | null,
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionClassFilterInput | null > | null,
   or?: Array< ModelSubscriptionClassFilterInput | null > | null,
-  owner?: ModelStringInput | null,
+  schoolID?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionStudentFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
   classID?: ModelSubscriptionIDInput | null,
   schoolID?: ModelSubscriptionIDInput | null,
@@ -897,11 +869,10 @@ export type ModelSubscriptionStudentFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStudentFilterInput | null > | null,
   or?: Array< ModelSubscriptionStudentFilterInput | null > | null,
-  owner?: ModelStringInput | null,
+  id?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionUserFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
   email?: ModelSubscriptionStringInput | null,
   name?: ModelSubscriptionStringInput | null,
   role?: ModelSubscriptionStringInput | null,
@@ -910,7 +881,7 @@ export type ModelSubscriptionUserFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUserFilterInput | null > | null,
   or?: Array< ModelSubscriptionUserFilterInput | null > | null,
-  owner?: ModelStringInput | null,
+  id?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionSubjectFilterInput = {
@@ -921,7 +892,6 @@ export type ModelSubscriptionSubjectFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionSubjectFilterInput | null > | null,
   or?: Array< ModelSubscriptionSubjectFilterInput | null > | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionAssessmentFilterInput = {
@@ -935,12 +905,10 @@ export type ModelSubscriptionAssessmentFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAssessmentFilterInput | null > | null,
   or?: Array< ModelSubscriptionAssessmentFilterInput | null > | null,
-  owner?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionGradeFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  studentID?: ModelSubscriptionIDInput | null,
   assessmentID?: ModelSubscriptionIDInput | null,
   score?: ModelSubscriptionFloatInput | null,
   classID?: ModelSubscriptionIDInput | null,
@@ -948,6 +916,7 @@ export type ModelSubscriptionGradeFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionGradeFilterInput | null > | null,
   or?: Array< ModelSubscriptionGradeFilterInput | null > | null,
+  studentID?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionFloatInput = {
@@ -964,7 +933,6 @@ export type ModelSubscriptionFloatInput = {
 
 export type ModelSubscriptionAttendanceFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  studentID?: ModelSubscriptionIDInput | null,
   classID?: ModelSubscriptionIDInput | null,
   date?: ModelSubscriptionStringInput | null,
   status?: ModelSubscriptionStringInput | null,
@@ -972,7 +940,7 @@ export type ModelSubscriptionAttendanceFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
   or?: Array< ModelSubscriptionAttendanceFilterInput | null > | null,
-  owner?: ModelStringInput | null,
+  studentID?: ModelStringInput | null,
 };
 
 export type ModelSubscriptionAnnouncementFilterInput = {
@@ -988,7 +956,6 @@ export type ModelSubscriptionAnnouncementFilterInput = {
   updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAnnouncementFilterInput | null > | null,
   or?: Array< ModelSubscriptionAnnouncementFilterInput | null > | null,
-  owner?: ModelStringInput | null,
 };
 
 export type CustomCreateSchoolMutationVariables = {
@@ -1157,7 +1124,6 @@ export type CreateCognitoUserMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1172,6 +1138,8 @@ export type CreateSchoolMutation = {
     id: string,
     name: string,
     address?: string | null,
+    owner?: string | null,
+    admins?: Array< string | null > | null,
     academicYears?:  {
       __typename: "ModelAcademicYearConnection",
       nextToken?: string | null,
@@ -1192,8 +1160,6 @@ export type CreateSchoolMutation = {
       __typename: "ModelAnnouncementConnection",
       nextToken?: string | null,
     } | null,
-    owner?: string | null,
-    admins?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1210,6 +1176,8 @@ export type UpdateSchoolMutation = {
     id: string,
     name: string,
     address?: string | null,
+    owner?: string | null,
+    admins?: Array< string | null > | null,
     academicYears?:  {
       __typename: "ModelAcademicYearConnection",
       nextToken?: string | null,
@@ -1230,8 +1198,6 @@ export type UpdateSchoolMutation = {
       __typename: "ModelAnnouncementConnection",
       nextToken?: string | null,
     } | null,
-    owner?: string | null,
-    admins?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1248,6 +1214,8 @@ export type DeleteSchoolMutation = {
     id: string,
     name: string,
     address?: string | null,
+    owner?: string | null,
+    admins?: Array< string | null > | null,
     academicYears?:  {
       __typename: "ModelAcademicYearConnection",
       nextToken?: string | null,
@@ -1268,8 +1236,6 @@ export type DeleteSchoolMutation = {
       __typename: "ModelAnnouncementConnection",
       nextToken?: string | null,
     } | null,
-    owner?: string | null,
-    admins?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -1302,7 +1268,6 @@ export type CreateAcademicYearMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1333,7 +1298,6 @@ export type UpdateAcademicYearMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1364,7 +1328,6 @@ export type DeleteAcademicYearMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1388,7 +1351,6 @@ export type CreateTermMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -1396,7 +1358,6 @@ export type CreateTermMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1420,7 +1381,6 @@ export type UpdateTermMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -1428,7 +1388,6 @@ export type UpdateTermMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1452,7 +1411,6 @@ export type DeleteTermMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -1460,7 +1418,6 @@ export type DeleteTermMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1508,7 +1465,6 @@ export type CreateClassMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1556,7 +1512,6 @@ export type UpdateClassMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1604,7 +1559,6 @@ export type DeleteClassMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1628,7 +1582,6 @@ export type CreateStudentMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     school?:  {
       __typename: "School",
@@ -1650,7 +1603,6 @@ export type CreateStudentMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1674,7 +1626,6 @@ export type UpdateStudentMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     school?:  {
       __typename: "School",
@@ -1696,7 +1647,6 @@ export type UpdateStudentMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1720,7 +1670,6 @@ export type DeleteStudentMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     school?:  {
       __typename: "School",
@@ -1742,7 +1691,6 @@ export type DeleteStudentMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1771,7 +1719,6 @@ export type CreateUserMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1800,7 +1747,6 @@ export type UpdateUserMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1829,7 +1775,6 @@ export type DeleteUserMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1852,7 +1797,6 @@ export type CreateSubjectMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -1860,7 +1804,6 @@ export type CreateSubjectMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1883,7 +1826,6 @@ export type UpdateSubjectMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -1891,7 +1833,6 @@ export type UpdateSubjectMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1914,7 +1855,6 @@ export type DeleteSubjectMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -1922,7 +1862,6 @@ export type DeleteSubjectMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -1946,7 +1885,6 @@ export type CreateAssessmentMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     subjectID: string,
     subject?:  {
@@ -1956,7 +1894,6 @@ export type CreateAssessmentMutation = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     termID: string,
     term?:  {
@@ -1968,7 +1905,6 @@ export type CreateAssessmentMutation = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     grades?:  {
       __typename: "ModelGradeConnection",
@@ -1976,7 +1912,6 @@ export type CreateAssessmentMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2000,7 +1935,6 @@ export type UpdateAssessmentMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     subjectID: string,
     subject?:  {
@@ -2010,7 +1944,6 @@ export type UpdateAssessmentMutation = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     termID: string,
     term?:  {
@@ -2022,7 +1955,6 @@ export type UpdateAssessmentMutation = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     grades?:  {
       __typename: "ModelGradeConnection",
@@ -2030,7 +1962,6 @@ export type UpdateAssessmentMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2054,7 +1985,6 @@ export type DeleteAssessmentMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     subjectID: string,
     subject?:  {
@@ -2064,7 +1994,6 @@ export type DeleteAssessmentMutation = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     termID: string,
     term?:  {
@@ -2076,7 +2005,6 @@ export type DeleteAssessmentMutation = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     grades?:  {
       __typename: "ModelGradeConnection",
@@ -2084,7 +2012,6 @@ export type DeleteAssessmentMutation = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2106,7 +2033,6 @@ export type CreateGradeMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessmentID: string,
     assessment?:  {
@@ -2119,7 +2045,6 @@ export type CreateGradeMutation = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     score: number,
     classID: string,
@@ -2131,7 +2056,6 @@ export type CreateGradeMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
@@ -2156,7 +2080,6 @@ export type UpdateGradeMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessmentID: string,
     assessment?:  {
@@ -2169,7 +2092,6 @@ export type UpdateGradeMutation = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     score: number,
     classID: string,
@@ -2181,7 +2103,6 @@ export type UpdateGradeMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
@@ -2206,7 +2127,6 @@ export type DeleteGradeMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessmentID: string,
     assessment?:  {
@@ -2219,7 +2139,6 @@ export type DeleteGradeMutation = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     score: number,
     classID: string,
@@ -2231,7 +2150,6 @@ export type DeleteGradeMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
@@ -2259,7 +2177,6 @@ export type CreateAttendanceMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     class?:  {
       __typename: "Class",
@@ -2269,11 +2186,9 @@ export type CreateAttendanceMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2298,7 +2213,6 @@ export type UpdateAttendanceMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     class?:  {
       __typename: "Class",
@@ -2308,11 +2222,9 @@ export type UpdateAttendanceMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2337,7 +2249,6 @@ export type DeleteAttendanceMutation = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     class?:  {
       __typename: "Class",
@@ -2347,11 +2258,9 @@ export type DeleteAttendanceMutation = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2383,7 +2292,6 @@ export type CreateAnnouncementMutation = {
     classID?: string | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2415,7 +2323,6 @@ export type UpdateAnnouncementMutation = {
     classID?: string | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2447,7 +2354,6 @@ export type DeleteAnnouncementMutation = {
     classID?: string | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2461,6 +2367,8 @@ export type GetSchoolQuery = {
     id: string,
     name: string,
     address?: string | null,
+    owner?: string | null,
+    admins?: Array< string | null > | null,
     academicYears?:  {
       __typename: "ModelAcademicYearConnection",
       nextToken?: string | null,
@@ -2481,8 +2389,6 @@ export type GetSchoolQuery = {
       __typename: "ModelAnnouncementConnection",
       nextToken?: string | null,
     } | null,
-    owner?: string | null,
-    admins?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -2537,7 +2443,6 @@ export type GetAcademicYearQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2557,7 +2462,6 @@ export type ListAcademicYearsQuery = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -2582,7 +2486,6 @@ export type GetTermQuery = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -2590,7 +2493,6 @@ export type GetTermQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2612,7 +2514,6 @@ export type ListTermsQuery = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -2661,7 +2562,6 @@ export type GetClassQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2682,7 +2582,6 @@ export type ListClassesQuery = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -2707,7 +2606,6 @@ export type GetStudentQuery = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     school?:  {
       __typename: "School",
@@ -2729,7 +2627,6 @@ export type GetStudentQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2750,7 +2647,6 @@ export type ListStudentsQuery = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -2780,7 +2676,6 @@ export type GetUserQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2802,7 +2697,6 @@ export type ListUsersQuery = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -2826,7 +2720,6 @@ export type GetSubjectQuery = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -2834,7 +2727,6 @@ export type GetSubjectQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2854,7 +2746,6 @@ export type ListSubjectsQuery = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -2879,7 +2770,6 @@ export type GetAssessmentQuery = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     subjectID: string,
     subject?:  {
@@ -2889,7 +2779,6 @@ export type GetAssessmentQuery = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     termID: string,
     term?:  {
@@ -2901,7 +2790,6 @@ export type GetAssessmentQuery = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     grades?:  {
       __typename: "ModelGradeConnection",
@@ -2909,7 +2797,6 @@ export type GetAssessmentQuery = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -2932,7 +2819,6 @@ export type ListAssessmentsQuery = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -2955,7 +2841,6 @@ export type GetGradeQuery = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessmentID: string,
     assessment?:  {
@@ -2968,7 +2853,6 @@ export type GetGradeQuery = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     score: number,
     classID: string,
@@ -2980,7 +2864,6 @@ export type GetGradeQuery = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
@@ -3030,7 +2913,6 @@ export type GetAttendanceQuery = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     class?:  {
       __typename: "Class",
@@ -3040,11 +2922,9 @@ export type GetAttendanceQuery = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -3066,7 +2946,6 @@ export type ListAttendancesQuery = {
       status: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -3099,7 +2978,6 @@ export type GetAnnouncementQuery = {
     classID?: string | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
@@ -3124,7 +3002,6 @@ export type ListAnnouncementsQuery = {
       classID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -3141,6 +3018,8 @@ export type OnCreateSchoolSubscription = {
     id: string,
     name: string,
     address?: string | null,
+    owner?: string | null,
+    admins?: Array< string | null > | null,
     academicYears?:  {
       __typename: "ModelAcademicYearConnection",
       nextToken?: string | null,
@@ -3161,8 +3040,6 @@ export type OnCreateSchoolSubscription = {
       __typename: "ModelAnnouncementConnection",
       nextToken?: string | null,
     } | null,
-    owner?: string | null,
-    admins?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -3179,6 +3056,8 @@ export type OnUpdateSchoolSubscription = {
     id: string,
     name: string,
     address?: string | null,
+    owner?: string | null,
+    admins?: Array< string | null > | null,
     academicYears?:  {
       __typename: "ModelAcademicYearConnection",
       nextToken?: string | null,
@@ -3199,8 +3078,6 @@ export type OnUpdateSchoolSubscription = {
       __typename: "ModelAnnouncementConnection",
       nextToken?: string | null,
     } | null,
-    owner?: string | null,
-    admins?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -3217,6 +3094,8 @@ export type OnDeleteSchoolSubscription = {
     id: string,
     name: string,
     address?: string | null,
+    owner?: string | null,
+    admins?: Array< string | null > | null,
     academicYears?:  {
       __typename: "ModelAcademicYearConnection",
       nextToken?: string | null,
@@ -3237,8 +3116,6 @@ export type OnDeleteSchoolSubscription = {
       __typename: "ModelAnnouncementConnection",
       nextToken?: string | null,
     } | null,
-    owner?: string | null,
-    admins?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -3246,7 +3123,6 @@ export type OnDeleteSchoolSubscription = {
 
 export type OnCreateAcademicYearSubscriptionVariables = {
   filter?: ModelSubscriptionAcademicYearFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnCreateAcademicYearSubscription = {
@@ -3271,13 +3147,11 @@ export type OnCreateAcademicYearSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateAcademicYearSubscriptionVariables = {
   filter?: ModelSubscriptionAcademicYearFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnUpdateAcademicYearSubscription = {
@@ -3302,13 +3176,11 @@ export type OnUpdateAcademicYearSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteAcademicYearSubscriptionVariables = {
   filter?: ModelSubscriptionAcademicYearFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnDeleteAcademicYearSubscription = {
@@ -3333,13 +3205,11 @@ export type OnDeleteAcademicYearSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateTermSubscriptionVariables = {
   filter?: ModelSubscriptionTermFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnCreateTermSubscription = {
@@ -3357,7 +3227,6 @@ export type OnCreateTermSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -3365,13 +3234,11 @@ export type OnCreateTermSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateTermSubscriptionVariables = {
   filter?: ModelSubscriptionTermFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnUpdateTermSubscription = {
@@ -3389,7 +3256,6 @@ export type OnUpdateTermSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -3397,13 +3263,11 @@ export type OnUpdateTermSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteTermSubscriptionVariables = {
   filter?: ModelSubscriptionTermFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnDeleteTermSubscription = {
@@ -3421,7 +3285,6 @@ export type OnDeleteTermSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -3429,13 +3292,12 @@ export type OnDeleteTermSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateClassSubscriptionVariables = {
   filter?: ModelSubscriptionClassFilterInput | null,
-  owner?: string | null,
+  schoolID?: string | null,
 };
 
 export type OnCreateClassSubscription = {
@@ -3477,13 +3339,12 @@ export type OnCreateClassSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateClassSubscriptionVariables = {
   filter?: ModelSubscriptionClassFilterInput | null,
-  owner?: string | null,
+  schoolID?: string | null,
 };
 
 export type OnUpdateClassSubscription = {
@@ -3525,13 +3386,12 @@ export type OnUpdateClassSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteClassSubscriptionVariables = {
   filter?: ModelSubscriptionClassFilterInput | null,
-  owner?: string | null,
+  schoolID?: string | null,
 };
 
 export type OnDeleteClassSubscription = {
@@ -3573,13 +3433,12 @@ export type OnDeleteClassSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateStudentSubscriptionVariables = {
   filter?: ModelSubscriptionStudentFilterInput | null,
-  owner?: string | null,
+  id?: string | null,
 };
 
 export type OnCreateStudentSubscription = {
@@ -3597,7 +3456,6 @@ export type OnCreateStudentSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     school?:  {
       __typename: "School",
@@ -3619,13 +3477,12 @@ export type OnCreateStudentSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateStudentSubscriptionVariables = {
   filter?: ModelSubscriptionStudentFilterInput | null,
-  owner?: string | null,
+  id?: string | null,
 };
 
 export type OnUpdateStudentSubscription = {
@@ -3643,7 +3500,6 @@ export type OnUpdateStudentSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     school?:  {
       __typename: "School",
@@ -3665,13 +3521,12 @@ export type OnUpdateStudentSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteStudentSubscriptionVariables = {
   filter?: ModelSubscriptionStudentFilterInput | null,
-  owner?: string | null,
+  id?: string | null,
 };
 
 export type OnDeleteStudentSubscription = {
@@ -3689,7 +3544,6 @@ export type OnDeleteStudentSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     school?:  {
       __typename: "School",
@@ -3711,13 +3565,12 @@ export type OnDeleteStudentSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateUserSubscriptionVariables = {
   filter?: ModelSubscriptionUserFilterInput | null,
-  owner?: string | null,
+  id?: string | null,
 };
 
 export type OnCreateUserSubscription = {
@@ -3740,13 +3593,12 @@ export type OnCreateUserSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateUserSubscriptionVariables = {
   filter?: ModelSubscriptionUserFilterInput | null,
-  owner?: string | null,
+  id?: string | null,
 };
 
 export type OnUpdateUserSubscription = {
@@ -3769,13 +3621,12 @@ export type OnUpdateUserSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteUserSubscriptionVariables = {
   filter?: ModelSubscriptionUserFilterInput | null,
-  owner?: string | null,
+  id?: string | null,
 };
 
 export type OnDeleteUserSubscription = {
@@ -3798,13 +3649,11 @@ export type OnDeleteUserSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateSubjectSubscriptionVariables = {
   filter?: ModelSubscriptionSubjectFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnCreateSubjectSubscription = {
@@ -3821,7 +3670,6 @@ export type OnCreateSubjectSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -3829,13 +3677,11 @@ export type OnCreateSubjectSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateSubjectSubscriptionVariables = {
   filter?: ModelSubscriptionSubjectFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnUpdateSubjectSubscription = {
@@ -3852,7 +3698,6 @@ export type OnUpdateSubjectSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -3860,13 +3705,11 @@ export type OnUpdateSubjectSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteSubjectSubscriptionVariables = {
   filter?: ModelSubscriptionSubjectFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnDeleteSubjectSubscription = {
@@ -3883,7 +3726,6 @@ export type OnDeleteSubjectSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessments?:  {
       __typename: "ModelAssessmentConnection",
@@ -3891,13 +3733,11 @@ export type OnDeleteSubjectSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateAssessmentSubscriptionVariables = {
   filter?: ModelSubscriptionAssessmentFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnCreateAssessmentSubscription = {
@@ -3915,7 +3755,6 @@ export type OnCreateAssessmentSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     subjectID: string,
     subject?:  {
@@ -3925,7 +3764,6 @@ export type OnCreateAssessmentSubscription = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     termID: string,
     term?:  {
@@ -3937,7 +3775,6 @@ export type OnCreateAssessmentSubscription = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     grades?:  {
       __typename: "ModelGradeConnection",
@@ -3945,13 +3782,11 @@ export type OnCreateAssessmentSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateAssessmentSubscriptionVariables = {
   filter?: ModelSubscriptionAssessmentFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnUpdateAssessmentSubscription = {
@@ -3969,7 +3804,6 @@ export type OnUpdateAssessmentSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     subjectID: string,
     subject?:  {
@@ -3979,7 +3813,6 @@ export type OnUpdateAssessmentSubscription = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     termID: string,
     term?:  {
@@ -3991,7 +3824,6 @@ export type OnUpdateAssessmentSubscription = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     grades?:  {
       __typename: "ModelGradeConnection",
@@ -3999,13 +3831,11 @@ export type OnUpdateAssessmentSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteAssessmentSubscriptionVariables = {
   filter?: ModelSubscriptionAssessmentFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnDeleteAssessmentSubscription = {
@@ -4023,7 +3853,6 @@ export type OnDeleteAssessmentSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     subjectID: string,
     subject?:  {
@@ -4033,7 +3862,6 @@ export type OnDeleteAssessmentSubscription = {
       classID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     termID: string,
     term?:  {
@@ -4045,7 +3873,6 @@ export type OnDeleteAssessmentSubscription = {
       academicYearID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     grades?:  {
       __typename: "ModelGradeConnection",
@@ -4053,12 +3880,12 @@ export type OnDeleteAssessmentSubscription = {
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateGradeSubscriptionVariables = {
   filter?: ModelSubscriptionGradeFilterInput | null,
+  studentID?: string | null,
 };
 
 export type OnCreateGradeSubscription = {
@@ -4074,7 +3901,6 @@ export type OnCreateGradeSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessmentID: string,
     assessment?:  {
@@ -4087,7 +3913,6 @@ export type OnCreateGradeSubscription = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     score: number,
     classID: string,
@@ -4099,7 +3924,6 @@ export type OnCreateGradeSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
@@ -4108,6 +3932,7 @@ export type OnCreateGradeSubscription = {
 
 export type OnUpdateGradeSubscriptionVariables = {
   filter?: ModelSubscriptionGradeFilterInput | null,
+  studentID?: string | null,
 };
 
 export type OnUpdateGradeSubscription = {
@@ -4123,7 +3948,6 @@ export type OnUpdateGradeSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessmentID: string,
     assessment?:  {
@@ -4136,7 +3960,6 @@ export type OnUpdateGradeSubscription = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     score: number,
     classID: string,
@@ -4148,7 +3971,6 @@ export type OnUpdateGradeSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
@@ -4157,6 +3979,7 @@ export type OnUpdateGradeSubscription = {
 
 export type OnDeleteGradeSubscriptionVariables = {
   filter?: ModelSubscriptionGradeFilterInput | null,
+  studentID?: string | null,
 };
 
 export type OnDeleteGradeSubscription = {
@@ -4172,7 +3995,6 @@ export type OnDeleteGradeSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     assessmentID: string,
     assessment?:  {
@@ -4185,7 +4007,6 @@ export type OnDeleteGradeSubscription = {
       termID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     score: number,
     classID: string,
@@ -4197,7 +4018,6 @@ export type OnDeleteGradeSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
@@ -4206,7 +4026,7 @@ export type OnDeleteGradeSubscription = {
 
 export type OnCreateAttendanceSubscriptionVariables = {
   filter?: ModelSubscriptionAttendanceFilterInput | null,
-  owner?: string | null,
+  studentID?: string | null,
 };
 
 export type OnCreateAttendanceSubscription = {
@@ -4225,7 +4045,6 @@ export type OnCreateAttendanceSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     class?:  {
       __typename: "Class",
@@ -4235,17 +4054,15 @@ export type OnCreateAttendanceSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateAttendanceSubscriptionVariables = {
   filter?: ModelSubscriptionAttendanceFilterInput | null,
-  owner?: string | null,
+  studentID?: string | null,
 };
 
 export type OnUpdateAttendanceSubscription = {
@@ -4264,7 +4081,6 @@ export type OnUpdateAttendanceSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     class?:  {
       __typename: "Class",
@@ -4274,17 +4090,15 @@ export type OnUpdateAttendanceSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteAttendanceSubscriptionVariables = {
   filter?: ModelSubscriptionAttendanceFilterInput | null,
-  owner?: string | null,
+  studentID?: string | null,
 };
 
 export type OnDeleteAttendanceSubscription = {
@@ -4303,7 +4117,6 @@ export type OnDeleteAttendanceSubscription = {
       schoolID: string,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     class?:  {
       __typename: "Class",
@@ -4313,17 +4126,14 @@ export type OnDeleteAttendanceSubscription = {
       teacherID?: string | null,
       createdAt: string,
       updatedAt: string,
-      owner?: string | null,
     } | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnCreateAnnouncementSubscriptionVariables = {
   filter?: ModelSubscriptionAnnouncementFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnCreateAnnouncementSubscription = {
@@ -4349,13 +4159,11 @@ export type OnCreateAnnouncementSubscription = {
     classID?: string | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateAnnouncementSubscriptionVariables = {
   filter?: ModelSubscriptionAnnouncementFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnUpdateAnnouncementSubscription = {
@@ -4381,13 +4189,11 @@ export type OnUpdateAnnouncementSubscription = {
     classID?: string | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteAnnouncementSubscriptionVariables = {
   filter?: ModelSubscriptionAnnouncementFilterInput | null,
-  owner?: string | null,
 };
 
 export type OnDeleteAnnouncementSubscription = {
@@ -4413,6 +4219,5 @@ export type OnDeleteAnnouncementSubscription = {
     classID?: string | null,
     createdAt: string,
     updatedAt: string,
-    owner?: string | null,
   } | null,
 };
