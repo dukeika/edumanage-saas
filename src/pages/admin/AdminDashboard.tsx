@@ -1,7 +1,14 @@
 // src/pages/admin/AdminDashboard.tsx
 import React, { useEffect, useState } from "react";
-import { Box, Paper, Typography } from "@mui/material";
-import { useCurrentUser } from "../../utils/useCurrentUser";
+import { Box, Paper, Typography, Grid } from "@mui/material";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { generateClient } from "@aws-amplify/api";
+import {
+  listStudents,
+  listClasses,
+  listAnnouncements,
+  listAttendances,
+} from "../../graphql/queries";
 
 interface Counts {
   students: number;
@@ -11,83 +18,85 @@ interface Counts {
 }
 
 const AdminDashboard: React.FC = () => {
-  const { user, loading } = useCurrentUser(); // your hook
-  const [busy, setBusy] = useState(true);
+  // pull `user` and `route` from Amplify's hook
+  const { user, route } = useAuthenticator((ctx) => [ctx.user, ctx.route]);
   const [counts, setCounts] = useState<Counts>({
     students: 0,
     classes: 0,
     announcements: 0,
     attendance: 0,
   });
+  const [fetched, setFetched] = useState(false);
+
+  // cast user to any so TS stops complaining
+  const attrs = (user as any)?.attributes as Record<string, string> | undefined;
+  const schoolID = attrs?.["custom:schoolID"];
 
   useEffect(() => {
-    // once auth is ready…
-    if (!loading) {
-      setBusy(false);
-
-      if (user?.schoolID) {
-        // if/when you have a schoolID and AppSync seeded, you can re-enable this:
-        /*
-        setBusy(true);
-        const client = generateClient();
-        Promise.all([
-          client.graphql({ query: listStudents,     variables:{ filter:{ schoolID:{ eq:user.schoolID } } } }),
-          client.graphql({ query: listClasses,      variables:{ filter:{ schoolID:{ eq:user.schoolID } } } }),
-          client.graphql({ query: listAnnouncements,variables:{ filter:{ schoolID:{ eq:user.schoolID } } } }),
-          client.graphql({ query: listAttendances,  variables:{ filter:{ classID:{ beginsWith:user.schoolID } } } }),
-        ])
-        .then(([sRes, cRes, aRes, atRes]: any) => {
+    // once we're authenticated, and have a schoolID, fetch data
+    if (route === "authenticated" && schoolID && !fetched) {
+      const client = generateClient();
+      Promise.all([
+        client.graphql({
+          query: listStudents,
+          variables: { filter: { schoolID: { eq: schoolID } } },
+        }),
+        client.graphql({
+          query: listClasses,
+          variables: { filter: { schoolID: { eq: schoolID } } },
+        }),
+        client.graphql({
+          query: listAnnouncements,
+          variables: { filter: { schoolID: { eq: schoolID } } },
+        }),
+        client.graphql({
+          query: listAttendances,
+          variables: { filter: { classID: { beginsWith: schoolID } } },
+        }),
+      ])
+        .then(([s, c, a, at]: any) => {
           setCounts({
-            students:    sRes.data.listStudents.items.length,
-            classes:     cRes.data.listClasses.items.length,
-            announcements:aRes.data.listAnnouncements.items.length,
-            attendance:  atRes.data.listAttendances.items.length,
+            students: s.data.listStudents.items.length,
+            classes: c.data.listClasses.items.length,
+            announcements: a.data.listAnnouncements.items.length,
+            attendance: at.data.listAttendances.items.length,
           });
+          setFetched(true);
         })
-        .catch(console.error)
-        .finally(() => setBusy(false));
-        */
-      } else {
-        console.warn("No schoolID present; showing default zero counts.");
-      }
+        .catch(console.error);
     }
-  }, [loading, user]);
+  }, [route, schoolID, fetched]);
 
-  if (loading || busy) {
+  // show a spinner/text until Amplify has finished bootstrapping
+  if (route !== "authenticated") {
     return (
       <Box sx={{ p: 4 }}>
-        <Typography variant="h5">Loading dashboard…</Typography>
+        <Typography variant="h5">Authenticating…</Typography>
       </Box>
     );
   }
 
-  const cards = [
-    { label: "Students", count: counts.students },
-    { label: "Classes", count: counts.classes },
-    { label: "Announcements", count: counts.announcements },
-    { label: "Attendance", count: counts.attendance },
-  ];
-
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Welcome, {user?.name || "Admin"}
+        Welcome, {attrs?.name || attrs?.email || "Admin"}
       </Typography>
 
-      <Box
-        sx={{
-          display: "grid",
-          gap: 3,
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-        }}
-      >
-        {cards.map(({ label, count }) => (
-          <Paper key={label} sx={{ p: 3, textAlign: "center" }}>
-            <Typography variant="h3">{count}</Typography>
-            <Typography>{label}</Typography>
-          </Paper>
+      <Grid container spacing={3}>
+        {[
+          ["Students", counts.students],
+          ["Classes", counts.classes],
+          ["Announcements", counts.announcements],
+          ["Attendance", counts.attendance],
+        ].map(([label, val]) => (
+          <Grid size={{ xs: 12, md: 6 }} key={label}>
+            <Paper sx={{ p: 3, textAlign: "center" }}>
+              <Typography variant="h3">{val}</Typography>
+              <Typography>{label}</Typography>
+            </Paper>
+          </Grid>
         ))}
-      </Box>
+      </Grid>
     </Box>
   );
 };

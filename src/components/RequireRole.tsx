@@ -1,6 +1,5 @@
-// src/components/RequireRole.tsx
 import React from "react";
-import { useCurrentUser } from "../utils/useCurrentUser";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 interface RequireRoleProps {
   roles: string[];
@@ -13,13 +12,13 @@ const RequireRole: React.FC<RequireRoleProps> = ({
   fallback = null,
   children,
 }) => {
-  const { user, loading } = useCurrentUser();
-  if (loading) return null;
-  return roles.includes(user?.userRole || "") ? (
-    <>{children}</>
-  ) : (
-    <>{fallback}</>
-  );
+  const { user, route } = useAuthenticator((ctx) => [ctx.user, ctx.route]);
+
+  // only render once fully signed in
+  if (route !== "authenticated") return null;
+
+  const role = (user as any).attributes["custom:userRole"];
+  return roles.includes(role) ? <>{children}</> : <>{fallback}</>;
 };
 
 export default RequireRole;

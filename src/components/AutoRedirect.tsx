@@ -1,22 +1,31 @@
 // src/components/AutoRedirect.tsx
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useCurrentUser } from "../utils/useCurrentUser";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 const AutoRedirect: React.FC = () => {
-  const { user, loading } = useCurrentUser();
+  // Grab the Authenticator context
+  const { user, route } = useAuthenticator((context) => [
+    context.user,
+    context.route,
+  ]);
   const navigate = useNavigate();
-  const location = useLocation();
+  const { pathname } = useLocation();
 
+  // Once we’re *inside* the authenticated state, route === "authenticated"
+  // and `user` will be a real AuthUser object.
   useEffect(() => {
-    if (!loading && user) {
-      // only redirect *if* we're exactly at "/"
-      if (location.pathname === "/") {
-        const role = user.userRole?.toLowerCase() || "student";
-        navigate(`/${role}`, { replace: true });
-      }
+    if (route === "authenticated" && pathname === "/") {
+      // The `user` object here comes from Amplify UI
+      // and you can read your custom attributes from:
+      // user.getUsername()  OR
+      // user.attributes['custom:userRole']
+      const role =
+        (user as any)?.attributes?.["custom:userRole"]?.toLowerCase() ||
+        "student";
+      navigate(`/${role}`, { replace: true });
     }
-  }, [user, loading, location, navigate]);
+  }, [route, user, pathname, navigate]);
 
   return null;
 };

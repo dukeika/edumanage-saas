@@ -1,13 +1,12 @@
 import React from "react";
-import "@aws-amplify/ui-react/styles.css";
 import { Authenticator } from "@aws-amplify/ui-react";
-import AuthContent from "./components/AuthContent";
+import AppRoutes from "./routes/AppRoutes";
 
+// don’t wrap in BrowserRouter here (we do that in index.tsx),
+// and don’t use a render‐prop—just pass your routes as plain children.
 const App: React.FC = () => (
-  // Authenticator shows its sign-in form until you’re logged in,
-  // then renders its children (<AuthContent />).
   <Authenticator>
-    <AuthContent />
+    <AppRoutes />
   </Authenticator>
 );
 
