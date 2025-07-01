@@ -1,0 +1,55 @@
+import React, { useEffect, useState } from "react";
+import { Paper, Typography, Box } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { generateClient } from "aws-amplify/api";
+import { listGrades } from "../../graphql/queries";
+
+const client = generateClient();
+const columns: GridColDef[] = [
+  { field: "id", headerName: "ID", width: 240 },
+  { field: "studentID", headerName: "Student ID", width: 180 },
+  { field: "assessmentID", headerName: "Assessment ID", width: 180 },
+  { field: "score", headerName: "Score", width: 120 },
+];
+
+const ListGrades: React.FC = () => {
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchGrades = async () => {
+      setLoading(true);
+      try {
+        const { data } = await client.graphql({
+          query: listGrades,
+          authMode: "userPool",
+        });
+        setRows(data?.listGrades?.items ?? []);
+      } catch (err) {
+        console.error("Failed to fetch grades:", err);
+      }
+      setLoading(false);
+    };
+    fetchGrades();
+  }, []);
+
+  return (
+    <Paper sx={{ m: 3, p: 3 }}>
+      <Typography variant="h5" mb={2}>
+        List of Grades
+      </Typography>
+      <Box sx={{ height: 500, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          getRowId={(row) => row.id}
+          disableRowSelectionOnClick
+          loading={loading}
+          pageSizeOptions={[10]}
+        />
+      </Box>
+    </Paper>
+  );
+};
+
+export default ListGrades;

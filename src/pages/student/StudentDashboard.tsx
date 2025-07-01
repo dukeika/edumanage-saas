@@ -1,16 +1,16 @@
 import React from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import SignOutButton from "../../components/SignOutButton"; // Adjust the import path as necessary
 
-const StudentDashboard = () => (
-  <Box sx={{ p: 4 }}>
-    <Typography variant="h4">Student Dashboard</Typography>
-    <Paper sx={{ mt: 2, p: 3 }}>
-      <Typography>
-        Welcome, Student. View your attendance, announcements, and fee status
-        here.
-      </Typography>
-    </Paper>
-  </Box>
-);
+const StudentDashboard: React.FC = () => {
+  return (
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h4">Student Dashboard</Typography>
+      <Box sx={{ mt: 3 }}>
+        <SignOutButton />
+      </Box>
+    </Box>
+  );
+};
 
 export default StudentDashboard;

@@ -1,83 +1,116 @@
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Box, Button, Typography, Stack } from "@mui/material";
+import { useNavigate, Outlet } from "react-router-dom";
 
-const AdminDashboard = () => {
+const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Admin Dashboard
-      </Typography>
-
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Typography variant="body1" gutterBottom>
-          Welcome, Admin. Here you'll manage users, classes, fees, and
-          announcements.
+    <Box sx={{ display: "flex", height: "100vh" }}>
+      {/* Sidebar */}
+      <Box
+        sx={{
+          width: 250,
+          bgcolor: "background.paper",
+          p: 2,
+          borderRight: "1px solid #ccc",
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          Admin Dashboard
         </Typography>
-      </Paper>
-
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <Stack spacing={1}>
           <Button
-            fullWidth
-            variant="contained"
-            onClick={() => navigate("/admin/class-form")}
+            onClick={() => navigate("/admin/create-school")}
+            variant="outlined"
+          >
+            Create School
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/create-academic-year")}
+            variant="outlined"
+          >
+            Create Academic Year
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/create-term")}
+            variant="outlined"
+          >
+            Create Term
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/create-class")}
+            variant="outlined"
           >
             Create Class
           </Button>
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Button
-            fullWidth
-            variant="contained"
-            onClick={() => navigate("/admin/class-list")}
-          >
-            View Classes
-          </Button>
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={() => navigate("/admin/academic-year-form")}
-          >
-            Academic Year
-          </Button>
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={() => navigate("/admin/subject-form")}
+            onClick={() => navigate("/admin/add-subject")}
+            variant="outlined"
           >
             Add Subject
           </Button>
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Button
-            fullWidth
-            variant="contained"
-            onClick={() => navigate("/admin/assessment-form")}
+            onClick={() => navigate("/admin/add-student")}
+            variant="outlined"
           >
-            New Assessment
+            Add Student
           </Button>
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Button
-            fullWidth
-            variant="contained"
-            onClick={() => navigate("/admin/grade-entry")}
+            onClick={() => navigate("/admin/add-assessment")}
+            variant="outlined"
           >
-            Enter Grades
+            Add Assessment
           </Button>
-        </Grid>
-      </Grid>
+          <Button
+            onClick={() => navigate("/admin/add-grade")}
+            variant="outlined"
+          >
+            Add Grade
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/add-attendance")}
+            variant="outlined"
+          >
+            Add Attendance
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/add-announcement")}
+            variant="outlined"
+          >
+            Add Announcement
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/list-students")}
+            variant="outlined"
+          >
+            List Students
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/list-teachers")}
+            variant="outlined"
+          >
+            List Teachers
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/list-classes")}
+            variant="outlined"
+          >
+            List Classes
+          </Button>
+          <Button
+            onClick={() => navigate("/admin/list-parents")}
+            variant="outlined"
+          >
+            List Parents
+          </Button>
+        </Stack>
+      </Box>
+
+      {/* Main Content */}
+      <Box sx={{ flex: 1, p: 4 }}>
+        <Outlet />
+      </Box>
     </Box>
   );
 };
