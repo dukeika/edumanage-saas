@@ -8,11 +8,12 @@ import AutoRedirect from "./components/AutoRedirect";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from "./components/Unauthorized";
 
-import AdminLayout from "./layouts/AdminLayout";
-import TeacherLayout from "./layouts/TeacherLayout";
-import StudentLayout from "./layouts/StudentLayout";
-import ParentLayout from "./layouts/ParentLayout";
-
+import {
+  AdminLayout,
+  TeacherLayout,
+  StudentLayout,
+  ParentLayout,
+} from "./layouts";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
@@ -22,7 +23,9 @@ const myTheme = {
   name: "my-theme",
   tokens: {
     colors: {
-      brand: { primary: { 10: "#E3F2FD", 80: "#1976D2", 90: "#1565C0" } },
+      brand: {
+        primary: { 10: "#E3F2FD", 80: "#1976D2", 90: "#1565C0" },
+      },
     },
   },
 };
@@ -35,9 +38,11 @@ const App: React.FC = () => (
 
         return (
           <BrowserRouter>
+            {/* Redirect “/” → /<role> on first load */}
             <AutoRedirect />
 
             <Routes>
+              {/* Admin */}
               <Route
                 path="/admin/*"
                 element={
@@ -50,13 +55,14 @@ const App: React.FC = () => (
                             <AdminDashboard user={user!} signOut={doSignOut} />
                           }
                         />
-                        {/* ...other admin subroutes */}
+                        {/* more admin subroutes here... */}
                       </Routes>
                     </AdminLayout>
                   </ProtectedRoute>
                 }
               />
 
+              {/* Teacher */}
               <Route
                 path="/teacher/*"
                 element={
@@ -78,6 +84,7 @@ const App: React.FC = () => (
                 }
               />
 
+              {/* Student */}
               <Route
                 path="/student/*"
                 element={
@@ -99,6 +106,7 @@ const App: React.FC = () => (
                 }
               />
 
+              {/* Parent */}
               <Route
                 path="/parent/*"
                 element={
@@ -117,6 +125,7 @@ const App: React.FC = () => (
                 }
               />
 
+              {/* Catch-all */}
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route
                 path="*"
