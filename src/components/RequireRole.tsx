@@ -1,7 +1,7 @@
 import React from "react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useCognitoAttributes } from "../utils/useCognitoAttributes";
 
-interface RequireRoleProps {
+export interface RequireRoleProps {
   roles: string[];
   fallback?: React.ReactNode;
   children: React.ReactNode;
@@ -12,13 +12,14 @@ const RequireRole: React.FC<RequireRoleProps> = ({
   fallback = null,
   children,
 }) => {
-  const { user, route } = useAuthenticator((ctx) => [ctx.user, ctx.route]);
+  const { attributes, loading } = useCognitoAttributes();
+  if (loading) return null;
 
-  // only render once fully signed in
-  if (route !== "authenticated") return null;
-
-  const role = (user as any).attributes["custom:userRole"];
-  return roles.includes(role) ? <>{children}</> : <>{fallback}</>;
+  const userRole = attributes["custom:userRole"];
+  if (!userRole || !roles.includes(userRole)) {
+    return <>{fallback}</>;
+  }
+  return <>{children}</>;
 };
 
 export default RequireRole;

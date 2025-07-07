@@ -1,23 +1,45 @@
-// src/routes/AppRoutes.tsx
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import AdminLayout from "../layouts/AdminLayout";
+import { Routes, Route } from "react-router-dom";
+
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import ClassFormPage from "../pages/admin/ClassFormPage";
+import ClassListPage from "../pages/admin/ClassListPage";
+import AcademicYearFormPage from "../pages/admin/AcademicYearFormPage";
+import SubjectFormPage from "../pages/admin/SubjectFormPage";
+import AssessmentFormPage from "../pages/admin/AssessmentFormPage";
+import GradeEntryFormPage from "../pages/admin/GradeEntryFormPage";
+import AdminSetupPage from "../pages/admin/AdminSetupPage";
+import AnnouncementCreatePage from "../pages/admin/AnnouncementCreatePage";
 
-const AppRoutes: React.FC = () => (
+import TeacherDashboard from "../pages/teacher/TeacherDashboard";
+import StudentDashboard from "../pages/student/StudentDashboard";
+import ParentDashboard from "../pages/parent/ParentDashboard";
+
+type AppRoutesProps = {
+  user: any; // The AuthUser from Amplify UI
+  signOut: () => void; // The signOut function
+};
+
+const AppRoutes: React.FC<AppRoutesProps> = ({ user, signOut }) => (
   <Routes>
-    {/* ‣ All “/admin/*” URLs */}
-    <Route path="/admin/*" element={<AdminLayout />}>
-      <Route index element={<AdminDashboard />} />
-      {/* catch invalid under /admin → back to dashboard */}
-      <Route path="*" element={<Navigate to="/admin" replace />} />
-    </Route>
+    {/* Admin area */}
+    <Route
+      path="dashboard"
+      element={<AdminDashboard user={user} signOut={signOut} />}
+    />
+    <Route path="setup" element={<AdminSetupPage />} />
+    <Route path="class-form" element={<ClassFormPage />} />
+    <Route path="class-list" element={<ClassListPage />} />
+    <Route path="academic-year-form" element={<AcademicYearFormPage />} />
+    <Route path="subject-form" element={<SubjectFormPage />} />
+    <Route path="assessment-form" element={<AssessmentFormPage />} />
+    <Route path="grade-entry" element={<GradeEntryFormPage />} />
+    <Route path="announcement-create" element={<AnnouncementCreatePage />} />
 
-    {/* ‣ Root → redirect into /admin */}
-    <Route path="/" element={<Navigate to="/admin" replace />} />
-
-    {/* ‣ Anything else → back to root */}
-    <Route path="*" element={<Navigate to="/" replace />} />
+    {/* Other roles */}
+    <Route path="teacher" element={<TeacherDashboard />} />
+    <Route path="student" element={<StudentDashboard />} />
+    <Route path="parent" element={<ParentDashboard />} />
   </Routes>
 );
 

@@ -1,31 +1,19 @@
-import React, { useEffect } from "react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useNavigate } from "react-router-dom";
-import AppRoutes from "../routes/AppRoutes";
-import { useCurrentUser } from "../utils/useCurrentUser";
+import React from "react";
 import { Button } from "@mui/material";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import AppRoutes from "../routes/AppRoutes";
 
-const AuthContent: React.FC = () => {
-  const { signOut } = useAuthenticator();
-  const { user, loading } = useCurrentUser();
-  const navigate = useNavigate();
+interface AuthContentProps {
+  // no extra props needed here
+}
 
-  // Imperative redirect once we know the role
-  useEffect(() => {
-    if (user) {
-      const role = user.userRole?.toLowerCase();
-      navigate(`/${role}`, { replace: true });
-    }
-  }, [user, navigate]);
+const AuthContent: React.FC<AuthContentProps> = () => {
+  const { signOut, user } = useAuthenticator();
 
-  // Before we know the token or before sign-in, render nothing
-  if (loading || !user) {
-    return null;
-  }
-
+  // pass both through to your routes
   return (
     <>
-      <AppRoutes />
+      <AppRoutes user={user!} signOut={signOut!} />
       <div style={{ position: "fixed", bottom: 16, right: 16 }}>
         <Button variant="contained" onClick={() => signOut?.()}>
           Sign Out

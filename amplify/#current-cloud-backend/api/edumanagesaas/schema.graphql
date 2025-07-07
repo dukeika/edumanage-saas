@@ -1,27 +1,42 @@
-# schema.graphql
-# Phase 8: EduManage SaaS — Full RBAC‐hardened schema
+### amplify/backend/api/YourApiName/schema.graphql ###
 
-# ─────────────────────────────────────────────────────────────────────────────
-# SCHOOL
-# Only the owner (creator) can mutate; Admins can read.
-# ─────────────────────────────────────────────────────────────────────────────
+# -------------------------------------------------------------------
+# 1) A top-level “super-admins” group, who can CRUD *all* School records
+#    (this is your “application admin”)
+# -------------------------------------------------------------------
 type School
   @model
   @auth(
     rules: [
+      # ApplicationAdmins can do everything
       {
-        allow: owner
-        ownerField: "owner"
+        allow: groups
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
-      { allow: groups, groups: ["Admins"], operations: [read] }
+      # The “owner” of this record (i.e. the school-admin you assign) can read/update
+      { allow: owner, ownerField: "schoolAdmin", operations: [read, update] }
+      # Any member of the per-school “admins” list (string list on the record)
+      # can also read/update
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      # All signed-in users can read
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
   name: String!
   address: String
-  owner: String
-  admins: [String]
+
+  # new: subdomain for each school’s public landing page
+  subdomain: String!
+
+  # new: Cognito username (or sub) of the “school-admin” user
+  schoolAdmin: String!
+
+  # your existing “extra” per-school admin list
+  admins: [String!]!
+
+  # relationships
   academicYears: [AcademicYear] @hasMany(fields: ["id"])
   classes: [Class] @hasMany(fields: ["id"])
   students: [Student] @hasMany(fields: ["id"])
@@ -29,19 +44,22 @@ type School
   announcements: [Announcement] @hasMany(fields: ["id"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ACADEMIC YEAR
-# Only Admins manage academic years.
-# ─────────────────────────────────────────────────────────────────────────────
 type AcademicYear
   @model
   @auth(
     rules: [
       {
         allow: groups
-        groups: ["Admins"]
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
@@ -51,19 +69,22 @@ type AcademicYear
   terms: [Term] @hasMany(fields: ["id"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# TERM
-# Only Admins manage terms.
-# ─────────────────────────────────────────────────────────────────────────────
 type Term
   @model
   @auth(
     rules: [
       {
         allow: groups
-        groups: ["Admins"]
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
@@ -75,25 +96,21 @@ type Term
   assessments: [Assessment] @hasMany(fields: ["id"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# CLASS
-# Admins own classes; Teachers can read/update; all signed-in users can read.
-# ─────────────────────────────────────────────────────────────────────────────
 type Class
   @model
   @auth(
     rules: [
-      # 1) Public via API Key — so our import scripts and console can run createSchool
-      { allow: public, provider: apiKey, operations: [create, read] }
-      # 2) Owner (the user who created it) can do everything
+      {
+        allow: groups
+        groups: ["ApplicationAdmins"]
+        operations: [create, read, update, delete]
+      }
       {
         allow: owner
         ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      # 3) Cognito group "admins" can read & update
       { allow: groups, groupsField: "admins", operations: [read, update] }
-      # 4) Any authenticated user can read
       { allow: private, operations: [read] }
     ]
   ) {
@@ -109,25 +126,22 @@ type Class
   grades: [Grade] @hasMany(fields: ["id"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# STUDENT
-# Students see their own record; Admins, Teachers & Parents can read.
-# ─────────────────────────────────────────────────────────────────────────────
 type Student
   @model
   @auth(
     rules: [
       {
-        allow: owner
-        ownerField: "id"
-        identityClaim: "sub"
-        operations: [read]
+        allow: groups
+        groups: ["ApplicationAdmins"]
+        operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins", "Teachers", "Parents"]
-        operations: [read]
+        allow: owner
+        ownerField: "owner"
+        operations: [create, read, update, delete]
       }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
@@ -140,39 +154,42 @@ type Student
   grades: [Grade] @hasMany(fields: ["id"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# USER METADATA
-# Users manage themselves; any signed-in user can read the list.
-# ─────────────────────────────────────────────────────────────────────────────
 type User
   @model
   @auth(
     rules: [
-      { allow: owner, ownerField: "id", identityClaim: "sub" }
+      {
+        allow: groups
+        groups: ["ApplicationAdmins"]
+        operations: [create, read, update, delete]
+      }
+      { allow: owner, ownerField: "owner", operations: [read, update] }
       { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
   email: AWSEmail!
   name: String!
-  role: String!
+  role: String! # "ApplicationAdmin"|"SchoolAdmin"|"Teacher"|"Student"|"Parent"
   schoolID: ID!
   school: School @belongsTo(fields: ["schoolID"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# SUBJECT
-# Admins & Teachers manage subjects; all signed-in users can read.
-# ─────────────────────────────────────────────────────────────────────────────
 type Subject
   @model
   @auth(
     rules: [
       {
         allow: groups
-        groups: ["Admins", "Teachers"]
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
       { allow: private, operations: [read] }
     ]
   ) {
@@ -183,19 +200,21 @@ type Subject
   assessments: [Assessment] @hasMany(fields: ["id"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ASSESSMENT
-# Admins & Teachers manage assessments; all signed-in users can read.
-# ─────────────────────────────────────────────────────────────────────────────
 type Assessment
   @model
   @auth(
     rules: [
       {
         allow: groups
-        groups: ["Admins", "Teachers"]
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
       { allow: private, operations: [read] }
     ]
   ) {
@@ -211,20 +230,22 @@ type Assessment
   grades: [Grade] @hasMany(fields: ["id"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# GRADE
-# Students read only their own grades; Admins & Teachers CRUD all.
-# ─────────────────────────────────────────────────────────────────────────────
 type Grade
   @model
   @auth(
     rules: [
-      { allow: owner, ownerField: "studentID", operations: [read] }
       {
         allow: groups
-        groups: ["Admins", "Teachers"]
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
@@ -237,20 +258,22 @@ type Grade
   class: Class @belongsTo(fields: ["classID"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ATTENDANCE
-# Students read their own; Admins & Teachers CRUD all.
-# ─────────────────────────────────────────────────────────────────────────────
 type Attendance
   @model
   @auth(
     rules: [
-      { allow: owner, ownerField: "studentID", operations: [read] }
       {
         allow: groups
-        groups: ["Admins", "Teachers"]
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
@@ -262,19 +285,21 @@ type Attendance
   class: Class @belongsTo(fields: ["classID"])
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ANNOUNCEMENT
-# Admins & Teachers post; everyone signed-in can read.
-# ─────────────────────────────────────────────────────────────────────────────
 type Announcement
   @model
   @auth(
     rules: [
       {
         allow: groups
-        groups: ["Admins", "Teachers"]
+        groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
+      {
+        allow: owner
+        ownerField: "createdBy"
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
       { allow: private, operations: [read] }
     ]
   ) {
@@ -283,25 +308,7 @@ type Announcement
   message: String!
   audience: String
   targetID: ID
-  createdBy: ID!
+  createdBy: String!
   schoolID: ID!
-  school: School @belongsTo(fields: ["schoolID"])
   classID: ID
-  createdAt: AWSDateTime!
-}
-
-# ─────────────────────────────────────────────────────────────────────────────
-# CUSTOM USER CREATION MUTATION
-# ─────────────────────────────────────────────────────────────────────────────
-input CreateCognitoUserInput {
-  email: AWSEmail!
-  name: String!
-  role: String!
-  schoolID: ID!
-  userPoolId: String!
-}
-
-type Mutation {
-  createCognitoUser(input: CreateCognitoUserInput!): User
-    @function(name: "adminCreateUser-${env}")
 }
