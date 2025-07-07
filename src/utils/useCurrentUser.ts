@@ -26,27 +26,36 @@ export const useCurrentUser = () => {
 
   let currentUser: CurrentUser | null = null;
   if (!loading && user) {
-    const attrs = (user as any).attributes || {};
-    // Check for both possible attribute names for user role
-    const userRole = attrs["custom:userRole"] || attrs["custom:role"];
-    
-    // Log the user attributes for debugging
-    console.log("User attributes:", attrs);
-    console.log("User role:", userRole);
-    
-    currentUser = {
-      id: user.username,
-      name: attrs.name || user.username,
-      userRole: userRole,
-      schoolID: attrs["custom:schoolID"],
-      classID: attrs["custom:classID"],
-      subjectID: attrs["custom:subjectID"],
-      termID: attrs["custom:termID"],
-      assessmentID: attrs["custom:assessmentID"],
-      studentID: attrs["custom:studentID"],
-      childID: attrs["custom:childID"],
-      academicYearID: attrs["custom:academicYearID"],
-    };
+    try {
+      const attrs = (user as any).attributes || {};
+      
+      // Log all user attributes for debugging
+      console.log("User attributes:", JSON.stringify(attrs, null, 2));
+      
+      // Check for both possible attribute names for user role
+      // The hooks implementation uses 'custom:role' while this one was using 'custom:userRole'
+      const userRole = attrs["custom:userRole"] || attrs["custom:role"];
+      
+      console.log("Extracted user role:", userRole);
+      
+      currentUser = {
+        id: user.username,
+        name: attrs.name || user.username,
+        userRole: userRole,
+        schoolID: attrs["custom:schoolID"],
+        classID: attrs["custom:classID"],
+        subjectID: attrs["custom:subjectID"],
+        termID: attrs["custom:termID"],
+        assessmentID: attrs["custom:assessmentID"],
+        studentID: attrs["custom:studentID"],
+        childID: attrs["custom:childID"],
+        academicYearID: attrs["custom:academicYearID"],
+      };
+      
+      console.log("Current user object:", JSON.stringify(currentUser, null, 2));
+    } catch (error) {
+      console.error("Error processing user attributes:", error);
+    }
   }
 
   return { user: currentUser, loading, signOut };
