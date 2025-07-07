@@ -16,17 +16,28 @@ export interface CurrentUser {
 }
 
 export const useCurrentUser = () => {
-  const { user, route } = useAuthenticator((ctx) => [ctx.user, ctx.route]);
+  const { user, route, signOut } = useAuthenticator((ctx) => [
+    ctx.user,
+    ctx.route,
+    ctx.signOut,
+  ]);
 
   const loading = route !== "authenticated";
 
   let currentUser: CurrentUser | null = null;
   if (!loading && user) {
     const attrs = (user as any).attributes || {};
+    // Check for both possible attribute names for user role
+    const userRole = attrs["custom:userRole"] || attrs["custom:role"];
+    
+    // Log the user attributes for debugging
+    console.log("User attributes:", attrs);
+    console.log("User role:", userRole);
+    
     currentUser = {
       id: user.username,
       name: attrs.name || user.username,
-      userRole: attrs["custom:userRole"],
+      userRole: userRole,
       schoolID: attrs["custom:schoolID"],
       classID: attrs["custom:classID"],
       subjectID: attrs["custom:subjectID"],
@@ -38,5 +49,5 @@ export const useCurrentUser = () => {
     };
   }
 
-  return { user: currentUser, loading };
+  return { user: currentUser, loading, signOut };
 };

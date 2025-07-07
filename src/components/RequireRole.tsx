@@ -1,5 +1,6 @@
 import React from "react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useCurrentUser } from "../utils/useCurrentUser";
+import { Box, CircularProgress } from "@mui/material";
 
 interface RequireRoleProps {
   roles: string[];
@@ -12,13 +13,21 @@ const RequireRole: React.FC<RequireRoleProps> = ({
   fallback = null,
   children,
 }) => {
-  const { user, route } = useAuthenticator((ctx) => [ctx.user, ctx.route]);
+  const { user, loading } = useCurrentUser();
 
-  // only render once fully signed in
-  if (route !== "authenticated") return null;
+  // Show loading indicator while checking authentication
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
-  const role = (user as any).attributes["custom:userRole"];
-  return roles.includes(role) ? <>{children}</> : <>{fallback}</>;
+  // If not authenticated, the parent component should handle this
+  if (!user) return null;
+
+  return roles.includes(user.userRole) ? <>{children}</> : <>{fallback}</>;
 };
 
 export default RequireRole;

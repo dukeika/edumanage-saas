@@ -1,12 +1,11 @@
 import React from "react";
 import { Authenticator } from "@aws-amplify/ui-react";
-import AppRoutes from "./routes/AppRoutes";
+import AuthContent from "./components/AuthContent";
 
-// don’t wrap in BrowserRouter here (we do that in index.tsx),
-// and don’t use a render‐prop—just pass your routes as plain children.
+// don't wrap in BrowserRouter here (we do that in index.tsx)
 const App: React.FC = () => (
   <Authenticator>
-    <AppRoutes />
+    <AuthContent />
   </Authenticator>
 );
 

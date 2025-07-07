@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { API, graphqlOperation } from "aws-amplify";
+import { generateClient } from "@aws-amplify/api";
 import RequireRole from "../components/RequireRole";
 
 const drawerWidth = 240;

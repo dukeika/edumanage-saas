@@ -1,25 +1,22 @@
-import React, { useEffect } from "react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useNavigate } from "react-router-dom";
-import AppRoutes from "../routes/AppRoutes";
+import React from "react";
 import { useCurrentUser } from "../utils/useCurrentUser";
-import { Button } from "@mui/material";
+import AppRoutes from "../routes/AppRoutes";
+import { Box, Button, CircularProgress } from "@mui/material";
 
 const AuthContent: React.FC = () => {
-  const { signOut } = useAuthenticator();
-  const { user, loading } = useCurrentUser();
-  const navigate = useNavigate();
+  const { user, loading, signOut } = useCurrentUser();
 
-  // Imperative redirect once we know the role
-  useEffect(() => {
-    if (user) {
-      const role = user.userRole?.toLowerCase();
-      navigate(`/${role}`, { replace: true });
-    }
-  }, [user, navigate]);
+  // Show loading indicator while authentication is being checked
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
-  // Before we know the token or before sign-in, render nothing
-  if (loading || !user) {
+  // If not authenticated, the Authenticator component will handle this
+  if (!user) {
     return null;
   }
 

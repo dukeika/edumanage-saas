@@ -2,10 +2,11 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useCurrentUser } from "../utils/useCurrentUser";
+import { Box, CircularProgress } from "@mui/material";
 
 interface RequireAuthProps {
   allowedRoles: string[];
-  children: React.ReactNode; // ← use React.ReactNode instead of JSX.Element
+  children: React.ReactNode;
 }
 
 const RequireAuth: React.FC<RequireAuthProps> = ({
@@ -16,8 +17,12 @@ const RequireAuth: React.FC<RequireAuthProps> = ({
   const location = useLocation();
 
   if (loading) {
-    // still checking auth—render nothing or a spinner if you prefer
-    return null;
+    // Show loading indicator while checking authentication
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (!user) {
