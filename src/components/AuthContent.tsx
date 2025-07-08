@@ -1,52 +1,31 @@
-import React, { useEffect } from "react";
-import { useCurrentUser } from "../utils/useCurrentUser";
+// src/components/AuthContent.tsx
+import React from "react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import RedirectOnSignOut from "./RedirectOnSignOut";
 import AppRoutes from "../routes/AppRoutes";
-import { Box, Button, CircularProgress } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Box, Button } from "@mui/material";
 
-const AuthContent: React.FC = () => {
-  const { user, loading, signOut } = useCurrentUser();
-  const navigate = useNavigate();
-  const location = useLocation();
+export default function AuthContent() {
+  const { route, user, signOut } = useAuthenticator((ctx) => [
+    ctx.route,
+    ctx.user,
+    ctx.signOut,
+  ]);
 
-  // --- MOVE useEffect TO THE TOP-LEVEL, before any early returns ---
-  useEffect(() => {
-    if (!loading && !user && location.pathname !== "/") {
-      navigate("/", { replace: true });
-    }
-  }, [user, loading, location, navigate]);
-
-  // Show loading indicator while authentication is being checked
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  // If not authenticated, the Authenticator component will handle this
-  if (!user) {
+  // Let Amplify UI handle all pre-auth screens; only render once fully signed in:
+  if (route !== "authenticated" || !user) {
     return null;
   }
 
   return (
     <>
+      <RedirectOnSignOut />
       <AppRoutes />
-      <div style={{ position: "fixed", bottom: 16, right: 16 }}>
-        <Button variant="contained" onClick={() => signOut?.()}>
+      <Box sx={{ position: "fixed", bottom: 16, right: 16 }}>
+        <Button variant="contained" onClick={signOut}>
           Sign Out
         </Button>
-      </div>
+      </Box>
     </>
   );
-};
-
-export default AuthContent;
+}

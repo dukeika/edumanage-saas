@@ -1,12 +1,11 @@
 // src/components/RequireAuth.tsx
-
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useCurrentUser } from "../utils/useCurrentUser";
 import { Box, CircularProgress } from "@mui/material";
 
 interface RequireAuthProps {
-  allowedRoles: string[]; // e.g., ["admin"], ["teacher"], etc. (all lowercase)
+  allowedRoles: string[]; // e.g. ["admins"], ["teachers"], ["students"], ["parents"]
   children: React.ReactNode;
 }
 
@@ -16,8 +15,8 @@ const RequireAuth: React.FC<RequireAuthProps> = ({
 }) => {
   const { user, loading } = useCurrentUser();
   const location = useLocation();
-  console.log("Full user in RequireAuth:", user);
 
+  // 1) Still checking auth status?
   if (loading) {
     return (
       <Box
@@ -33,22 +32,24 @@ const RequireAuth: React.FC<RequireAuthProps> = ({
     );
   }
 
+  // 2) Not signed in → bounce to login
   if (!user) {
-    // Not signed in
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Normalize allowedRoles for safe matching
-  const normalizedAllowedRoles = allowedRoles.map((r) => r.toLowerCase());
+  // 3) Normalize everything to lowercase for safe comparison
+  const normalizedAllowed = allowedRoles.map((r) => r.toLowerCase());
+  const roleMatch = normalizedAllowed.includes(user.userRole.toLowerCase());
+  const groupMatch = user.groups?.some((g) =>
+    normalizedAllowed.includes(g.toLowerCase())
+  );
 
-  // Check both Cognito Groups and custom:userRole
-  const hasGroup = user.groups?.some((g) => normalizedAllowedRoles.includes(g));
-  const hasRole = normalizedAllowedRoles.includes(user.userRole);
-
-  if (!hasGroup && !hasRole) {
+  // 4) Signed in but neither your custom:userRole nor any Cognito group matches
+  if (!roleMatch && !groupMatch) {
     return <Navigate to="/unauthorized" replace />;
   }
 
+  // 5) You’re good!
   return <>{children}</>;
 };
 
