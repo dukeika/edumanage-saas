@@ -1,31 +1,28 @@
-// src/components/AutoRedirect.tsx
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useCurrentUser } from "../utils/useCurrentUser";
 
 const AutoRedirect: React.FC = () => {
-  // Grab the Authenticator context
-  const { user, route } = useAuthenticator((context) => [
-    context.user,
-    context.route,
-  ]);
+  const { user, loading } = useCurrentUser();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  // Once we’re *inside* the authenticated state, route === "authenticated"
-  // and `user` will be a real AuthUser object.
   useEffect(() => {
-    if (route === "authenticated" && pathname === "/") {
-      // The `user` object here comes from Amplify UI
-      // and you can read your custom attributes from:
-      // user.getUsername()  OR
-      // user.attributes['custom:userRole']
-      const role =
-        (user as any)?.attributes?.["custom:userRole"]?.toLowerCase() ||
-        "student";
-      navigate(`/${role}`, { replace: true });
-    }
-  }, [route, user, pathname, navigate]);
+    if (loading || !user || pathname !== "/") return;
+
+    // Use groups for routing, fallback to userRole
+    const groups = user.groups || [];
+    let dest = "/unauthorized";
+    if (groups.includes("admins")) dest = "/admin";
+    else if (groups.includes("teachers")) dest = "/teacher";
+    else if (groups.includes("parents")) dest = "/parent";
+    else if (groups.includes("students")) dest = "/student";
+    else if (user.userRole) dest = `/${user.userRole}`;
+    else dest = "/unauthorized";
+
+    console.log("Redirecting to:", dest);
+    navigate(dest, { replace: true });
+  }, [user, loading, pathname, navigate]);
 
   return null;
 };
