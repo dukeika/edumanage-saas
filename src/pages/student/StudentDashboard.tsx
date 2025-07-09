@@ -1,16 +1,19 @@
 import React from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
-const StudentDashboard = () => (
-  <Box sx={{ p: 4 }}>
-    <Typography variant="h4">Student Dashboard</Typography>
-    <Paper sx={{ mt: 2, p: 3 }}>
-      <Typography>
-        Welcome, Student. View your attendance, announcements, and fee status
-        here.
+const StudentDashboard: React.FC = () => (
+  <Paper sx={{ p: 4 }}>
+    <Typography variant="h6" gutterBottom>
+      Student Dashboard
+    </Typography>
+    <Box>
+      <Typography color="text.secondary">
+        Upcoming classes, attendance history, and notifications (placeholder)
       </Typography>
-    </Paper>
-  </Box>
+    </Box>
+  </Paper>
 );
 
 export default StudentDashboard;

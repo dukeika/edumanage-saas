@@ -14,8 +14,8 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": true,
-    "passwordPolicyMinLength": "6",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
       "email"
@@ -30,7 +30,7 @@
       "email"
     ],
     "userpoolClientLambdaRole": "edumanda694ea8_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": false,
+    "userpoolClientSetAttributes": true,
     "sharedId": "da694ea8",
     "resourceName": "edumanagesaasda694ea8",
     "authSelections": "userPoolOnly",
@@ -61,9 +61,9 @@
     "breakCircularDependency": true,
     "dependsOn": [],
     "userPoolGroups": false,
-    "adminQueries": true,
+    "adminQueries": false,
     "triggers": {},
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost/\",\"http://localhost/\"],\"LogoutURLs\":[\"https://localhost/\"]}",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost/\"],\"LogoutURLs\":[\"https://localhost/\"]}",
     "authProviders": [],
     "parentStack": {
       "Ref": "AWS::StackId"

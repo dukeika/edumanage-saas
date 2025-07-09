@@ -1,16 +1,19 @@
 import React from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
-const ParentDashboard = () => (
-  <Box sx={{ p: 4 }}>
-    <Typography variant="h4">Parent Dashboard</Typography>
-    <Paper sx={{ mt: 2, p: 3 }}>
-      <Typography>
-        Welcome, Parent. Track your child's progress, fees, and announcements
-        here.
+const ParentDashboard: React.FC = () => (
+  <Paper sx={{ p: 4 }}>
+    <Typography variant="h6" gutterBottom>
+      Parent Dashboard
+    </Typography>
+    <Box>
+      <Typography color="text.secondary">
+        Child summary, balances, and alerts (placeholder)
       </Typography>
-    </Paper>
-  </Box>
+    </Box>
+  </Paper>
 );
 
 export default ParentDashboard;

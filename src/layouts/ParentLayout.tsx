@@ -1,73 +1,91 @@
 import React from "react";
-import { Outlet, NavLink } from "react-router-dom";
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Drawer,
-  List,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import RequireRole from "../components/RequireRole";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Drawer from "@mui/material/Drawer";
+import MenuIcon from "@mui/icons-material/Menu";
+import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import ParentSidebarContent from "../components/parent/ParentSidebarContent";
+import { Outlet } from "react-router-dom";
 
 const drawerWidth = 240;
 
 const ParentLayout: React.FC = () => {
-  const { signOut } = useAuthenticator();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed" sx={{ zIndex: (t) => t.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            EduManage Parent
-          </Typography>
-          <IconButton color="inherit" onClick={() => signOut?.()}>
-            <LogoutIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f6fa" }}>
+      <CssBaseline />
 
-      <Drawer
-        variant="permanent"
+      {isMobile && (
+        <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              Parent Portal
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      )}
+
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      >
+        {/* Mobile Drawer */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": { width: drawerWidth },
+          }}
+        >
+          <ParentSidebarContent onClose={handleDrawerToggle} />
+        </Drawer>
+        {/* Desktop Drawer */}
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", md: "block" },
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+          open
+        >
+          <ParentSidebarContent />
+        </Drawer>
+      </Box>
+
+      <Box
+        component="main"
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
+          flexGrow: 1,
+          p: 3,
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          mt: { xs: isMobile ? 7 : 0, md: 0 },
         }}
       >
-        <Toolbar />
-        <List>
-          <RequireRole roles={["Parent"]}>
-            <ListItemButton
-              component={NavLink}
-              to="/parent"
-              end
-              sx={{ "&.active": { backgroundColor: "action.selected" } }}
-            >
-              <ListItemText primary="Dashboard" />
-            </ListItemButton>
-          </RequireRole>
-
-          <RequireRole roles={["Parent"]}>
-            <ListItemButton
-              component={NavLink}
-              to="/parent/child-profile"
-              sx={{ "&.active": { backgroundColor: "action.selected" } }}
-            >
-              <ListItemText primary="Child Profile" />
-            </ListItemButton>
-          </RequireRole>
-        </List>
-      </Drawer>
-
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
         <Outlet />
       </Box>
     </Box>

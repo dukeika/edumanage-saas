@@ -1,14 +1,8 @@
 export type AmplifyDependentResourcesAttributes = {
   "api": {
-    "adminUpdateUserAttribute": {
-      "ApiId": "string",
-      "ApiName": "string",
-      "RootUrl": "string"
-    },
     "edumanagesaas": {
       "GraphQLAPIEndpointOutput": "string",
-      "GraphQLAPIIdOutput": "string",
-      "GraphQLAPIKeyOutput": "string"
+      "GraphQLAPIIdOutput": "string"
     }
   },
   "auth": {
@@ -16,6 +10,8 @@ export type AmplifyDependentResourcesAttributes = {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "HostedUIDomain": "string",
+      "IdentityPoolId": "string",
+      "IdentityPoolName": "string",
       "OAuthMetadata": "string",
       "UserPoolArn": "string",
       "UserPoolId": "string",
@@ -24,20 +20,6 @@ export type AmplifyDependentResourcesAttributes = {
   },
   "function": {
     "adminCreateUser": {
-      "Arn": "string",
-      "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
-      "Name": "string",
-      "Region": "string"
-    },
-    "adminUpdateUserAttribute": {
-      "Arn": "string",
-      "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
-      "Name": "string",
-      "Region": "string"
-    },
-    "adminUpdateUserAttributes": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",

@@ -1,7 +1,13 @@
 {
-  "dev": {
-    "configLevel": "project",
-    "useProfile": false,
-    "awsConfigFilePath": "C:\\Users\\akabo\\.amplify\\awscloudformation\\8ORXRz4Zwh"
+  "projectName": "edumanagesaas",
+  "defaultEditor": "Visual Studio Code",
+  "frontend": "javascript",
+  "framework": "react",
+  "configLevel": "project",
+  "providers": {
+    "awscloudformation": {
+      "region": "eu-west-2",
+      "profile": "Future-Logix-Limited"
+    }
   }
 }

@@ -1,32 +1,47 @@
-enum AudienceType {
-  CLASS
-  SCHOOL
-}
+### amplify/backend/api/YourApiName/schema.graphql ###
 
+# -------------------------------------------------------------------
+# 1) A top-level “super-admins” group, who can CRUD *all* School records
+#    (this is your “application admin”)
+# -------------------------------------------------------------------
 type School
   @model
   @auth(
     rules: [
+      # ApplicationAdmins can do everything
       {
         allow: groups
         groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Admins"]
-        operations: [create, read, update, delete]
-      }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      # The “owner” of this record (i.e. the school-admin you assign) can read/update
+      { allow: owner, ownerField: "schoolAdmin", operations: [read, update] }
+      # Any member of the per-school “admins” list (string list on the record)
+      # can also read/update
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      # All signed-in users can read
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
+  id: ID!
   name: String!
-  domain: String
+  address: String
+
+  # new: subdomain for each school’s public landing page
+  subdomain: String!
+
+  # new: Cognito username (or sub) of the “school-admin” user
+  schoolAdmin: String!
+
+  # your existing “extra” per-school admin list
+  admins: [String!]!
+
+  # relationships
+  academicYears: [AcademicYear] @hasMany(fields: ["id"])
+  classes: [Class] @hasMany(fields: ["id"])
+  students: [Student] @hasMany(fields: ["id"])
+  users: [User] @hasMany(fields: ["id"])
+  announcements: [Announcement] @hasMany(fields: ["id"])
 }
 
 type AcademicYear
@@ -39,22 +54,19 @@ type AcademicYear
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
-  name: String!
-  startDate: AWSDateTime!
-  endDate: AWSDateTime
-  schoolID: ID! @index(name: "bySchool")
+  id: ID!
+  yearLabel: String!
+  schoolID: ID!
+  school: School @belongsTo(fields: ["schoolID"])
+  terms: [Term] @hasMany(fields: ["id"])
 }
 
 type Term
@@ -67,23 +79,21 @@ type Term
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
-  name: String!
-  startDate: AWSDateTime!
-  endDate: AWSDateTime
-  schoolID: ID! @index(name: "bySchool")
-  academicYearID: ID! @index(name: "byAcademicYear")
+  id: ID!
+  termLabel: String!
+  startDate: AWSDate
+  endDate: AWSDate
+  academicYearID: ID!
+  academicYear: AcademicYear @belongsTo(fields: ["academicYearID"])
+  assessments: [Assessment] @hasMany(fields: ["id"])
 }
 
 type Class
@@ -96,21 +106,24 @@ type Class
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
+  id: ID!
   name: String!
-  schoolID: ID! @index(name: "bySchool")
-  termID: ID! @index(name: "byTerm")
+  schoolID: ID!
+  school: School @belongsTo(fields: ["schoolID"])
+  teacherID: ID
+  students: [Student] @hasMany(fields: ["id"])
+  attendances: [Attendance] @hasMany(fields: ["id"])
+  subjects: [Subject] @hasMany(fields: ["id"])
+  assessments: [Assessment] @hasMany(fields: ["id"])
+  grades: [Grade] @hasMany(fields: ["id"])
 }
 
 type Student
@@ -123,22 +136,22 @@ type Student
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
-  firstName: String!
-  lastName: String!
-  email: String!
-  schoolID: ID! @index(name: "bySchool")
+  id: ID!
+  name: String!
+  classID: ID!
+  schoolID: ID!
+  class: Class @belongsTo(fields: ["classID"])
+  school: School @belongsTo(fields: ["schoolID"])
+  attendances: [Attendance] @hasMany(fields: ["id"])
+  grades: [Grade] @hasMany(fields: ["id"])
 }
 
 type User
@@ -150,23 +163,16 @@ type User
         groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Admins"]
-        operations: [create, read, update, delete]
-      }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: owner, ownerField: "owner", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
+  id: ID!
+  email: AWSEmail!
   name: String!
-  email: String!
-  userRole: String!
-  schoolID: ID! @index(name: "bySchool")
+  role: String! # "ApplicationAdmin"|"SchoolAdmin"|"Teacher"|"Student"|"Parent"
+  schoolID: ID!
+  school: School @belongsTo(fields: ["schoolID"])
 }
 
 type Subject
@@ -179,21 +185,19 @@ type Subject
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
+  id: ID!
   name: String!
-  schoolID: ID! @index(name: "bySchool")
-  classID: ID! @index(name: "byClass")
+  classID: ID!
+  class: Class @belongsTo(fields: ["classID"])
+  assessments: [Assessment] @hasMany(fields: ["id"])
 }
 
 type Assessment
@@ -206,25 +210,24 @@ type Assessment
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
+  id: ID!
   title: String!
-  assessmentDate: AWSDateTime!
-  schoolID: ID! @index(name: "bySchool")
-  subjectID: ID! @index(name: "bySubject")
-  termID: ID!
+  assessmentDate: AWSDate!
   classID: ID!
-  createdBy: ID!
+  class: Class @belongsTo(fields: ["classID"])
+  subjectID: ID!
+  subject: Subject @belongsTo(fields: ["subjectID"])
+  termID: ID!
+  term: Term @belongsTo(fields: ["termID"])
+  grades: [Grade] @hasMany(fields: ["id"])
 }
 
 type Grade
@@ -237,23 +240,22 @@ type Grade
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
-  studentID: ID! @index(name: "byStudent")
-  assessmentID: ID! @index(name: "byAssessment")
+  id: ID!
+  studentID: ID!
+  student: Student @belongsTo(fields: ["studentID"])
+  assessmentID: ID!
+  assessment: Assessment @belongsTo(fields: ["assessmentID"])
   score: Float!
-  comments: String
-  schoolID: ID! @index(name: "bySchool")
+  classID: ID!
+  class: Class @belongsTo(fields: ["classID"])
 }
 
 type Attendance
@@ -266,23 +268,21 @@ type Attendance
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "owner"
         operations: [create, read, update, delete]
       }
-      {
-        allow: groups
-        groups: ["Teachers", "Parents", "Students"]
-        operations: [read]
-      }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
-  studentID: ID! @index(name: "byStudent")
-  classID: ID! @index(name: "byClass")
-  date: AWSDateTime!
+  id: ID!
+  studentID: ID!
+  classID: ID!
+  date: AWSDate!
   status: String!
-  schoolID: ID! @index(name: "bySchool")
+  student: Student @belongsTo(fields: ["studentID"])
+  class: Class @belongsTo(fields: ["classID"])
 }
 
 type Announcement
@@ -295,19 +295,20 @@ type Announcement
         operations: [create, read, update, delete]
       }
       {
-        allow: groups
-        groups: ["Admins"]
+        allow: owner
+        ownerField: "createdBy"
         operations: [create, read, update, delete]
       }
-      { allow: groups, groups: ["Teachers"], operations: [create, read] }
-      { allow: groups, groups: ["Parents", "Students"], operations: [read] }
+      { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
-  id: ID! @primaryKey
+  id: ID!
   title: String!
-  body: String!
-  audience: AudienceType!
-  createdBy: ID!
-  createdAt: AWSDateTime!
-  schoolID: ID! @index(name: "bySchool")
+  message: String!
+  audience: String
+  targetID: ID
+  createdBy: String!
+  schoolID: ID!
+  classID: ID
 }
