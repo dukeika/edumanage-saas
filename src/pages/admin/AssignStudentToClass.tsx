@@ -36,7 +36,6 @@ const AssignStudentToClass = () => {
       variables: {
         input: {
           id: selectedStudent,
-          classID: selectedClass,
         },
       },
     });

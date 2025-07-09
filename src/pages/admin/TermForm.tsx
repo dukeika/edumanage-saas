@@ -1,75 +1,74 @@
-// src/pages/admin/TermForm.tsx
 import React, { useState } from "react";
-import { TextField, Button, Paper, Box, Typography } from "@mui/material";
-import { createTerm } from "../../graphql/mutations";
 import { generateClient } from "aws-amplify/api";
+import { createTerm } from "../../graphql/mutations";
+import { useCurrentUser } from "../../utils/useCurrentUser";
 
-const client = generateClient();
-
-type TermFormProps = {
-  academicYearID: string;
-};
-
-const TermForm = ({ academicYearID }: TermFormProps) => {
-  const [termLabel, setTermLabel] = useState("");
+const TermForm: React.FC = () => {
+  const { user } = useCurrentUser();
+  const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [academicYearID, setAcademicYearID] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!user?.schoolID) return;
+    const client = generateClient();
     try {
       await client.graphql({
         query: createTerm,
         variables: {
           input: {
-            termLabel,
+            name,
             startDate,
             endDate,
             academicYearID,
+            schoolID: user.schoolID,
           },
         },
       });
-      alert("Term created successfully");
+      setMessage("Term created!");
+      setName("");
+      setStartDate("");
+      setEndDate("");
+      setAcademicYearID("");
     } catch (err) {
-      console.error("Error creating term:", err);
+      setMessage("Error creating term.");
     }
   };
 
   return (
-    <Paper elevation={2} sx={{ p: 3 }}>
-      <Typography variant="h6">Add Term</Typography>
-      <Box component="form" onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Term Label"
-          value={termLabel}
-          onChange={(e) => setTermLabel(e.target.value)}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          type="date"
-          label="Start Date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
-        <TextField
-          fullWidth
-          type="date"
-          label="End Date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-        />
-        <Button type="submit" variant="contained">
-          Create
-        </Button>
-      </Box>
-    </Paper>
+    <form onSubmit={handleSubmit}>
+      <input
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
+      <input
+        type="date"
+        placeholder="Start Date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        required
+      />
+      <input
+        type="date"
+        placeholder="End Date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        required
+      />
+      <input
+        placeholder="Academic Year ID"
+        value={academicYearID}
+        onChange={(e) => setAcademicYearID(e.target.value)}
+        required
+      />
+      <button type="submit">Create Term</button>
+      {message && <div>{message}</div>}
+    </form>
   );
 };
 

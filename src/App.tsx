@@ -2,11 +2,31 @@
 import React from "react";
 import { Authenticator } from "@aws-amplify/ui-react";
 import AuthContent from "./components/AuthContent";
+import AppRoutes from "./routes/AppRoutes";
+import { useCurrentUser } from "./hooks/useCurrentUser";
 
-export default function App() {
+function App() {
+  const { setUser } = useCurrentUser();
+
   return (
     <Authenticator>
-      <AuthContent />
+      {({ signOut }) => (
+        <AuthContent
+          signOut={async () => {
+            // guard against undefined
+            if (signOut) {
+              await signOut();
+            }
+            setUser(null);
+            localStorage.clear();
+            window.location.assign("/");
+          }}
+        >
+          <AppRoutes />
+        </AuthContent>
+      )}
     </Authenticator>
   );
 }
+
+export default App;

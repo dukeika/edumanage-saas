@@ -1,61 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/api";
 import { listClasses } from "../../graphql/queries";
-import { Box, Typography, Paper, List, ListItem, Divider } from "@mui/material";
+import { useCurrentUser } from "../../utils/useCurrentUser";
 
-const client = generateClient();
-type ClassListProps = {
-  schoolID: string;
-};
+type Class = { id: string; name: string; schoolID: string; termID: string };
 
-type ClassItem = {
-  id: string;
-  name: string;
-  schoolID: string;
-  teacherID?: string | null;
-};
-
-const ClassList = ({ schoolID }: ClassListProps) => {
-  const [classes, setClasses] = useState<ClassItem[]>([]);
-
-  const fetchClasses = async () => {
-    try {
-      const response: any = await client.graphql({
-        query: listClasses,
-        variables: {
-          filter: {
-            schoolID: { eq: schoolID },
-          },
-        },
-      });
-      setClasses(response.data.listClasses.items);
-    } catch (err) {
-      console.error("Error fetching classes:", err);
-    }
-  };
+export default function ClassList() {
+  const { user } = useCurrentUser();
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user?.schoolID) return;
+    const client = generateClient();
+    const fetchClasses = async () => {
+      setLoading(true);
+      const res: any = await client.graphql({
+        query: listClasses,
+        variables: { filter: { schoolID: { eq: user.schoolID } } },
+      });
+      setClasses(res.data.listClasses.items);
+      setLoading(false);
+    };
     fetchClasses();
-  }, [schoolID]);
+  }, [user]);
 
+  if (loading) return <div>Loading classes…</div>;
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h6">Classes</Typography>
-      <Paper sx={{ mt: 2, p: 2 }}>
-        <List>
-          {classes.map((cls) => (
-            <React.Fragment key={cls.id}>
-              <ListItem>
-                <strong>{cls.name}</strong> — Teacher ID:{" "}
-                {cls.teacherID || "Not assigned"}
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          ))}
-        </List>
-      </Paper>
-    </Box>
+    <div>
+      <h2>Classes</h2>
+      <ul>
+        {classes.map((cls) => (
+          <li key={cls.id}>{cls.name}</li>
+        ))}
+      </ul>
+    </div>
   );
-};
-
-export default ClassList;
+}

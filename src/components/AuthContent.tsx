@@ -1,31 +1,41 @@
 // src/components/AuthContent.tsx
 import React from "react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import RedirectOnSignOut from "./RedirectOnSignOut";
-import AppRoutes from "../routes/AppRoutes";
-import { Box, Button } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
 
-export default function AuthContent() {
-  const { route, user, signOut } = useAuthenticator((ctx) => [
-    ctx.route,
-    ctx.user,
-    ctx.signOut,
-  ]);
+interface AuthContentProps {
+  children: React.ReactNode;
+  signOut: () => Promise<void>;
+}
 
-  // Let Amplify UI handle all pre-auth screens; only render once fully signed in:
-  if (route !== "authenticated" || !user) {
-    return null;
-  }
-
+const AuthContent: React.FC<AuthContentProps> = ({ children, signOut }) => {
   return (
-    <>
-      <RedirectOnSignOut />
-      <AppRoutes />
-      <Box sx={{ position: "fixed", bottom: 16, right: 16 }}>
-        <Button variant="contained" onClick={signOut}>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
+      {/* Top bar */}
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6">My App</Typography>
+        </Toolbar>
+      </AppBar>
+
+      {/* Main content */}
+      <Box component="main" flexGrow={1} p={2}>
+        {children}
+      </Box>
+
+      {/* Footer with Sign Out */}
+      <Box
+        component="footer"
+        p={2}
+        textAlign="center"
+        bgcolor="background.paper"
+        boxShadow={3}
+      >
+        <Button variant="contained" color="secondary" onClick={signOut}>
           Sign Out
         </Button>
       </Box>
-    </>
+    </Box>
   );
-}
+};
+
+export default AuthContent;

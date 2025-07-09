@@ -1,93 +1,72 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  MenuItem,
-  Button,
-  Box,
-  Typography,
-  Paper,
-} from "@mui/material";
-import { generateClient } from "aws-amplify/api";
-import { createCognitoUser } from "../../graphql/mutations";
-import awsconfig from "../../aws-exports";
+import { TextField, Button, Typography, Box } from "@mui/material";
+import RequireRole from "../../components/RequireRole";
+import { signUp } from "aws-amplify/auth";
 
-const client = generateClient();
-
-const roles = ["Teacher", "Student", "Parent"];
-
-const UserCreationForm = ({ schoolID }: { schoolID: string }) => {
+const UserCreationForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState("Teacher");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async () => {
-    const input = {
-      email,
-      name,
-      role,
-      schoolID,
-      userPoolId: awsconfig.aws_user_pools_id,
-    };
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const response = await client.graphql({
-        query: createCognitoUser,
-        variables: { input },
+      await signUp({
+        username: email,
+        password,
+        options: { userAttributes: { email, name } },
       });
-      setMessage(
-        `User "${response.data.createCognitoUser.email}" created successfully!`
-      );
+      setMessage(`✅ User "${email}" created!`);
       setEmail("");
       setName("");
+      setPassword("");
     } catch (err: any) {
       console.error(err);
-      setMessage("Error: " + err.errors?.[0]?.message || "Unknown error");
+      setMessage(err.message || "❌ Error creating user");
     }
   };
 
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h6">Create New User</Typography>
-      <Paper sx={{ mt: 2, p: 3 }}>
+    <RequireRole roles={["ADMIN"]}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ maxWidth: 400, mx: "auto" }}
+      >
+        <Typography variant="h6">Create New User</Typography>
+        <TextField
+          label="Email"
+          type="email"
+          fullWidth
+          margin="normal"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <TextField
           label="Name"
           fullWidth
+          margin="normal"
+          required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          sx={{ mb: 2 }}
         />
         <TextField
-          label="Email"
+          label="Temporary Password"
+          type="password"
           fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          sx={{ mb: 2 }}
+          margin="normal"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <TextField
-          select
-          label="Role"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          fullWidth
-          sx={{ mb: 2 }}
-        >
-          {roles.map((r) => (
-            <MenuItem key={r} value={r}>
-              {r}
-            </MenuItem>
-          ))}
-        </TextField>
-        <Button variant="contained" onClick={handleSubmit}>
+        <Button variant="contained" type="submit" fullWidth>
           Create User
         </Button>
-        {message && (
-          <Typography sx={{ mt: 2 }} color="green">
-            {message}
-          </Typography>
-        )}
-      </Paper>
-    </Box>
+        {message && <Typography>{message}</Typography>}
+      </Box>
+    </RequireRole>
   );
 };
 

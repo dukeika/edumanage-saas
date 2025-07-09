@@ -3,6 +3,7 @@ import { generateClient } from "aws-amplify/api";
 import { listClasses } from "../../graphql/queries";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 
+// Match your schema: only fields actually on Class
 type ClassType = {
   id: string;
   name: string;
@@ -27,6 +28,7 @@ const ClassListPage: React.FC = () => {
         });
         setClasses(res.data.listClasses.items);
       } catch (err) {
+        console.error("Error fetching classes:", err);
         setClasses([]);
       }
       setLoading(false);
@@ -34,7 +36,9 @@ const ClassListPage: React.FC = () => {
     fetchClasses();
   }, [user]);
 
-  if (!user?.schoolID) return <div>No school selected or available.</div>;
+  if (!user?.schoolID) {
+    return <div>No school selected or available.</div>;
+  }
   if (loading) return <div>Loading classes…</div>;
 
   return (

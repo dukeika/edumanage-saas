@@ -27,7 +27,7 @@
           "EMAIL"
         ],
         "passwordProtectionSettings": {
-          "passwordPolicyMinLength": "6",
+          "passwordPolicyMinLength": 8,
           "passwordPolicyCharacters": []
         },
         "mfaConfiguration": "OFF",
@@ -42,19 +42,19 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/auth/edumanagesaasda694ea8-cloudformation-template.json",
         "logicalId": "authedumanagesaasda694ea8"
       },
-      "lastPushTimeStamp": "2025-06-27T12:39:11.438Z",
+      "lastPushTimeStamp": "2025-07-02T02:43:45.535Z",
       "output": {
         "UserPoolId": "eu-west-2_OuXc4ZpsU",
         "AppClientIDWeb": "2ojmkpj241a2jmsd02scen1eck",
         "AppClientID": "4ogtnu9523ipoh0i589futjbbp",
         "HostedUIDomain": "edumanagesaasda694ea8-da694ea8-dev",
-        "IdentityPoolId": "eu-west-2:c1acaad4-9d0c-4151-9ef4-e88520dcdc40",
+        "IdentityPoolId": "eu-west-2:67ed7571-ddfb-4fef-a876-33ab8a36d670",
         "UserPoolArn": "arn:aws:cognito-idp:eu-west-2:624914081304:userpool/eu-west-2_OuXc4ZpsU",
         "IdentityPoolName": "edumanagesaasda694ea8_identitypool_da694ea8__dev",
-        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost/\",\"http://localhost/\"],\"LogoutURLs\":[\"https://localhost/\"]}",
+        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost/\"],\"LogoutURLs\":[\"https://localhost/\"]}",
         "UserPoolName": "edumanagesaasda694ea8_userpool_da694ea8"
       },
-      "lastPushDirHash": "V8nFmqJj6Y/lDImpP4Oq8VtpC1I="
+      "lastPushDirHash": "WFqBbYWSXZ/06ufF/Q5S6ea7des="
     }
   },
   "api": {
@@ -63,11 +63,11 @@
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
+          "category": "auth",
+          "resourceName": "edumanagesaasda694ea8",
           "attributes": [
             "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "edumanagesaasda694ea8"
+          ]
         }
       ],
       "output": {
@@ -78,52 +78,17 @@
               "userPoolId": "authedumanagesaasda694ea8"
             }
           },
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "API_KEY",
-              "apiKeyConfig": {
-                "apiKeyExpirationDays": 7,
-                "apiKeyExpirationDate": "2025-07-04T03:49:50.598Z",
-                "description": "access to AppSync"
-              }
-            }
-          ]
+          "additionalAuthenticationProviders": []
         },
         "GraphQLAPIIdOutput": "qv5r6e7crvbvdcwi2pck2uak24",
-        "GraphQLAPIEndpointOutput": "https://gj3enzgrgvhufk5imqqbf442ny.appsync-api.eu-west-2.amazonaws.com/graphql",
-        "GraphQLAPIKeyOutput": "da2-s3eb3ixtgbbghaerjab7qqeoje"
+        "GraphQLAPIEndpointOutput": "https://gj3enzgrgvhufk5imqqbf442ny.appsync-api.eu-west-2.amazonaws.com/graphql"
       },
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiedumanagesaas"
       },
-      "lastPushTimeStamp": "2025-06-27T12:39:10.069Z",
-      "lastPushDirHash": "KpOFPMOSFT2R05zmKRkzSF22OqY="
-    },
-    "adminUpdateUserAttribute": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "adminUpdateUserAttribute",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ],
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/adminUpdateUserAttribute-cloudformation-template.json",
-        "logicalId": "apiadminUpdateUserAttribute"
-      },
-      "lastPushTimeStamp": "2025-06-27T12:39:10.071Z",
-      "output": {
-        "ApiName": "adminUpdateUserAttribute",
-        "RootUrl": "https://ftrdns136f.execute-api.eu-west-2.amazonaws.com/dev",
-        "ApiId": "ftrdns136f"
-      },
-      "lastPushDirHash": "znmZ0NU/la9AUEH8oeRirVTgu/Y="
+      "lastPushTimeStamp": "2025-07-02T02:43:47.983Z",
+      "lastPushDirHash": "BUmjpKigHwyCdyCGXa7bwTckH9Q="
     }
   },
   "function": {
@@ -143,7 +108,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/function/adminCreateUser-cloudformation-template.json",
         "logicalId": "functionadminCreateUser"
       },
-      "lastPushTimeStamp": "2025-06-27T12:39:10.074Z",
+      "lastPushTimeStamp": "2025-07-02T02:43:45.542Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::624914081304:role/edumanagesaasLambdaRole754f667f-dev",
         "Region": "eu-west-2",
@@ -152,76 +117,6 @@
         "LambdaExecutionRole": "edumanagesaasLambdaRole754f667f-dev"
       },
       "lastPushDirHash": "38DbFogPN4jPgJTVmG1AfbmkYI4="
-    },
-    "adminUpdateUserAttributes": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "edumanagesaasda694ea8",
-          "attributes": [
-            "UserPoolId"
-          ]
-        }
-      ],
-      "lastBuildTimeStamp": "2025-06-26T06:12:17.674Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2025-06-26T06:12:17.728Z",
-      "distZipFilename": "adminUpdateUserAttributes-7250726c46335565582b-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
-        "s3Key": "amplify-builds/adminUpdateUserAttributes-7250726c46335565582b-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/function/adminUpdateUserAttributes-cloudformation-template.json",
-        "logicalId": "functionadminUpdateUserAttributes"
-      },
-      "lastPushTimeStamp": "2025-06-27T12:39:10.075Z",
-      "output": {
-        "LambdaExecutionRoleArn": "arn:aws:iam::624914081304:role/edumanagesaasLambdaRole623270be-dev",
-        "Region": "eu-west-2",
-        "Arn": "arn:aws:lambda:eu-west-2:624914081304:function:adminUpdateUserAttributes-dev",
-        "Name": "adminUpdateUserAttributes-dev",
-        "LambdaExecutionRole": "edumanagesaasLambdaRole623270be-dev"
-      },
-      "lastPushDirHash": "t9AgVO6q3ky7/gDMIGKOO8MoBN8="
-    },
-    "adminUpdateUserAttribute": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "auth",
-          "resourceName": "edumanagesaasda694ea8",
-          "attributes": [
-            "UserPoolId"
-          ]
-        }
-      ],
-      "lastBuildTimeStamp": "2025-06-26T08:19:28.111Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2025-06-26T08:19:31.586Z",
-      "distZipFilename": "adminUpdateUserAttribute-3759783966344c314c68-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
-        "s3Key": "amplify-builds/adminUpdateUserAttribute-3759783966344c314c68-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/function/adminUpdateUserAttribute-cloudformation-template.json",
-        "logicalId": "functionadminUpdateUserAttribute"
-      },
-      "lastPushTimeStamp": "2025-06-27T12:39:10.077Z",
-      "output": {
-        "LambdaExecutionRoleArn": "arn:aws:iam::624914081304:role/edumanagesaasLambdaRole4bfc93a0-dev",
-        "Region": "eu-west-2",
-        "Arn": "arn:aws:lambda:eu-west-2:624914081304:function:adminUpdateUserAttribute-dev",
-        "Name": "adminUpdateUserAttribute-dev",
-        "LambdaExecutionRole": "edumanagesaasLambdaRole4bfc93a0-dev"
-      },
-      "lastPushDirHash": "MscwboSBu7yWbkgRyFALMwD3mTs="
     }
   }
 }

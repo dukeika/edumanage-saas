@@ -1,78 +1,62 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { generateClient } from "aws-amplify/api";
+import { customCreateAnnouncement } from "../../graphql/customMutations";
 import { useCurrentUser } from "../../utils/useCurrentUser";
-import RequireRole from "../../components/RequireRole";
-import { generateClient } from "@aws-amplify/api";
-import { createAnnouncement } from "../../graphql/customMutations";
 
 const AnnouncementCreatePage: React.FC = () => {
   const { user } = useCurrentUser();
   const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [audience, setAudience] = useState("SCHOOL");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.schoolID) return;
-
     const client = generateClient();
-    await client.graphql({
-      query: createAnnouncement,
-      variables: {
-        input: {
-          title,
-          message,
-          schoolID: user.schoolID,
-          createdBy: user.id,
+    try {
+      await client.graphql({
+        query: customCreateAnnouncement,
+        variables: {
+          input: {
+            title,
+            body,
+            audience,
+            createdBy: user.id,
+            createdAt: new Date().toISOString(),
+            schoolID: user.schoolID,
+          },
         },
-      },
-    });
-
-    alert("Announcement created!");
-    setTitle("");
-    setMessage("");
+      });
+      setMessage("Announcement created!");
+      setTitle("");
+      setBody("");
+    } catch (err) {
+      setMessage("Error creating announcement.");
+    }
   };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        New Announcement
-      </Typography>
-
-      <RequireRole roles={["Admin", "Teacher"]}>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            multiline
-            minRows={4}
-            label="Message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <Button type="submit" variant="contained">
-            Post Announcement
-          </Button>
-        </form>
-      </RequireRole>
-
-      <RequireRole
-        roles={["Student", "Parent"]}
-        fallback={
-          <Typography color="textSecondary">
-            You do not have permission to post announcements.
-          </Typography>
-        }
-      >
-        {/* no children */}
-      </RequireRole>
-    </Box>
+    <form onSubmit={handleSubmit}>
+      <input
+        placeholder="Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+      />
+      <textarea
+        placeholder="Body"
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        required
+      />
+      <select value={audience} onChange={(e) => setAudience(e.target.value)}>
+        <option value="SCHOOL">School</option>
+        <option value="CLASS">Class</option>
+      </select>
+      <button type="submit">Create Announcement</button>
+      {message && <div>{message}</div>}
+    </form>
   );
 };
 

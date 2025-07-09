@@ -1,66 +1,69 @@
-// src/pages/admin/CreateAnnouncement.tsx
 import React, { useState } from "react";
-import { TextField, Button, Paper, Box, Typography } from "@mui/material";
-import { createAnnouncement } from "../../graphql/mutations";
-import { generateClient } from "aws-amplify/api";
+import RequireRole from "../../components/RequireRole";
 import { useCurrentUser } from "../../utils/useCurrentUser";
+import { generateClient } from "aws-amplify/api";
+import { customCreateAnnouncement } from "../../graphql/customMutations";
 
 const client = generateClient();
 
-const CreateAnnouncement = () => {
-  const { user, loading } = useCurrentUser();
+const CreateAnnouncement: React.FC = () => {
+  const { user } = useCurrentUser();
   const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [audience, setAudience] = useState<"SCHOOL" | "CLASS">("SCHOOL");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.schoolID || !user?.id) return;
+    if (!user?.schoolID) return;
 
     try {
       await client.graphql({
-        query: createAnnouncement,
+        query: customCreateAnnouncement,
         variables: {
           input: {
             title,
-            message,
+            body,
+            audience,
             schoolID: user.schoolID,
             createdBy: user.id,
             createdAt: new Date().toISOString(),
           },
         },
       });
-      alert("Announcement posted");
+      setMessage("✅ Announcement created!");
+      setTitle("");
+      setBody("");
     } catch (err) {
-      console.error("Error creating announcement:", err);
+      console.error(err);
+      setMessage("❌ Failed to create announcement");
     }
   };
 
-  if (loading) return <p>Loading user...</p>;
-
   return (
-    <Paper elevation={2} sx={{ p: 3 }}>
-      <Typography variant="h6">New Announcement</Typography>
-      <Box component="form" onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Title"
+    <RequireRole roles={["ADMIN"]}>
+      {message && <div>{message}</div>}
+      <form onSubmit={handleSubmit}>
+        <input
+          placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          margin="normal"
         />
-        <TextField
-          fullWidth
-          multiline
-          label="Message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          margin="normal"
+        <textarea
+          placeholder="Body"
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
         />
-        <Button type="submit" variant="contained">
-          Post
-        </Button>
-      </Box>
-    </Paper>
+        <select
+          value={audience}
+          onChange={(e) => setAudience(e.target.value as any)}
+        >
+          <option value="SCHOOL">School</option>
+          <option value="CLASS">Class</option>
+        </select>
+        <button type="submit">Create Announcement</button>
+      </form>
+    </RequireRole>
   );
 };
 

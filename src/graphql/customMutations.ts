@@ -1,12 +1,11 @@
-// src/graphql/customMutations.ts
-
 export const customCreateSchool = /* GraphQL */ `
   mutation CustomCreateSchool($input: CreateSchoolInput!) {
     createSchool(input: $input) {
       id
       name
-      address
-      owner
+      domain
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -17,7 +16,9 @@ export const customCreateClass = /* GraphQL */ `
       id
       name
       schoolID
-      teacherID
+      termID
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -26,9 +27,12 @@ export const customCreateStudent = /* GraphQL */ `
   mutation CustomCreateStudent($input: CreateStudentInput!) {
     createStudent(input: $input) {
       id
-      name
-      classID
+      firstName
+      lastName
+      email
       schoolID
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -38,7 +42,10 @@ export const customCreateSubject = /* GraphQL */ `
     createSubject(input: $input) {
       id
       name
+      schoolID
       classID
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -47,8 +54,12 @@ export const customCreateAcademicYear = /* GraphQL */ `
   mutation CustomCreateAcademicYear($input: CreateAcademicYearInput!) {
     createAcademicYear(input: $input) {
       id
-      yearLabel
+      name
+      startDate
+      endDate
       schoolID
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -57,8 +68,13 @@ export const customCreateTerm = /* GraphQL */ `
   mutation CustomCreateTerm($input: CreateTermInput!) {
     createTerm(input: $input) {
       id
-      termLabel
+      name
+      startDate
+      endDate
       academicYearID
+      schoolID
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -72,6 +88,10 @@ export const customCreateAssessment = /* GraphQL */ `
       classID
       subjectID
       termID
+      schoolID
+      createdBy
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -83,7 +103,10 @@ export const customCreateGrade = /* GraphQL */ `
       studentID
       assessmentID
       score
-      classID
+      comments
+      schoolID
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -96,6 +119,9 @@ export const customCreateAttendance = /* GraphQL */ `
       classID
       date
       status
+      schoolID
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -105,18 +131,12 @@ export const customCreateAnnouncement = /* GraphQL */ `
     createAnnouncement(input: $input) {
       id
       title
-      message
-      schoolID
+      body
+      audience
       createdBy
-    }
-  }
-`;
-// just stub definitions so your imports resolve
-export const createAnnouncement = /* GraphQL */ `
-  mutation CreateAnnouncement($input: CreateAnnouncementInput!) {
-    createAnnouncement(input: $input) {
-      id
-      title
+      createdAt
+      schoolID
+      updatedAt
     }
   }
 `;

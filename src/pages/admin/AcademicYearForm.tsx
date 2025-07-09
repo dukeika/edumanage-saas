@@ -1,60 +1,65 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Paper, Typography } from "@mui/material";
-import { createAcademicYear } from "../../graphql/mutations";
 import { generateClient } from "aws-amplify/api";
+import { createAcademicYear } from "../../graphql/mutations";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 
-const client = generateClient();
-
-export interface AcademicYearFormProps {
-  schoolID: string;
-}
-
-const AcademicYearForm = ({ schoolID }: AcademicYearFormProps) => {
-  const { user, loading } = useCurrentUser();
-  const [yearLabel, setYearLabel] = useState("");
+const AcademicYearForm: React.FC = () => {
+  const { user } = useCurrentUser();
+  const [name, setName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!user?.schoolID) return;
+    const client = generateClient();
     try {
       await client.graphql({
         query: createAcademicYear,
         variables: {
           input: {
-            yearLabel,
-            schoolID,
+            name,
+            startDate,
+            endDate,
+            schoolID: user.schoolID,
           },
         },
       });
-
-      setYearLabel("");
-      alert("Academic year created successfully");
-    } catch (error) {
-      console.error("Error creating academic year:", error);
+      setMessage("Academic Year created!");
+      setName("");
+      setStartDate("");
+      setEndDate("");
+    } catch (err) {
+      setMessage("Error creating academic year.");
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (!user) return <div>Not authenticated</div>;
-
   return (
-    <Paper sx={{ p: 4, mt: 4 }}>
-      <Typography variant="h6" gutterBottom>
-        Create Academic Year
-      </Typography>
-      <Box component="form" onSubmit={handleSubmit} display="flex" gap={2}>
-        <TextField
-          label="Year Label"
-          value={yearLabel}
-          onChange={(e) => setYearLabel(e.target.value)}
-          required
-        />
-        <Button type="submit" variant="contained">
-          Create
-        </Button>
-      </Box>
-    </Paper>
+    <form onSubmit={handleSubmit}>
+      <input
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
+      <input
+        type="date"
+        placeholder="Start Date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        required
+      />
+      <input
+        type="date"
+        placeholder="End Date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        required
+      />
+      <button type="submit">Create Academic Year</button>
+      {message && <div>{message}</div>}
+    </form>
   );
 };
 
