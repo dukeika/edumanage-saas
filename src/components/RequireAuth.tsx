@@ -15,6 +15,8 @@ const RequireAuth: React.FC<RequireAuthProps> = ({
 }) => {
   const { user, loading } = useCurrentUser();
   const location = useLocation();
+  console.log("RequireAuth: allowedRoles", allowedRoles);
+  console.log("RequireAuth: user", user);
 
   // 1) Still checking auth status?
   if (loading) {
@@ -37,19 +39,24 @@ const RequireAuth: React.FC<RequireAuthProps> = ({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // 3) Normalize everything to lowercase for safe comparison
+  // 3) Normalize for comparison
   const normalizedAllowed = allowedRoles.map((r) => r.toLowerCase());
-  const roleMatch = normalizedAllowed.includes(user.userRole.toLowerCase());
-  const groupMatch = user.groups?.some((g) =>
-    normalizedAllowed.includes(g.toLowerCase())
-  );
 
-  // 4) Signed in but neither your custom:userRole nor any Cognito group matches
+  // Match on userRole (custom attr) or any Cognito group (all lowercased)
+  const roleMatch =
+    user.userRole && normalizedAllowed.includes(user.userRole.toLowerCase());
+  const groupMatch =
+    Array.isArray(user.groups) &&
+    user.groups
+      .map((g: string) => g.toLowerCase())
+      .some((g) => normalizedAllowed.includes(g));
+
   if (!roleMatch && !groupMatch) {
+    // 4) Signed in, but not authorized
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // 5) You’re good!
+  // 5) Authorized!
   return <>{children}</>;
 };
 

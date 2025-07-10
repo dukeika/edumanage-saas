@@ -1,11 +1,8 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+// Admin
 import AdminLayout from "../layouts/AdminLayout";
-import TeacherLayout from "../layouts/TeacherLayout";
-import StudentLayout from "../layouts/StudentLayout";
-import ParentLayout from "../layouts/ParentLayout";
-
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ManageStudentsPage from "../pages/admin/ManageStudentsPage";
 import ManageTeachersPage from "../pages/admin/ManageTeachersPage";
@@ -13,23 +10,55 @@ import ManageClassesPage from "../pages/admin/ManageClassesPage";
 import AnnouncementsPage from "../pages/admin/AnnouncementsPage";
 import ReportsPage from "../pages/admin/ReportsPage";
 
+// Teacher
+import TeacherLayout from "../layouts/TeacherLayout";
 import TeacherDashboard from "../pages/teacher/TeacherDashboard";
+import AttendancePage from "../pages/teacher/AttendancePage";
+import TeacherAnnouncementsPage from "../pages/teacher/TeacherAnnouncementsPage";
+
+// Student
+import StudentLayout from "../layouts/StudentLayout";
 import StudentDashboard from "../pages/student/StudentDashboard";
+import StudentAnnouncementsPage from "../pages/student/StudentAnnouncementsPage";
+import AttendanceHistoryPage from "../pages/student/AttendanceHistoryPage";
+
+// Parent
+import ParentLayout from "../layouts/ParentLayout";
 import ParentDashboard from "../pages/parent/ParentDashboard";
+import ParentAnnouncementsPage from "../pages/parent/ParentAnnouncementsPage";
+import FeeBalancePage from "../pages/parent/FeeBalancePage";
+
+// Application Admin (Super Admin)
+import AppAdminLayout from "../layouts/AppAdminLayout";
+import AppAdminDashboard from "../pages/appadmin/AppAdminDashboard";
+import AppAdminSchoolsPage from "../pages/appadmin/AppAdminSchoolsPage";
+import AppAdminUsersPage from "../pages/appadmin/AppAdminUsersPage";
+import CreateSchoolPage from "../pages/appadmin/CreateSchoolPage";
+import AssignAdminPage from "../pages/appadmin/AssignAdminPage";
 
 import RoleBasedRedirect from "../components/RoleBasedRedirect";
 import Unauthorized from "../components/Unauthorized";
 import RequireAuth from "../components/RequireAuth";
 
-import AttendancePage from "../pages/teacher/AttendancePage";
-import TeacherAnnouncementsPage from "../pages/teacher/TeacherAnnouncementsPage";
-import StudentAnnouncementsPage from "../pages/student/StudentAnnouncementsPage";
-import AttendanceHistoryPage from "../pages/student/AttendanceHistoryPage";
-import ParentAnnouncementsPage from "../pages/parent/ParentAnnouncementsPage";
-import FeeBalancePage from "../pages/parent/FeeBalancePage";
-
 const AppRoutes: React.FC = () => (
   <Routes>
+    {/* Application Admin (Super Admin) Routes */}
+    <Route
+      path="/app-admin/*"
+      element={
+        <RequireAuth allowedRoles={["applicationadmins"]}>
+          <AppAdminLayout />
+        </RequireAuth>
+      }
+    >
+      <Route index element={<AppAdminDashboard />} />
+      <Route path="schools" element={<AppAdminSchoolsPage />} />
+      <Route path="users" element={<AppAdminUsersPage />} />
+      <Route path="create-school" element={<CreateSchoolPage />} />
+      <Route path="assign-admin" element={<AssignAdminPage />} />
+      <Route path="*" element={<Navigate to="/app-admin" replace />} />
+    </Route>
+
     {/* Admin Routes */}
     <Route
       path="/admin/*"
@@ -45,7 +74,6 @@ const AppRoutes: React.FC = () => (
       <Route path="classes" element={<ManageClassesPage />} />
       <Route path="announcements" element={<AnnouncementsPage />} />
       <Route path="reports" element={<ReportsPage />} />
-      {/* catch invalid under /admin → back to dashboard */}
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Route>
 
