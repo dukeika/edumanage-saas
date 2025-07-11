@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useCurrentUser } from "../../utils/useCurrentUser";
-import { generateClient } from "@aws-amplify/api";
+import { generateClient } from "aws-amplify/api";
 import { createSchool } from "../../graphql/mutations";
 import {
   Box,
@@ -28,7 +28,7 @@ const initialFields = {
 };
 
 export default function CreateSchoolPage() {
-  const { user } = useCurrentUser();
+  const { user, loading: userLoading } = useCurrentUser();
   const [fields, setFields] = useState(initialFields);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,46 +46,39 @@ export default function CreateSchoolPage() {
     setError(null);
     setSuccess(null);
 
-    // --- Validate required fields ---
+    if (userLoading || !user) {
+      setError("You must be signed in to create a school.");
+      return;
+    }
+
     if (!fields.name || !fields.subdomain || !fields.address) {
       setError("Name, subdomain, and address are required.");
       return;
     }
 
-    // --- User must be logged in ---
-    if (!user) {
-      setError("You must be signed in to create a school.");
-      return;
-    }
-
-    // --- Prepare input object (matches CreateSchoolInput type) ---
     const input = {
-      name: fields.name,
-      subdomain: fields.subdomain,
-      address: fields.address,
-      logoURL: fields.logoURL || undefined,
-      heroImageURL: fields.heroImageURL || undefined,
-      description: fields.description || undefined,
-      contactEmail: fields.contactEmail || undefined,
-      phone: fields.phone || undefined,
-      website: fields.website || undefined,
-      calendarInfo: fields.calendarInfo || undefined,
+      ...fields,
       schoolAdmin: user.id,
       admins: [user.id],
     };
 
     setLoading(true);
     try {
-      const response = await client.graphql({
+      const response: any = await client.graphql({
         query: createSchool,
         variables: { input },
+        authMode: "userPool", // this fixes your auth error
       });
+
+      if (response.errors) {
+        throw new Error(response.errors[0].message);
+      }
+
       setSuccess(`School "${fields.name}" created successfully!`);
       setFields(initialFields);
     } catch (err: any) {
       setError(
-        err?.errors?.[0]?.message ||
-          "Failed to create school. Check your inputs and network."
+        err.message || "Failed to create school. Check your inputs and network."
       );
     } finally {
       setLoading(false);
@@ -99,7 +92,7 @@ export default function CreateSchoolPage() {
       </Typography>
       <Box component="form" onSubmit={handleSubmit} autoComplete="off">
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               required
               name="name"
@@ -109,7 +102,7 @@ export default function CreateSchoolPage() {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               required
               name="subdomain"
@@ -120,7 +113,7 @@ export default function CreateSchoolPage() {
               helperText="Unique URL, e.g. 'springfield'"
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               required
               name="address"
@@ -130,7 +123,7 @@ export default function CreateSchoolPage() {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               name="logoURL"
               label="Logo URL"
@@ -139,7 +132,7 @@ export default function CreateSchoolPage() {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               name="heroImageURL"
               label="Hero Image URL"
@@ -148,7 +141,7 @@ export default function CreateSchoolPage() {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               name="contactEmail"
               label="Contact Email"
@@ -157,7 +150,7 @@ export default function CreateSchoolPage() {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               name="phone"
               label="Phone"
@@ -166,7 +159,7 @@ export default function CreateSchoolPage() {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               name="website"
               label="Website"
