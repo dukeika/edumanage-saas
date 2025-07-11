@@ -15,7 +15,37 @@ export const createSchool = /* GraphQL */ `mutation CreateSchool(
   createSchool(input: $input, condition: $condition) {
     id
     name
-    domain
+    address
+    subdomain
+    schoolAdmin
+    admins
+    logoURL
+    heroImageURL
+    description
+    contactEmail
+    phone
+    website
+    calendarInfo
+    academicYears {
+      nextToken
+      __typename
+    }
+    classes {
+      nextToken
+      __typename
+    }
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -32,7 +62,37 @@ export const updateSchool = /* GraphQL */ `mutation UpdateSchool(
   updateSchool(input: $input, condition: $condition) {
     id
     name
-    domain
+    address
+    subdomain
+    schoolAdmin
+    admins
+    logoURL
+    heroImageURL
+    description
+    contactEmail
+    phone
+    website
+    calendarInfo
+    academicYears {
+      nextToken
+      __typename
+    }
+    classes {
+      nextToken
+      __typename
+    }
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -49,7 +109,37 @@ export const deleteSchool = /* GraphQL */ `mutation DeleteSchool(
   deleteSchool(input: $input, condition: $condition) {
     id
     name
-    domain
+    address
+    subdomain
+    schoolAdmin
+    admins
+    logoURL
+    heroImageURL
+    description
+    contactEmail
+    phone
+    website
+    calendarInfo
+    academicYears {
+      nextToken
+      __typename
+    }
+    classes {
+      nextToken
+      __typename
+    }
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -65,12 +155,33 @@ export const createAcademicYear = /* GraphQL */ `mutation CreateAcademicYear(
 ) {
   createAcademicYear(input: $input, condition: $condition) {
     id
-    name
-    startDate
-    endDate
+    yearLabel
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    terms {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -84,12 +195,33 @@ export const updateAcademicYear = /* GraphQL */ `mutation UpdateAcademicYear(
 ) {
   updateAcademicYear(input: $input, condition: $condition) {
     id
-    name
-    startDate
-    endDate
+    yearLabel
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    terms {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -103,12 +235,33 @@ export const deleteAcademicYear = /* GraphQL */ `mutation DeleteAcademicYear(
 ) {
   deleteAcademicYear(input: $input, condition: $condition) {
     id
-    name
-    startDate
-    endDate
+    yearLabel
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    terms {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -122,13 +275,26 @@ export const createTerm = /* GraphQL */ `mutation CreateTerm(
 ) {
   createTerm(input: $input, condition: $condition) {
     id
-    name
+    termLabel
     startDate
     endDate
-    schoolID
     academicYearID
+    academicYear {
+      id
+      yearLabel
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -142,13 +308,26 @@ export const updateTerm = /* GraphQL */ `mutation UpdateTerm(
 ) {
   updateTerm(input: $input, condition: $condition) {
     id
-    name
+    termLabel
     startDate
     endDate
-    schoolID
     academicYearID
+    academicYear {
+      id
+      yearLabel
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -162,13 +341,26 @@ export const deleteTerm = /* GraphQL */ `mutation DeleteTerm(
 ) {
   deleteTerm(input: $input, condition: $condition) {
     id
-    name
+    termLabel
     startDate
     endDate
-    schoolID
     academicYearID
+    academicYear {
+      id
+      yearLabel
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -184,9 +376,48 @@ export const createClass = /* GraphQL */ `mutation CreateClass(
     id
     name
     schoolID
-    termID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    teacherID
+    students {
+      nextToken
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    subjects {
+      nextToken
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -202,9 +433,48 @@ export const updateClass = /* GraphQL */ `mutation UpdateClass(
     id
     name
     schoolID
-    termID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    teacherID
+    students {
+      nextToken
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    subjects {
+      nextToken
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -220,9 +490,48 @@ export const deleteClass = /* GraphQL */ `mutation DeleteClass(
     id
     name
     schoolID
-    termID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    teacherID
+    students {
+      nextToken
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    subjects {
+      nextToken
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -236,12 +545,48 @@ export const createStudent = /* GraphQL */ `mutation CreateStudent(
 ) {
   createStudent(input: $input, condition: $condition) {
     id
-    firstName
-    lastName
-    email
+    name
+    classID
     schoolID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -255,12 +600,48 @@ export const updateStudent = /* GraphQL */ `mutation UpdateStudent(
 ) {
   updateStudent(input: $input, condition: $condition) {
     id
-    firstName
-    lastName
-    email
+    name
+    classID
     schoolID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -274,12 +655,48 @@ export const deleteStudent = /* GraphQL */ `mutation DeleteStudent(
 ) {
   deleteStudent(input: $input, condition: $condition) {
     id
-    firstName
-    lastName
-    email
+    name
+    classID
     schoolID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -293,12 +710,31 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
 ) {
   createUser(input: $input, condition: $condition) {
     id
-    name
     email
-    userRole
+    name
+    role
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -312,12 +748,31 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
 ) {
   updateUser(input: $input, condition: $condition) {
     id
-    name
     email
-    userRole
+    name
+    role
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -331,12 +786,31 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
 ) {
   deleteUser(input: $input, condition: $condition) {
     id
-    name
     email
-    userRole
+    name
+    role
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -351,10 +825,24 @@ export const createSubject = /* GraphQL */ `mutation CreateSubject(
   createSubject(input: $input, condition: $condition) {
     id
     name
-    schoolID
     classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -369,10 +857,24 @@ export const updateSubject = /* GraphQL */ `mutation UpdateSubject(
   updateSubject(input: $input, condition: $condition) {
     id
     name
-    schoolID
     classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -387,10 +889,24 @@ export const deleteSubject = /* GraphQL */ `mutation DeleteSubject(
   deleteSubject(input: $input, condition: $condition) {
     id
     name
-    schoolID
     classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -406,13 +922,46 @@ export const createAssessment = /* GraphQL */ `mutation CreateAssessment(
     id
     title
     assessmentDate
-    schoolID
-    subjectID
-    termID
     classID
-    createdBy
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    subjectID
+    subject {
+      id
+      name
+      classID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    termID
+    term {
+      id
+      termLabel
+      startDate
+      endDate
+      academicYearID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -428,13 +977,46 @@ export const updateAssessment = /* GraphQL */ `mutation UpdateAssessment(
     id
     title
     assessmentDate
-    schoolID
-    subjectID
-    termID
     classID
-    createdBy
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    subjectID
+    subject {
+      id
+      name
+      classID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    termID
+    term {
+      id
+      termLabel
+      startDate
+      endDate
+      academicYearID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -450,13 +1032,46 @@ export const deleteAssessment = /* GraphQL */ `mutation DeleteAssessment(
     id
     title
     assessmentDate
-    schoolID
-    subjectID
-    termID
     classID
-    createdBy
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    subjectID
+    subject {
+      id
+      name
+      classID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    termID
+    term {
+      id
+      termLabel
+      startDate
+      endDate
+      academicYearID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -471,12 +1086,44 @@ export const createGrade = /* GraphQL */ `mutation CreateGrade(
   createGrade(input: $input, condition: $condition) {
     id
     studentID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     assessmentID
+    assessment {
+      id
+      title
+      assessmentDate
+      classID
+      subjectID
+      termID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     score
-    comments
-    schoolID
+    classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -491,12 +1138,44 @@ export const updateGrade = /* GraphQL */ `mutation UpdateGrade(
   updateGrade(input: $input, condition: $condition) {
     id
     studentID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     assessmentID
+    assessment {
+      id
+      title
+      assessmentDate
+      classID
+      subjectID
+      termID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     score
-    comments
-    schoolID
+    classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -511,12 +1190,44 @@ export const deleteGrade = /* GraphQL */ `mutation DeleteGrade(
   deleteGrade(input: $input, condition: $condition) {
     id
     studentID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     assessmentID
+    assessment {
+      id
+      title
+      assessmentDate
+      classID
+      subjectID
+      termID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     score
-    comments
-    schoolID
+    classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -534,9 +1245,29 @@ export const createAttendance = /* GraphQL */ `mutation CreateAttendance(
     classID
     date
     status
-    schoolID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -554,9 +1285,29 @@ export const updateAttendance = /* GraphQL */ `mutation UpdateAttendance(
     classID
     date
     status
-    schoolID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -574,9 +1325,29 @@ export const deleteAttendance = /* GraphQL */ `mutation DeleteAttendance(
     classID
     date
     status
-    schoolID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -591,11 +1362,13 @@ export const createAnnouncement = /* GraphQL */ `mutation CreateAnnouncement(
   createAnnouncement(input: $input, condition: $condition) {
     id
     title
-    body
+    message
     audience
+    targetID
     createdBy
-    createdAt
     schoolID
+    classID
+    createdAt
     updatedAt
     __typename
   }
@@ -611,11 +1384,13 @@ export const updateAnnouncement = /* GraphQL */ `mutation UpdateAnnouncement(
   updateAnnouncement(input: $input, condition: $condition) {
     id
     title
-    body
+    message
     audience
+    targetID
     createdBy
-    createdAt
     schoolID
+    classID
+    createdAt
     updatedAt
     __typename
   }
@@ -631,11 +1406,13 @@ export const deleteAnnouncement = /* GraphQL */ `mutation DeleteAnnouncement(
   deleteAnnouncement(input: $input, condition: $condition) {
     id
     title
-    body
+    message
     audience
+    targetID
     createdBy
-    createdAt
     schoolID
+    classID
+    createdAt
     updatedAt
     __typename
   }

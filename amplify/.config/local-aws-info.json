@@ -9,5 +9,10 @@
       "region": "eu-west-2",
       "profile": "Future-Logix-Limited"
     }
+  },
+  "dev": {
+    "configLevel": "project",
+    "useProfile": false,
+    "awsConfigFilePath": "C:\\Users\\akabo\\.amplify\\awscloudformation\\ZbJNag2H7f"
   }
 }

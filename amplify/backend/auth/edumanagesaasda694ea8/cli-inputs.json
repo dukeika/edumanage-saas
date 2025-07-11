@@ -35,14 +35,18 @@
     "resourceName": "edumanagesaasda694ea8",
     "authSelections": "userPoolOnly",
     "useDefault": "manual",
-    "hostedUI": true,
+    "hostedUI": false,
     "usernameAttributes": [
       "email"
     ],
-    "hostedUIDomainName": "edumanagesaasda694ea8-da694ea8",
-    "authProvidersUserPool": [],
-    "hostedUIProviderMeta": "[]",
-    "userPoolGroupList": [],
+    "userPoolGroupList": [
+      "ApplicationAdmins",
+      "Admins",
+      "Teachers",
+      "Students",
+      "Parents",
+      "edumanagesaasAuth"
+    ],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
@@ -60,10 +64,9 @@
     },
     "breakCircularDependency": true,
     "dependsOn": [],
-    "userPoolGroups": false,
-    "adminQueries": false,
+    "userPoolGroups": true,
+    "adminQueries": true,
     "triggers": {},
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost/\"],\"LogoutURLs\":[\"https://localhost/\"]}",
     "authProviders": [],
     "parentStack": {
       "Ref": "AWS::StackId"

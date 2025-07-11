@@ -12,7 +12,37 @@ export const getSchool = /* GraphQL */ `query GetSchool($id: ID!) {
   getSchool(id: $id) {
     id
     name
-    domain
+    address
+    subdomain
+    schoolAdmin
+    admins
+    logoURL
+    heroImageURL
+    description
+    contactEmail
+    phone
+    website
+    calendarInfo
+    academicYears {
+      nextToken
+      __typename
+    }
+    classes {
+      nextToken
+      __typename
+    }
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
     __typename
@@ -36,7 +66,17 @@ export const listSchools = /* GraphQL */ `query ListSchools(
     items {
       id
       name
-      domain
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
       createdAt
       updatedAt
       __typename
@@ -52,12 +92,33 @@ export const listSchools = /* GraphQL */ `query ListSchools(
 export const getAcademicYear = /* GraphQL */ `query GetAcademicYear($id: ID!) {
   getAcademicYear(id: $id) {
     id
-    name
-    startDate
-    endDate
+    yearLabel
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    terms {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -66,27 +127,18 @@ export const getAcademicYear = /* GraphQL */ `query GetAcademicYear($id: ID!) {
   APITypes.GetAcademicYearQuery
 >;
 export const listAcademicYears = /* GraphQL */ `query ListAcademicYears(
-  $id: ID
   $filter: ModelAcademicYearFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listAcademicYears(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listAcademicYears(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      name
-      startDate
-      endDate
+      yearLabel
       schoolID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -100,40 +152,45 @@ export const listAcademicYears = /* GraphQL */ `query ListAcademicYears(
 export const getTerm = /* GraphQL */ `query GetTerm($id: ID!) {
   getTerm(id: $id) {
     id
-    name
+    termLabel
     startDate
     endDate
-    schoolID
     academicYearID
+    academicYear {
+      id
+      yearLabel
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
 ` as GeneratedQuery<APITypes.GetTermQueryVariables, APITypes.GetTermQuery>;
 export const listTerms = /* GraphQL */ `query ListTerms(
-  $id: ID
   $filter: ModelTermFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listTerms(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listTerms(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      name
+      termLabel
       startDate
       endDate
-      schoolID
       academicYearID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -146,34 +203,66 @@ export const getClass = /* GraphQL */ `query GetClass($id: ID!) {
     id
     name
     schoolID
-    termID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    teacherID
+    students {
+      nextToken
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    subjects {
+      nextToken
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
 ` as GeneratedQuery<APITypes.GetClassQueryVariables, APITypes.GetClassQuery>;
 export const listClasses = /* GraphQL */ `query ListClasses(
-  $id: ID
   $filter: ModelClassFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listClasses(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listClasses(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       name
       schoolID
-      termID
+      teacherID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -187,12 +276,48 @@ export const listClasses = /* GraphQL */ `query ListClasses(
 export const getStudent = /* GraphQL */ `query GetStudent($id: ID!) {
   getStudent(id: $id) {
     id
-    firstName
-    lastName
-    email
+    name
+    classID
     schoolID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
+    attendances {
+      nextToken
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -201,27 +326,19 @@ export const getStudent = /* GraphQL */ `query GetStudent($id: ID!) {
   APITypes.GetStudentQuery
 >;
 export const listStudents = /* GraphQL */ `query ListStudents(
-  $id: ID
   $filter: ModelStudentFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listStudents(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listStudents(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      firstName
-      lastName
-      email
+      name
+      classID
       schoolID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -235,38 +352,50 @@ export const listStudents = /* GraphQL */ `query ListStudents(
 export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
-    name
     email
-    userRole
+    name
+    role
     schoolID
+    school {
+      id
+      name
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
+      createdAt
+      updatedAt
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
 ` as GeneratedQuery<APITypes.GetUserQueryVariables, APITypes.GetUserQuery>;
 export const listUsers = /* GraphQL */ `query ListUsers(
-  $id: ID
   $filter: ModelUserFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listUsers(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      name
       email
-      userRole
+      name
+      role
       schoolID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -278,10 +407,24 @@ export const getSubject = /* GraphQL */ `query GetSubject($id: ID!) {
   getSubject(id: $id) {
     id
     name
-    schoolID
     classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    assessments {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -290,26 +433,18 @@ export const getSubject = /* GraphQL */ `query GetSubject($id: ID!) {
   APITypes.GetSubjectQuery
 >;
 export const listSubjects = /* GraphQL */ `query ListSubjects(
-  $id: ID
   $filter: ModelSubjectFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listSubjects(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listSubjects(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       name
-      schoolID
       classID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -325,13 +460,46 @@ export const getAssessment = /* GraphQL */ `query GetAssessment($id: ID!) {
     id
     title
     assessmentDate
-    schoolID
-    subjectID
-    termID
     classID
-    createdBy
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    subjectID
+    subject {
+      id
+      name
+      classID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    termID
+    term {
+      id
+      termLabel
+      startDate
+      endDate
+      academicYearID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    grades {
+      nextToken
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -340,30 +508,21 @@ export const getAssessment = /* GraphQL */ `query GetAssessment($id: ID!) {
   APITypes.GetAssessmentQuery
 >;
 export const listAssessments = /* GraphQL */ `query ListAssessments(
-  $id: ID
   $filter: ModelAssessmentFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listAssessments(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listAssessments(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       title
       assessmentDate
-      schoolID
+      classID
       subjectID
       termID
-      classID
-      createdBy
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -378,39 +537,63 @@ export const getGrade = /* GraphQL */ `query GetGrade($id: ID!) {
   getGrade(id: $id) {
     id
     studentID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     assessmentID
+    assessment {
+      id
+      title
+      assessmentDate
+      classID
+      subjectID
+      termID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     score
-    comments
-    schoolID
+    classID
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
 ` as GeneratedQuery<APITypes.GetGradeQueryVariables, APITypes.GetGradeQuery>;
 export const listGrades = /* GraphQL */ `query ListGrades(
-  $id: ID
   $filter: ModelGradeFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listGrades(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listGrades(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       studentID
       assessmentID
       score
-      comments
-      schoolID
+      classID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -428,9 +611,29 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
     classID
     date
     status
-    schoolID
+    student {
+      id
+      name
+      classID
+      schoolID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
+    class {
+      id
+      name
+      schoolID
+      teacherID
+      createdAt
+      updatedAt
+      owner
+      __typename
+    }
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -439,28 +642,20 @@ export const getAttendance = /* GraphQL */ `query GetAttendance($id: ID!) {
   APITypes.GetAttendanceQuery
 >;
 export const listAttendances = /* GraphQL */ `query ListAttendances(
-  $id: ID
   $filter: ModelAttendanceFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listAttendances(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listAttendances(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       studentID
       classID
       date
       status
-      schoolID
       createdAt
       updatedAt
+      owner
       __typename
     }
     nextToken
@@ -475,11 +670,13 @@ export const getAnnouncement = /* GraphQL */ `query GetAnnouncement($id: ID!) {
   getAnnouncement(id: $id) {
     id
     title
-    body
+    message
     audience
+    targetID
     createdBy
-    createdAt
     schoolID
+    classID
+    createdAt
     updatedAt
     __typename
   }
@@ -489,27 +686,21 @@ export const getAnnouncement = /* GraphQL */ `query GetAnnouncement($id: ID!) {
   APITypes.GetAnnouncementQuery
 >;
 export const listAnnouncements = /* GraphQL */ `query ListAnnouncements(
-  $id: ID
   $filter: ModelAnnouncementFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listAnnouncements(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listAnnouncements(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       title
-      body
+      message
       audience
+      targetID
       createdBy
-      createdAt
       schoolID
+      classID
+      createdAt
       updatedAt
       __typename
     }
@@ -521,15 +712,15 @@ export const listAnnouncements = /* GraphQL */ `query ListAnnouncements(
   APITypes.ListAnnouncementsQueryVariables,
   APITypes.ListAnnouncementsQuery
 >;
-export const academicYearsBySchoolID = /* GraphQL */ `query AcademicYearsBySchoolID(
-  $schoolID: ID!
+export const schoolsBySubdomain = /* GraphQL */ `query SchoolsBySubdomain(
+  $subdomain: String!
   $sortDirection: ModelSortDirection
-  $filter: ModelAcademicYearFilterInput
+  $filter: ModelSchoolFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  academicYearsBySchoolID(
-    schoolID: $schoolID
+  schoolsBySubdomain(
+    subdomain: $subdomain
     sortDirection: $sortDirection
     filter: $filter
     limit: $limit
@@ -538,9 +729,17 @@ export const academicYearsBySchoolID = /* GraphQL */ `query AcademicYearsBySchoo
     items {
       id
       name
-      startDate
-      endDate
-      schoolID
+      address
+      subdomain
+      schoolAdmin
+      admins
+      logoURL
+      heroImageURL
+      description
+      contactEmail
+      phone
+      website
+      calendarInfo
       createdAt
       updatedAt
       __typename
@@ -550,561 +749,6 @@ export const academicYearsBySchoolID = /* GraphQL */ `query AcademicYearsBySchoo
   }
 }
 ` as GeneratedQuery<
-  APITypes.AcademicYearsBySchoolIDQueryVariables,
-  APITypes.AcademicYearsBySchoolIDQuery
->;
-export const termsBySchoolID = /* GraphQL */ `query TermsBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelTermFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  termsBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      startDate
-      endDate
-      schoolID
-      academicYearID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.TermsBySchoolIDQueryVariables,
-  APITypes.TermsBySchoolIDQuery
->;
-export const termsByAcademicYearID = /* GraphQL */ `query TermsByAcademicYearID(
-  $academicYearID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelTermFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  termsByAcademicYearID(
-    academicYearID: $academicYearID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      startDate
-      endDate
-      schoolID
-      academicYearID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.TermsByAcademicYearIDQueryVariables,
-  APITypes.TermsByAcademicYearIDQuery
->;
-export const classesBySchoolID = /* GraphQL */ `query ClassesBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelClassFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  classesBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      schoolID
-      termID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.ClassesBySchoolIDQueryVariables,
-  APITypes.ClassesBySchoolIDQuery
->;
-export const classesByTermID = /* GraphQL */ `query ClassesByTermID(
-  $termID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelClassFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  classesByTermID(
-    termID: $termID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      schoolID
-      termID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.ClassesByTermIDQueryVariables,
-  APITypes.ClassesByTermIDQuery
->;
-export const studentsBySchoolID = /* GraphQL */ `query StudentsBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelStudentFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  studentsBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      firstName
-      lastName
-      email
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.StudentsBySchoolIDQueryVariables,
-  APITypes.StudentsBySchoolIDQuery
->;
-export const usersBySchoolID = /* GraphQL */ `query UsersBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelUserFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  usersBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      email
-      userRole
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.UsersBySchoolIDQueryVariables,
-  APITypes.UsersBySchoolIDQuery
->;
-export const subjectsBySchoolID = /* GraphQL */ `query SubjectsBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelSubjectFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  subjectsBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      schoolID
-      classID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.SubjectsBySchoolIDQueryVariables,
-  APITypes.SubjectsBySchoolIDQuery
->;
-export const subjectsByClassID = /* GraphQL */ `query SubjectsByClassID(
-  $classID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelSubjectFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  subjectsByClassID(
-    classID: $classID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      schoolID
-      classID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.SubjectsByClassIDQueryVariables,
-  APITypes.SubjectsByClassIDQuery
->;
-export const assessmentsBySchoolID = /* GraphQL */ `query AssessmentsBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelAssessmentFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  assessmentsBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      title
-      assessmentDate
-      schoolID
-      subjectID
-      termID
-      classID
-      createdBy
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.AssessmentsBySchoolIDQueryVariables,
-  APITypes.AssessmentsBySchoolIDQuery
->;
-export const assessmentsBySubjectID = /* GraphQL */ `query AssessmentsBySubjectID(
-  $subjectID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelAssessmentFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  assessmentsBySubjectID(
-    subjectID: $subjectID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      title
-      assessmentDate
-      schoolID
-      subjectID
-      termID
-      classID
-      createdBy
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.AssessmentsBySubjectIDQueryVariables,
-  APITypes.AssessmentsBySubjectIDQuery
->;
-export const gradesByStudentID = /* GraphQL */ `query GradesByStudentID(
-  $studentID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelGradeFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  gradesByStudentID(
-    studentID: $studentID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      studentID
-      assessmentID
-      score
-      comments
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.GradesByStudentIDQueryVariables,
-  APITypes.GradesByStudentIDQuery
->;
-export const gradesByAssessmentID = /* GraphQL */ `query GradesByAssessmentID(
-  $assessmentID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelGradeFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  gradesByAssessmentID(
-    assessmentID: $assessmentID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      studentID
-      assessmentID
-      score
-      comments
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.GradesByAssessmentIDQueryVariables,
-  APITypes.GradesByAssessmentIDQuery
->;
-export const gradesBySchoolID = /* GraphQL */ `query GradesBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelGradeFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  gradesBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      studentID
-      assessmentID
-      score
-      comments
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.GradesBySchoolIDQueryVariables,
-  APITypes.GradesBySchoolIDQuery
->;
-export const attendancesByStudentID = /* GraphQL */ `query AttendancesByStudentID(
-  $studentID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelAttendanceFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  attendancesByStudentID(
-    studentID: $studentID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      studentID
-      classID
-      date
-      status
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.AttendancesByStudentIDQueryVariables,
-  APITypes.AttendancesByStudentIDQuery
->;
-export const attendancesByClassID = /* GraphQL */ `query AttendancesByClassID(
-  $classID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelAttendanceFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  attendancesByClassID(
-    classID: $classID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      studentID
-      classID
-      date
-      status
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.AttendancesByClassIDQueryVariables,
-  APITypes.AttendancesByClassIDQuery
->;
-export const attendancesBySchoolID = /* GraphQL */ `query AttendancesBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelAttendanceFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  attendancesBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      studentID
-      classID
-      date
-      status
-      schoolID
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.AttendancesBySchoolIDQueryVariables,
-  APITypes.AttendancesBySchoolIDQuery
->;
-export const announcementsBySchoolID = /* GraphQL */ `query AnnouncementsBySchoolID(
-  $schoolID: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelAnnouncementFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  announcementsBySchoolID(
-    schoolID: $schoolID
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      title
-      body
-      audience
-      createdBy
-      createdAt
-      schoolID
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.AnnouncementsBySchoolIDQueryVariables,
-  APITypes.AnnouncementsBySchoolIDQuery
+  APITypes.SchoolsBySubdomainQueryVariables,
+  APITypes.SchoolsBySubdomainQuery
 >;

@@ -9,12 +9,12 @@
       "UnauthRoleName": "amplify-edumanagesaas-dev-ca37e-unauthRole",
       "StackName": "amplify-edumanagesaas-dev-ca37e",
       "StackId": "arn:aws:cloudformation:eu-west-2:624914081304:stack/amplify-edumanagesaas-dev-ca37e/ce067c50-4f68-11f0-824c-0af9f42065fb",
-      "AmplifyAppId": "d2brvqp7qvf3ov",
-      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+      "AmplifyAppId": "d2brvqp7qvf3ov"
     },
     "categories": {
       "auth": {
-        "edumanagesaasda694ea8": {}
+        "edumanagesaasda694ea8": {},
+        "userPoolGroups": {}
       },
       "api": {
         "edumanagesaas": {},

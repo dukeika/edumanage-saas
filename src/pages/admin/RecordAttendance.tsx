@@ -1,132 +1,106 @@
-import React, { useEffect, useState } from "react";
-import RequireRole from "../../components/RequireRole";
-import { useCurrentUser } from "../../utils/useCurrentUser";
-import { generateClient } from "aws-amplify/api";
-import { listStudents, listClasses } from "../../graphql/queries";
+// src/pages/admin/RecordAttendance.tsx
+import React, { useState } from "react";
+import { Box, Button, Grid, TextField, MenuItem, Alert } from "@mui/material";
+import { generateClient } from "@aws-amplify/api";
 import { createAttendance } from "../../graphql/mutations";
 
 const client = generateClient();
 
-type StudentType = { id: string; firstName: string; lastName: string };
-type ClassType = { id: string; name: string };
-
-const RecordAttendance: React.FC = () => {
-  const { user } = useCurrentUser();
-  const [students, setStudents] = useState<StudentType[]>([]);
-  const [classes, setClasses] = useState<ClassType[]>([]);
-  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
-  const [selectedClassId, setSelectedClassId] = useState<string>("");
-  const [date, setDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
-  );
-  const [status, setStatus] = useState<"PRESENT" | "ABSENT">("PRESENT");
-  const [message, setMessage] = useState<string>("");
-
-  useEffect(() => {
-    if (!user?.schoolID) return;
-
-    // Fetch classes for this school
-    client
-      .graphql({
-        query: listClasses,
-        variables: { filter: { schoolID: { eq: user.schoolID } } },
-      })
-      .then((res: any) => setClasses(res.data.listClasses.items))
-      .catch(console.error);
-
-    // Fetch students for this school
-    client
-      .graphql({
-        query: listStudents,
-        variables: { filter: { schoolID: { eq: user.schoolID } } },
-      })
-      .then((res: any) => setStudents(res.data.listStudents.items))
-      .catch(console.error);
-  }, [user]);
+const RecordAttendance: React.FC<{
+  classID: string;
+  students: { id: string; name: string }[];
+}> = ({ classID, students }) => {
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [date, setDate] = useState("");
+  const [status, setStatus] = useState("PRESENT");
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.schoolID || !selectedStudentId || !selectedClassId) return;
-
+    setSuccess(null);
+    setError(null);
     try {
-      await client.graphql({
+      const { data } = (await client.graphql({
         query: createAttendance,
         variables: {
           input: {
             studentID: selectedStudentId,
-            classID: selectedClassId,
+            classID,
             date,
             status,
-            schoolID: user.schoolID,
           },
         },
-      });
-      setMessage("✅ Attendance recorded");
-      // Optionally clear selection or keep for next entry
+      })) as any;
+      setSuccess("Attendance recorded!");
       setSelectedStudentId("");
+      setDate("");
       setStatus("PRESENT");
-    } catch (err) {
-      console.error(err);
-      setMessage("❌ Failed to record attendance");
+    } catch (err: any) {
+      setError("Failed to record attendance.");
     }
   };
 
   return (
-    <RequireRole roles={["ADMIN"]}>
-      {message && <div>{message}</div>}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Class:
-          <select
-            value={selectedClassId}
-            onChange={(e) => setSelectedClassId(e.target.value)}
-            required
-          >
-            <option value="">-- Select class --</option>
-            {classes.map((cls) => (
-              <option key={cls.id} value={cls.id}>
-                {cls.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Student:
-          <select
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <TextField
+            select
+            label="Student"
             value={selectedStudentId}
             onChange={(e) => setSelectedStudentId(e.target.value)}
             required
+            fullWidth
           >
-            <option value="">-- Select student --</option>
             {students.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.firstName} {s.lastName}
-              </option>
+              <MenuItem key={s.id} value={s.id}>
+                {s.name}
+              </MenuItem>
             ))}
-          </select>
-        </label>
-        <label>
-          Date:
-          <input
+          </TextField>
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <TextField
             type="date"
+            label="Date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
+            InputLabelProps={{ shrink: true }}
+            fullWidth
           />
-        </label>
-        <label>
-          Status:
-          <select
+        </Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
+          <TextField
+            select
+            label="Status"
             value={status}
-            onChange={(e) => setStatus(e.target.value as any)}
+            onChange={(e) => setStatus(e.target.value)}
+            required
+            fullWidth
           >
-            <option value="PRESENT">Present</option>
-            <option value="ABSENT">Absent</option>
-          </select>
-        </label>
-        <button type="submit">Record Attendance</button>
-      </form>
-    </RequireRole>
+            <MenuItem value="PRESENT">Present</MenuItem>
+            <MenuItem value="ABSENT">Absent</MenuItem>
+          </TextField>
+        </Grid>
+      </Grid>
+      <Box mt={2}>
+        <Button type="submit" variant="contained">
+          Record Attendance
+        </Button>
+      </Box>
+      {success && (
+        <Alert severity="success" sx={{ mt: 2 }}>
+          {success}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
+    </Box>
   );
 };
 

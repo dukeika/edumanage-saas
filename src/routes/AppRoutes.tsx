@@ -36,12 +36,18 @@ import AppAdminUsersPage from "../pages/appadmin/AppAdminUsersPage";
 import CreateSchoolPage from "../pages/appadmin/CreateSchoolPage";
 import AssignAdminPage from "../pages/appadmin/AssignAdminPage";
 
+// School Landing Page (NEW)
+import SchoolLandingPage from "../pages/school/SchoolLandingPage";
+
 import RoleBasedRedirect from "../components/RoleBasedRedirect";
 import Unauthorized from "../components/Unauthorized";
 import RequireAuth from "../components/RequireAuth";
 
 const AppRoutes: React.FC = () => (
   <Routes>
+    {/* School Public Landing Page */}
+    <Route path="/school/:schoolDomain" element={<SchoolLandingPage />} />
+
     {/* Application Admin (Super Admin) Routes */}
     <Route
       path="/app-admin/*"

@@ -1,4 +1,4 @@
-import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-amplify/datastore";
+import { ModelInit, MutableModel, __modelMeta__, OptionallyManagedIdentifier, ManagedIdentifier } from "@aws-amplify/datastore";
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncCollection, AsyncItem } from "@aws-amplify/datastore";
 
@@ -8,38 +8,54 @@ import { LazyLoading, LazyLoadingDisabled, AsyncCollection, AsyncItem } from "@a
 
 type EagerSchool = {
   readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<School, 'id'>;
+    identifier: OptionallyManagedIdentifier<School, 'id'>;
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly name: string;
   readonly address?: string | null;
+  readonly subdomain: string;
+  readonly schoolAdmin: string;
+  readonly admins: string[];
+  readonly logoURL?: string | null;
+  readonly heroImageURL?: string | null;
+  readonly description?: string | null;
+  readonly contactEmail?: string | null;
+  readonly phone?: string | null;
+  readonly website?: string | null;
+  readonly calendarInfo?: string | null;
   readonly academicYears?: (AcademicYear | null)[] | null;
   readonly classes?: (Class | null)[] | null;
   readonly students?: (Student | null)[] | null;
   readonly users?: (User | null)[] | null;
   readonly announcements?: (Announcement | null)[] | null;
-  readonly owner?: string | null;
-  readonly admins?: (string | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
 type LazySchool = {
   readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<School, 'id'>;
+    identifier: OptionallyManagedIdentifier<School, 'id'>;
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly name: string;
   readonly address?: string | null;
+  readonly subdomain: string;
+  readonly schoolAdmin: string;
+  readonly admins: string[];
+  readonly logoURL?: string | null;
+  readonly heroImageURL?: string | null;
+  readonly description?: string | null;
+  readonly contactEmail?: string | null;
+  readonly phone?: string | null;
+  readonly website?: string | null;
+  readonly calendarInfo?: string | null;
   readonly academicYears: AsyncCollection<AcademicYear>;
   readonly classes: AsyncCollection<Class>;
   readonly students: AsyncCollection<Student>;
   readonly users: AsyncCollection<User>;
   readonly announcements: AsyncCollection<Announcement>;
-  readonly owner?: string | null;
-  readonly admins?: (string | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -401,7 +417,7 @@ export declare const Attendance: (new (init: ModelInit<Attendance>) => Attendanc
 type EagerAnnouncement = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Announcement, 'id'>;
-    readOnlyFields: 'updatedAt';
+    readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly title: string;
@@ -410,16 +426,15 @@ type EagerAnnouncement = {
   readonly targetID?: string | null;
   readonly createdBy: string;
   readonly schoolID: string;
-  readonly school?: School | null;
   readonly classID?: string | null;
-  readonly createdAt: string;
+  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
 type LazyAnnouncement = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Announcement, 'id'>;
-    readOnlyFields: 'updatedAt';
+    readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly title: string;
@@ -428,9 +443,8 @@ type LazyAnnouncement = {
   readonly targetID?: string | null;
   readonly createdBy: string;
   readonly schoolID: string;
-  readonly school: AsyncItem<School | undefined>;
   readonly classID?: string | null;
-  readonly createdAt: string;
+  readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 

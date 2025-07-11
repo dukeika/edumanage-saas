@@ -1,65 +1,70 @@
+// src/pages/admin/AcademicYearForm.tsx
 import React, { useState } from "react";
-import { generateClient } from "aws-amplify/api";
+import { Box, Button, Grid, TextField, Alert } from "@mui/material";
+import { generateClient } from "@aws-amplify/api";
 import { createAcademicYear } from "../../graphql/mutations";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 
-const AcademicYearForm: React.FC = () => {
+const client = generateClient();
+
+const AcademicYearForm: React.FC<{ schoolID: string }> = ({ schoolID }) => {
+  const [yearLabel, setYearLabel] = useState("");
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useCurrentUser();
-  const [name, setName] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.schoolID) return;
-    const client = generateClient();
+    setError(null);
+    setSuccess(null);
     try {
-      await client.graphql({
+      const { data } = (await client.graphql({
         query: createAcademicYear,
         variables: {
           input: {
-            name,
-            startDate,
-            endDate,
-            schoolID: user.schoolID,
+            yearLabel,
+            schoolID,
           },
         },
-      });
-      setMessage("Academic Year created!");
-      setName("");
-      setStartDate("");
-      setEndDate("");
-    } catch (err) {
-      setMessage("Error creating academic year.");
+      })) as any;
+      setSuccess(
+        `Academic Year "${data.createAcademicYear.yearLabel}" created!`
+      );
+      setYearLabel("");
+    } catch (err: any) {
+      setError("Failed to create Academic Year");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
-      <input
-        type="date"
-        placeholder="Start Date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        required
-      />
-      <input
-        type="date"
-        placeholder="End Date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        required
-      />
-      <button type="submit">Create Academic Year</button>
-      {message && <div>{message}</div>}
-    </form>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <TextField
+            label="Academic Year Label"
+            value={yearLabel}
+            onChange={(e) => setYearLabel(e.target.value)}
+            required
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+      <Box mt={2}>
+        <Button type="submit" variant="contained">
+          Add Academic Year
+        </Button>
+      </Box>
+      {success && (
+        <Alert severity="success" sx={{ mt: 2 }}>
+          {success}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
+    </Box>
   );
 };
 

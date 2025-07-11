@@ -18,7 +18,7 @@ const awsmobile = {
         ],
         "redirectSignIn": "http://localhost/",
         "redirectSignOut": "https://localhost/",
-        "responseType": "code"
+        "responseType": "token"
     },
     "federationTarget": "COGNITO_USER_POOLS",
     "aws_cognito_username_attributes": [

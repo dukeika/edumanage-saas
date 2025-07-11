@@ -51,6 +51,21 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID"
+          ],
+          "category": "auth",
+          "resourceName": "edumanagesaasda694ea8"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
     }
   },
   "function": {
@@ -74,6 +89,46 @@
         {
           "category": "function",
           "resourceName": "adminCreateUser"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttribute_authEdumanagesaasda694Ea8Userpoolid": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttribute_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttribute_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttribute"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttributes_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttributes"
+        }
+      ]
+    },
+    "AMPLIFY_function_adminUpdateUserAttributes_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "adminUpdateUserAttributes"
         }
       ]
     }

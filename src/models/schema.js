@@ -24,6 +24,77 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "subdomain": {
+                    "name": "subdomain",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "schoolAdmin": {
+                    "name": "schoolAdmin",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "admins": {
+                    "name": "admins",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": false
+                },
+                "logoURL": {
+                    "name": "logoURL",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "heroImageURL": {
+                    "name": "heroImageURL",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "description": {
+                    "name": "description",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "contactEmail": {
+                    "name": "contactEmail",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "phone": {
+                    "name": "phone",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "website": {
+                    "name": "website",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "calendarInfo": {
+                    "name": "calendarInfo",
+                    "isArray": false,
+                    "type": "AWSJSON",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "academicYears": {
                     "name": "academicYears",
                     "isArray": true,
@@ -100,24 +171,9 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
-                            "school"
+                            "id"
                         ]
                     }
-                },
-                "owner": {
-                    "name": "owner",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "admins": {
-                    "name": "admins",
-                    "isArray": true,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -144,18 +200,48 @@ export const schema = {
                     "properties": {}
                 },
                 {
+                    "type": "key",
+                    "properties": {
+                        "fields": [
+                            "id"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "bySubdomain",
+                        "queryField": "schoolsBySubdomain",
+                        "fields": [
+                            "subdomain"
+                        ]
+                    }
+                },
+                {
                     "type": "auth",
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
                                 "provider": "userPools",
-                                "ownerField": "owner",
-                                "allow": "owner",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
                                 "operations": [
                                     "create",
                                     "read",
                                     "update",
                                     "delete"
+                                ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "schoolAdmin",
+                                "allow": "owner",
+                                "operations": [
+                                    "read",
+                                    "update"
                                 ],
                                 "identityClaim": "cognito:username"
                             },
@@ -265,27 +351,45 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
                                 "provider": "userPools",
                                 "ownerField": "owner",
                                 "allow": "owner",
-                                "identityClaim": "cognito:username",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
-                                ]
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
                                 "allow": "groups",
                                 "groupsField": "admins",
-                                "groupField": "groups",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
                                     "read"
                                 ]
                             }
@@ -392,27 +496,45 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
                                 "provider": "userPools",
                                 "ownerField": "owner",
                                 "allow": "owner",
-                                "identityClaim": "cognito:username",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
-                                ]
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
                                 "allow": "groups",
                                 "groupsField": "admins",
-                                "groupField": "groups",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
                                     "read"
                                 ]
                             }
@@ -576,27 +698,45 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
                                 "provider": "userPools",
                                 "ownerField": "owner",
                                 "allow": "owner",
-                                "identityClaim": "cognito:username",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
-                                ]
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
                                 "allow": "groups",
                                 "groupsField": "admins",
-                                "groupField": "groups",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
                                     "read"
                                 ]
                             }
@@ -727,27 +867,45 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
                                 "provider": "userPools",
                                 "ownerField": "owner",
                                 "allow": "owner",
-                                "identityClaim": "cognito:username",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
-                                ]
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
                                 "allow": "groups",
                                 "groupsField": "admins",
-                                "groupField": "groups",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
                                     "read"
                                 ]
                             }
@@ -838,23 +996,32 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
                                 "provider": "userPools",
                                 "ownerField": "owner",
                                 "allow": "owner",
-                                "identityClaim": "cognito:username",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
+                                    "read",
+                                    "update"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "allow": "private",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
                                     "read"
                                 ]
                             }
@@ -947,27 +1114,45 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
                                 "provider": "userPools",
                                 "ownerField": "owner",
                                 "allow": "owner",
-                                "identityClaim": "cognito:username",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
-                                ]
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
                                 "allow": "groups",
                                 "groupsField": "admins",
-                                "groupField": "groups",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
                                     "read"
                                 ]
                             }
@@ -1105,6 +1290,56 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "owner",
+                                "allow": "owner",
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
+                            },
+                            {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groupsField": "admins",
+                                "operations": [
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
                 }
             ]
         },
@@ -1214,6 +1449,56 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "owner",
+                                "allow": "owner",
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
+                            },
+                            {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groupsField": "admins",
+                                "operations": [
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
                 }
             ]
         },
@@ -1314,27 +1599,45 @@ export const schema = {
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
+                                "provider": "userPools",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ]
+                            },
+                            {
                                 "provider": "userPools",
                                 "ownerField": "owner",
                                 "allow": "owner",
-                                "identityClaim": "cognito:username",
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
-                                ]
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
                                 "allow": "groups",
                                 "groupsField": "admins",
-                                "groupField": "groups",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
                                     "read"
                                 ]
                             }
@@ -1384,7 +1687,7 @@ export const schema = {
                 "createdBy": {
                     "name": "createdBy",
                     "isArray": false,
-                    "type": "ID",
+                    "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -1394,21 +1697,6 @@ export const schema = {
                     "type": "ID",
                     "isRequired": true,
                     "attributes": []
-                },
-                "school": {
-                    "name": "school",
-                    "isArray": false,
-                    "type": {
-                        "model": "School"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetNames": [
-                            "schoolID"
-                        ]
-                    }
                 },
                 "classID": {
                     "name": "classID",
@@ -1421,8 +1709,9 @@ export const schema = {
                     "name": "createdAt",
                     "isArray": false,
                     "type": "AWSDateTime",
-                    "isRequired": true,
-                    "attributes": []
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
                 },
                 "updatedAt": {
                     "name": "updatedAt",
@@ -1441,31 +1730,58 @@ export const schema = {
                     "properties": {}
                 },
                 {
+                    "type": "key",
+                    "properties": {
+                        "name": "gsi-School.announcements",
+                        "fields": [
+                            "id"
+                        ]
+                    }
+                },
+                {
                     "type": "auth",
                     "properties": {
                         "rules": [
                             {
+                                "groupClaim": "cognito:groups",
                                 "provider": "userPools",
-                                "ownerField": "owner",
-                                "allow": "owner",
-                                "identityClaim": "cognito:username",
+                                "allow": "groups",
+                                "groups": [
+                                    "ApplicationAdmins"
+                                ],
                                 "operations": [
                                     "create",
+                                    "read",
                                     "update",
-                                    "delete",
-                                    "read"
+                                    "delete"
                                 ]
+                            },
+                            {
+                                "provider": "userPools",
+                                "ownerField": "createdBy",
+                                "allow": "owner",
+                                "operations": [
+                                    "create",
+                                    "read",
+                                    "update",
+                                    "delete"
+                                ],
+                                "identityClaim": "cognito:username"
                             },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
                                 "allow": "groups",
                                 "groupsField": "admins",
-                                "groupField": "groups",
                                 "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
+                                    "read",
+                                    "update"
+                                ],
+                                "groupField": "groups"
+                            },
+                            {
+                                "allow": "private",
+                                "operations": [
                                     "read"
                                 ]
                             }
@@ -1478,5 +1794,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "69d18b0debf3427c139a992d333281d8"
+    "version": "fcc02b3a4833b1156093afcb675292cb"
 };

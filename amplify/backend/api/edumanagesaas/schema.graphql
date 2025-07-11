@@ -1,42 +1,34 @@
 ### amplify/backend/api/YourApiName/schema.graphql ###
 
-# -------------------------------------------------------------------
-# 1) A top-level “super-admins” group, who can CRUD *all* School records
-#    (this is your “application admin”)
-# -------------------------------------------------------------------
 type School
   @model
   @auth(
     rules: [
-      # ApplicationAdmins can do everything
       {
         allow: groups
         groups: ["ApplicationAdmins"]
         operations: [create, read, update, delete]
       }
-      # The “owner” of this record (i.e. the school-admin you assign) can read/update
       { allow: owner, ownerField: "schoolAdmin", operations: [read, update] }
-      # Any member of the per-school “admins” list (string list on the record)
-      # can also read/update
       { allow: groups, groupsField: "admins", operations: [read, update] }
-      # All signed-in users can read
       { allow: private, operations: [read] }
     ]
   ) {
-  id: ID!
+  id: ID! @primaryKey
   name: String!
   address: String
-
-  # new: subdomain for each school’s public landing page
   subdomain: String!
-
-  # new: Cognito username (or sub) of the “school-admin” user
+    @index(name: "bySubdomain", queryField: "schoolsBySubdomain")
   schoolAdmin: String!
-
-  # your existing “extra” per-school admin list
   admins: [String!]!
+  logoURL: String
+  heroImageURL: String
+  description: String
+  contactEmail: String
+  phone: String
+  website: String
+  calendarInfo: AWSJSON
 
-  # relationships
   academicYears: [AcademicYear] @hasMany(fields: ["id"])
   classes: [Class] @hasMany(fields: ["id"])
   students: [Student] @hasMany(fields: ["id"])
