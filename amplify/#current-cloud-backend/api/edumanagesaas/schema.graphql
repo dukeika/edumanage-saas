@@ -4,6 +4,7 @@ type School
   @model
   @auth(
     rules: [
+      { allow: public, provider: apiKey, operations: [read] } # <-- ADD THIS LINE
       {
         allow: groups
         groups: ["ApplicationAdmins"]

@@ -6,6 +6,15 @@
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
       "cognitoUserPoolId": "authedumanagesaasda694ea8"
-    }
+    },
+    "conflictResolution": {},
+    "additionalAuthTypes": [
+      {
+        "mode": "API_KEY",
+        "expirationTime": 7,
+        "apiKeyExpirationDate": "2025-07-19T04:42:06.768Z",
+        "keyDescription": "EduManageAPIKey"
+      }
+    ]
   }
 }

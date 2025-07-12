@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { generateClient } from "aws-amplify/api";
-import { schoolsBySubdomain } from "../../graphql/queries"; // Adjust to match your codegen output!
+import { schoolsBySubdomain } from "../../graphql/queries";
 import { Box, Typography, CircularProgress, Paper } from "@mui/material";
 
 const client = generateClient();
 
 export default function SchoolLandingPage() {
   const { schoolDomain } = useParams<{ schoolDomain: string }>();
-
-  const { subdomain } = useParams<{ subdomain: string }>();
   const [school, setSchool] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +17,7 @@ export default function SchoolLandingPage() {
       setLoading(true);
       setError(null);
 
-      if (!subdomain) {
+      if (!schoolDomain) {
         setError("No subdomain in URL.");
         setLoading(false);
         return;
@@ -28,11 +26,10 @@ export default function SchoolLandingPage() {
       try {
         const response: any = await client.graphql({
           query: schoolsBySubdomain,
-          variables: { subdomain },
-          authMode: "iam", // Correct for Amplify v6+ public IAM access
+          variables: { subdomain: schoolDomain }, // use schoolDomain for your subdomain query param
+          authMode: "apiKey", // Use apiKey for public landing
         });
 
-        // Adjust this line to your schema's query name/output
         const items =
           response.data?.schoolsBySubdomain?.items ||
           response.data?.schoolBySubdomain?.items;
@@ -49,7 +46,7 @@ export default function SchoolLandingPage() {
     };
 
     fetchSchool();
-  }, [subdomain]);
+  }, [schoolDomain]); // watch schoolDomain, not subdomain
 
   if (loading)
     return (
@@ -68,7 +65,7 @@ export default function SchoolLandingPage() {
   return (
     <Paper sx={{ maxWidth: 900, margin: "40px auto", p: 4 }}>
       <Box sx={{ textAlign: "center" }}>
-        {school.logoURL && (
+        {school?.logoURL && (
           <img
             src={school.logoURL}
             alt={`${school.name} logo`}
@@ -76,12 +73,12 @@ export default function SchoolLandingPage() {
           />
         )}
         <Typography variant="h3" gutterBottom>
-          {school.name}
+          {school?.name}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          {school.address}
+          {school?.address}
         </Typography>
-        {school.heroImageURL && (
+        {school?.heroImageURL && (
           <img
             src={school.heroImageURL}
             alt="hero"
@@ -89,10 +86,10 @@ export default function SchoolLandingPage() {
           />
         )}
         <Typography variant="body1" sx={{ mt: 3 }}>
-          {school.description}
+          {school?.description}
         </Typography>
         {/* Render calendar info if present */}
-        {school.calendarInfo && (
+        {school?.calendarInfo && (
           <Box sx={{ mt: 2 }}>
             <Typography variant="h6">Calendar:</Typography>
             <pre>
@@ -112,9 +109,9 @@ export default function SchoolLandingPage() {
         )}
         {/* Contact info */}
         <Box sx={{ mt: 2 }}>
-          <Typography>Email: {school.contactEmail}</Typography>
-          <Typography>Phone: {school.phone}</Typography>
-          <Typography>Website: {school.website}</Typography>
+          <Typography>Email: {school?.contactEmail}</Typography>
+          <Typography>Phone: {school?.phone}</Typography>
+          <Typography>Website: {school?.website}</Typography>
         </Box>
       </Box>
     </Paper>

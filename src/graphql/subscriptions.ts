@@ -8,147 +8,6 @@ type GeneratedSubscription<InputType, OutputType> = string & {
   __generatedSubscriptionOutput: OutputType;
 };
 
-export const onCreateSchool = /* GraphQL */ `subscription OnCreateSchool(
-  $filter: ModelSubscriptionSchoolFilterInput
-  $schoolAdmin: String
-) {
-  onCreateSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
-    id
-    name
-    address
-    subdomain
-    schoolAdmin
-    admins
-    logoURL
-    heroImageURL
-    description
-    contactEmail
-    phone
-    website
-    calendarInfo
-    academicYears {
-      nextToken
-      __typename
-    }
-    classes {
-      nextToken
-      __typename
-    }
-    students {
-      nextToken
-      __typename
-    }
-    users {
-      nextToken
-      __typename
-    }
-    announcements {
-      nextToken
-      __typename
-    }
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnCreateSchoolSubscriptionVariables,
-  APITypes.OnCreateSchoolSubscription
->;
-export const onUpdateSchool = /* GraphQL */ `subscription OnUpdateSchool(
-  $filter: ModelSubscriptionSchoolFilterInput
-  $schoolAdmin: String
-) {
-  onUpdateSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
-    id
-    name
-    address
-    subdomain
-    schoolAdmin
-    admins
-    logoURL
-    heroImageURL
-    description
-    contactEmail
-    phone
-    website
-    calendarInfo
-    academicYears {
-      nextToken
-      __typename
-    }
-    classes {
-      nextToken
-      __typename
-    }
-    students {
-      nextToken
-      __typename
-    }
-    users {
-      nextToken
-      __typename
-    }
-    announcements {
-      nextToken
-      __typename
-    }
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnUpdateSchoolSubscriptionVariables,
-  APITypes.OnUpdateSchoolSubscription
->;
-export const onDeleteSchool = /* GraphQL */ `subscription OnDeleteSchool(
-  $filter: ModelSubscriptionSchoolFilterInput
-  $schoolAdmin: String
-) {
-  onDeleteSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
-    id
-    name
-    address
-    subdomain
-    schoolAdmin
-    admins
-    logoURL
-    heroImageURL
-    description
-    contactEmail
-    phone
-    website
-    calendarInfo
-    academicYears {
-      nextToken
-      __typename
-    }
-    classes {
-      nextToken
-      __typename
-    }
-    students {
-      nextToken
-      __typename
-    }
-    users {
-      nextToken
-      __typename
-    }
-    announcements {
-      nextToken
-      __typename
-    }
-    createdAt
-    updatedAt
-    __typename
-  }
-}
-` as GeneratedSubscription<
-  APITypes.OnDeleteSchoolSubscriptionVariables,
-  APITypes.OnDeleteSchoolSubscription
->;
 export const onCreateAcademicYear = /* GraphQL */ `subscription OnCreateAcademicYear(
   $filter: ModelSubscriptionAcademicYearFilterInput
   $owner: String
@@ -1420,4 +1279,145 @@ export const onDeleteAnnouncement = /* GraphQL */ `subscription OnDeleteAnnounce
 ` as GeneratedSubscription<
   APITypes.OnDeleteAnnouncementSubscriptionVariables,
   APITypes.OnDeleteAnnouncementSubscription
+>;
+export const onCreateSchool = /* GraphQL */ `subscription OnCreateSchool(
+  $filter: ModelSubscriptionSchoolFilterInput
+  $schoolAdmin: String
+) {
+  onCreateSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
+    id
+    name
+    address
+    subdomain
+    schoolAdmin
+    admins
+    logoURL
+    heroImageURL
+    description
+    contactEmail
+    phone
+    website
+    calendarInfo
+    academicYears {
+      nextToken
+      __typename
+    }
+    classes {
+      nextToken
+      __typename
+    }
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnCreateSchoolSubscriptionVariables,
+  APITypes.OnCreateSchoolSubscription
+>;
+export const onUpdateSchool = /* GraphQL */ `subscription OnUpdateSchool(
+  $filter: ModelSubscriptionSchoolFilterInput
+  $schoolAdmin: String
+) {
+  onUpdateSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
+    id
+    name
+    address
+    subdomain
+    schoolAdmin
+    admins
+    logoURL
+    heroImageURL
+    description
+    contactEmail
+    phone
+    website
+    calendarInfo
+    academicYears {
+      nextToken
+      __typename
+    }
+    classes {
+      nextToken
+      __typename
+    }
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnUpdateSchoolSubscriptionVariables,
+  APITypes.OnUpdateSchoolSubscription
+>;
+export const onDeleteSchool = /* GraphQL */ `subscription OnDeleteSchool(
+  $filter: ModelSubscriptionSchoolFilterInput
+  $schoolAdmin: String
+) {
+  onDeleteSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
+    id
+    name
+    address
+    subdomain
+    schoolAdmin
+    admins
+    logoURL
+    heroImageURL
+    description
+    contactEmail
+    phone
+    website
+    calendarInfo
+    academicYears {
+      nextToken
+      __typename
+    }
+    classes {
+      nextToken
+      __typename
+    }
+    students {
+      nextToken
+      __typename
+    }
+    users {
+      nextToken
+      __typename
+    }
+    announcements {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedSubscription<
+  APITypes.OnDeleteSchoolSubscriptionVariables,
+  APITypes.OnDeleteSchoolSubscription
 >;

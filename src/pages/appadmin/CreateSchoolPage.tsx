@@ -11,6 +11,10 @@ import {
   Alert,
   Paper,
 } from "@mui/material";
+import { Amplify } from "aws-amplify";
+// Make sure aws-exports.js or aws-exports.ts exists in the src directory or update the path accordingly
+import awsExports from "../../aws-exports";
+Amplify.configure(awsExports);
 
 const client = generateClient();
 

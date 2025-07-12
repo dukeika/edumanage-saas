@@ -42,7 +42,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/auth/edumanagesaasda694ea8-cloudformation-template.json",
         "logicalId": "authedumanagesaasda694ea8"
       },
-      "lastPushTimeStamp": "2025-07-11T17:18:47.728Z",
+      "lastPushTimeStamp": "2025-07-12T11:03:29.624Z",
       "output": {
         "UserPoolId": "eu-west-2_OuXc4ZpsU",
         "AppClientIDWeb": "2ojmkpj241a2jmsd02scen1eck",
@@ -63,11 +63,11 @@
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
-          "category": "auth",
-          "resourceName": "edumanagesaasda694ea8",
           "attributes": [
             "UserPoolId"
-          ]
+          ],
+          "category": "auth",
+          "resourceName": "edumanagesaasda694ea8"
         }
       ],
       "output": {
@@ -78,17 +78,27 @@
               "userPoolId": "authedumanagesaasda694ea8"
             }
           },
-          "additionalAuthenticationProviders": []
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 7,
+                "apiKeyExpirationDate": "2025-07-19T04:42:06.768Z",
+                "description": "EduManageAPIKey"
+              }
+            }
+          ]
         },
         "GraphQLAPIIdOutput": "qv5r6e7crvbvdcwi2pck2uak24",
-        "GraphQLAPIEndpointOutput": "https://gj3enzgrgvhufk5imqqbf442ny.appsync-api.eu-west-2.amazonaws.com/graphql"
+        "GraphQLAPIEndpointOutput": "https://gj3enzgrgvhufk5imqqbf442ny.appsync-api.eu-west-2.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-rrmo22oclfhfhmyoqgzanq4e2u"
       },
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiedumanagesaas"
       },
-      "lastPushTimeStamp": "2025-07-11T17:18:46.222Z",
-      "lastPushDirHash": "sYwrxrb3aI7pICSQ2K7TcQbJcmw="
+      "lastPushTimeStamp": "2025-07-12T11:03:34.532Z",
+      "lastPushDirHash": "r0YiFRdw5GY3fBeKn38vzu5CGhM="
     }
   },
   "function": {
@@ -108,7 +118,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/function/adminCreateUser-cloudformation-template.json",
         "logicalId": "functionadminCreateUser"
       },
-      "lastPushTimeStamp": "2025-07-11T17:18:46.225Z",
+      "lastPushTimeStamp": "2025-07-12T11:03:29.628Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::624914081304:role/edumanagesaasLambdaRole754f667f-dev",
         "Region": "eu-west-2",
