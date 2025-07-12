@@ -30,9 +30,9 @@ const AuthContent: React.FC<AuthContentProps> = ({ children, signOut }) => {
         bgcolor="background.paper"
         boxShadow={3}
       >
-        <Button variant="contained" color="secondary" onClick={signOut}>
+        {/* <Button variant="contained" color="secondary" onClick={signOut}>
           Sign Out
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

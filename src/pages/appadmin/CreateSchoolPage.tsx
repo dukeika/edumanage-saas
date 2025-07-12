@@ -63,23 +63,35 @@ export default function CreateSchoolPage() {
     };
 
     setLoading(true);
+
     try {
+      console.log("Calling generateClient.graphql with input:", input);
       const response: any = await client.graphql({
         query: createSchool,
         variables: { input },
-        authMode: "userPool", // this fixes your auth error
+        authMode: "userPool", // Amplify v6: this is correct for Cognito User Pools
       });
 
-      if (response.errors) {
-        throw new Error(response.errors[0].message);
+      const data =
+        response.data?.createSchool ||
+        (response?.data && response.data.createSchool) ||
+        (response as any)?.createSchool;
+
+      if (!data) {
+        throw new Error(
+          response.errors?.[0]?.message || "Unknown error from API"
+        );
       }
 
       setSuccess(`School "${fields.name}" created successfully!`);
       setFields(initialFields);
     } catch (err: any) {
       setError(
-        err.message || "Failed to create school. Check your inputs and network."
+        err.message ||
+          err.errors?.[0]?.message ||
+          "Failed to create school. Check your inputs and network."
       );
+      console.error("generateClient.graphql error:", err);
     } finally {
       setLoading(false);
     }

@@ -39,14 +39,7 @@
     "usernameAttributes": [
       "email"
     ],
-    "userPoolGroupList": [
-      "ApplicationAdmins",
-      "Admins",
-      "Teachers",
-      "Students",
-      "Parents",
-      "edumanagesaasAuth"
-    ],
+    "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
@@ -64,13 +57,13 @@
     },
     "breakCircularDependency": true,
     "dependsOn": [],
-    "userPoolGroups": true,
+    "userPoolGroups": false,
     "adminQueries": true,
     "triggers": {},
-    "authProviders": [],
     "parentStack": {
       "Ref": "AWS::StackId"
     },
-    "permissions": []
+    "permissions": [],
+    "authProviders": []
   }
 }

@@ -1,258 +1,122 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { generateClient } from "@aws-amplify/api";
-import { schoolsBySubdomain } from "../../graphql/queries";
-import { Box, Typography, Grid, Button, Paper, Divider } from "@mui/material";
+import { generateClient } from "aws-amplify/api";
+import { schoolsBySubdomain } from "../../graphql/queries"; // Adjust to match your codegen output!
+import { Box, Typography, CircularProgress, Paper } from "@mui/material";
 
-// Amplify v6 API client
 const client = generateClient();
 
-interface School {
-  id: string;
-  name: string;
-  address?: string | null;
-  subdomain: string;
-  logoURL?: string | null;
-  heroImageURL?: string | null;
-  description?: string | null;
-  contactEmail?: string | null;
-  phone?: string | null;
-  website?: string | null;
-  calendarInfo?: string | null; // AWSJSON
-}
-
-const SchoolLandingPage: React.FC = () => {
+export default function SchoolLandingPage() {
   const { schoolDomain } = useParams<{ schoolDomain: string }>();
-  const [school, setSchool] = useState<School | null>(null);
+
+  const { subdomain } = useParams<{ subdomain: string }>();
+  const [school, setSchool] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchSchool() {
+    const fetchSchool = async () => {
       setLoading(true);
+      setError(null);
+
+      if (!subdomain) {
+        setError("No subdomain in URL.");
+        setLoading(false);
+        return;
+      }
+
       try {
-        if (!schoolDomain) throw new Error("No school domain in URL");
-
-        const { data } = (await client.graphql({
+        const response: any = await client.graphql({
           query: schoolsBySubdomain,
-          variables: { subdomain: schoolDomain },
-          authMode: "aws_iam" as any, // Allow public/unauth access
-        })) as any;
+          variables: { subdomain },
+          authMode: "iam", // Correct for Amplify v6+ public IAM access
+        });
 
-        const found = data?.schoolsBySubdomain?.items?.[0] ?? null;
-        setSchool(found);
-      } catch (err) {
-        setSchool(null);
+        // Adjust this line to your schema's query name/output
+        const items =
+          response.data?.schoolsBySubdomain?.items ||
+          response.data?.schoolBySubdomain?.items;
+        if (items && items.length > 0) {
+          setSchool(items[0]);
+        } else {
+          setError("School not found.");
+        }
+      } catch (err: any) {
+        setError("Failed to load school info.");
+        console.error(err);
       }
       setLoading(false);
-    }
-    fetchSchool();
-  }, [schoolDomain]);
+    };
 
-  if (loading) {
+    fetchSchool();
+  }, [subdomain]);
+
+  if (loading)
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="60vh"
-      >
-        <Typography variant="h6">Loading school...</Typography>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <CircularProgress />
       </Box>
     );
-  }
-  if (!school) {
+
+  if (error)
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="60vh"
-      >
-        <Typography variant="h6" color="error">
-          School not found.
-        </Typography>
-      </Box>
+      <Paper sx={{ m: 4, p: 4 }}>
+        <Typography color="error">{error}</Typography>
+      </Paper>
     );
-  }
 
   return (
-    <Box minHeight="100vh" sx={{ background: "#f5f6fa", py: 4 }}>
-      {/* Header & Hero Section */}
-      <Box
-        sx={{
-          maxWidth: 960,
-          mx: "auto",
-          mb: 4,
-          p: 3,
-          background: "#fff",
-          borderRadius: 3,
-          boxShadow: 2,
-        }}
-      >
-        <Grid container spacing={3} alignItems="center">
-          <Grid size={{ xs: 12, md: 3 }}>
-            {school.logoURL ? (
-              <img
-                src={school.logoURL}
-                alt="School Logo"
-                style={{ width: "100%", maxHeight: 100, objectFit: "contain" }}
-              />
-            ) : (
-              <Box
-                width="100%"
-                height={100}
-                bgcolor="#eee"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                fontSize={28}
-                fontWeight={700}
-                color="#999"
-                borderRadius={2}
-              >
-                No Logo
-              </Box>
-            )}
-          </Grid>
-          <Grid size={{ xs: 12, md: 9 }}>
-            <Typography variant="h3" fontWeight={700} gutterBottom>
-              {school.name}
-            </Typography>
-            <Typography variant="subtitle1" color="text.secondary">
-              {school.address}
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
-
-      {/* Hero Image or Description */}
-      {school.heroImageURL ? (
-        <Box
-          sx={{
-            maxWidth: 960,
-            mx: "auto",
-            mb: 3,
-            borderRadius: 2,
-            overflow: "hidden",
-            boxShadow: 1,
-          }}
-        >
+    <Paper sx={{ maxWidth: 900, margin: "40px auto", p: 4 }}>
+      <Box sx={{ textAlign: "center" }}>
+        {school.logoURL && (
+          <img
+            src={school.logoURL}
+            alt={`${school.name} logo`}
+            style={{ maxHeight: 80 }}
+          />
+        )}
+        <Typography variant="h3" gutterBottom>
+          {school.name}
+        </Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          {school.address}
+        </Typography>
+        {school.heroImageURL && (
           <img
             src={school.heroImageURL}
-            alt="School Hero"
+            alt="hero"
             style={{ width: "100%", maxHeight: 300, objectFit: "cover" }}
           />
+        )}
+        <Typography variant="body1" sx={{ mt: 3 }}>
+          {school.description}
+        </Typography>
+        {/* Render calendar info if present */}
+        {school.calendarInfo && (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h6">Calendar:</Typography>
+            <pre>
+              {(() => {
+                try {
+                  return JSON.stringify(
+                    JSON.parse(school.calendarInfo),
+                    null,
+                    2
+                  );
+                } catch {
+                  return school.calendarInfo;
+                }
+              })()}
+            </pre>
+          </Box>
+        )}
+        {/* Contact info */}
+        <Box sx={{ mt: 2 }}>
+          <Typography>Email: {school.contactEmail}</Typography>
+          <Typography>Phone: {school.phone}</Typography>
+          <Typography>Website: {school.website}</Typography>
         </Box>
-      ) : null}
-
-      {/* School Description & Info */}
-      <Box
-        sx={{
-          maxWidth: 960,
-          mx: "auto",
-          p: 3,
-          background: "#fff",
-          borderRadius: 3,
-          boxShadow: 2,
-        }}
-      >
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 8 }}>
-            <Typography variant="h5" gutterBottom>
-              About {school.name}
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              {school.description || "No school description yet."}
-            </Typography>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Typography variant="subtitle1" fontWeight={600}>
-              Contact Information
-            </Typography>
-            <Typography variant="body2">
-              <strong>Email:</strong> {school.contactEmail || "N/A"}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Phone:</strong> {school.phone || "N/A"}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Website:</strong>{" "}
-              {school.website ? (
-                <a
-                  href={school.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {school.website}
-                </a>
-              ) : (
-                "N/A"
-              )}
-            </Typography>
-          </Grid>
-
-          {/* School Calendar (simple JSON to table if available) */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              School Calendar
-            </Typography>
-            <Paper sx={{ p: 2, minHeight: 120 }}>
-              {school.calendarInfo ? (
-                <CalendarDisplay calendarInfo={school.calendarInfo} />
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  No calendar data available.
-                </Typography>
-              )}
-            </Paper>
-            {/* Login button */}
-            <Box mt={3} textAlign="center">
-              <Button
-                variant="contained"
-                size="large"
-                href="/login"
-                sx={{ fontWeight: 700, borderRadius: 2 }}
-              >
-                Login
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
       </Box>
-    </Box>
-  );
-};
-
-// Helper to display calendar JSON as a table
-function CalendarDisplay({ calendarInfo }: { calendarInfo: string }) {
-  let items: { event: string; date: string }[] = [];
-  try {
-    const data = JSON.parse(calendarInfo);
-    items = Array.isArray(data) ? data : [];
-  } catch {
-    return <Typography variant="body2">Invalid calendar format.</Typography>;
-  }
-  if (!items.length)
-    return (
-      <Typography variant="body2" color="text.secondary">
-        No upcoming events.
-      </Typography>
-    );
-  return (
-    <Box component="table" sx={{ width: "100%", fontSize: 14 }}>
-      <tbody>
-        {items.map((event, i) => (
-          <tr key={i}>
-            <td>
-              <strong>{event.event}</strong>
-            </td>
-            <td style={{ paddingLeft: 8 }}>{event.date}</td>
-          </tr>
-        ))}
-      </tbody>
-    </Box>
+    </Paper>
   );
 }
-
-export default SchoolLandingPage;
