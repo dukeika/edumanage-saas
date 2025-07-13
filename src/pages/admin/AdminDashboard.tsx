@@ -1,7 +1,6 @@
 // src/pages/admin/AdminDashboard.tsx
 import React, { useEffect, useState } from "react";
-import { Box, Paper, Typography, Grid } from "@mui/material";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { Box, Paper, Typography, Grid, Button } from "@mui/material";
 import { generateClient } from "@aws-amplify/api";
 import {
   listStudents,
@@ -9,6 +8,8 @@ import {
   listAnnouncements,
   listAttendances,
 } from "../../graphql/queries";
+import { signOut } from "@aws-amplify/auth";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 interface Counts {
   students: number;
@@ -18,8 +19,7 @@ interface Counts {
 }
 
 const AdminDashboard: React.FC = () => {
-  // pull `user` and `route` from Amplify's hook
-  const { user, route } = useAuthenticator((ctx) => [ctx.user, ctx.route]);
+  const { user, loading } = useCurrentUser();
   const [counts, setCounts] = useState<Counts>({
     students: 0,
     classes: 0,
@@ -28,13 +28,11 @@ const AdminDashboard: React.FC = () => {
   });
   const [fetched, setFetched] = useState(false);
 
-  // cast user to any so TS stops complaining
-  const attrs = (user as any)?.attributes as Record<string, string> | undefined;
-  const schoolID = attrs?.["custom:schoolID"];
+  // schoolID should be present on the user (update as per your token structure)
+  const schoolID = user?.schoolId;
 
   useEffect(() => {
-    // once we're authenticated, and have a schoolID, fetch data
-    if (route === "authenticated" && schoolID && !fetched) {
+    if (!loading && user && schoolID && !fetched) {
       const client = generateClient();
       Promise.all([
         client.graphql({
@@ -65,22 +63,40 @@ const AdminDashboard: React.FC = () => {
         })
         .catch(console.error);
     }
-  }, [route, schoolID, fetched]);
+  }, [loading, user, schoolID, fetched]);
 
-  // show a spinner/text until Amplify has finished bootstrapping
-  if (route !== "authenticated") {
+  if (loading) {
     return (
       <Box sx={{ p: 4 }}>
-        <Typography variant="h5">Authenticating…</Typography>
+        <Typography variant="h5">Loading…</Typography>
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography variant="h5" color="error">
+          Unauthorized. Please log in.
+        </Typography>
       </Box>
     );
   }
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Welcome, {attrs?.name || attrs?.email || "Admin"}
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+        <Typography variant="h4" gutterBottom>
+          Welcome, {user.name ?? user.email ?? "Admin"}
+        </Typography>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => signOut().then(() => window.location.replace("/"))}
+        >
+          Logout
+        </Button>
+      </Box>
 
       <Grid container spacing={3}>
         {[

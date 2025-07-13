@@ -1,6 +1,11 @@
 import React from "react";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import { signOut } from "aws-amplify/auth";
+// ...
+<button onClick={() => signOut().then(() => window.location.replace("/"))}>
+  Logout
+</button>;
 
 const AppAdminDashboard: React.FC = () => (
   <Paper sx={{ p: 4 }}>

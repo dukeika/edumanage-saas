@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { getCurrentUser } from "aws-amplify/auth";
+import { getCurrentUser, fetchAuthSession } from "@aws-amplify/auth";
 
 export interface CurrentUser {
   id: string;
-  name: string;
   email?: string;
+  groups: string[];
   userRole?: string;
-  schoolID?: string;
-  groups?: string[];
+  name?: string;
+  schoolId?: string; // <-- lower camelCase for consistency
 }
 
 export const useCurrentUser = () => {
@@ -15,17 +15,54 @@ export const useCurrentUser = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCurrentUser()
-      .then((currentUser) => {
-        setUser({
-          id: currentUser.userId,
-          name: currentUser.username,
-          email: currentUser.signInDetails?.loginId,
-        });
-      })
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    (async () => {
+      try {
+        const cognitoUser = await getCurrentUser();
+        const session = await fetchAuthSession();
+        const idToken = session.tokens?.idToken?.payload || {};
+
+        // Strictly parse all fields as string
+        const id = typeof idToken.sub === "string" ? idToken.sub : "";
+        const name =
+          typeof idToken.name === "string"
+            ? idToken.name
+            : typeof cognitoUser.username === "string"
+            ? cognitoUser.username
+            : "";
+        const email =
+          typeof idToken.email === "string"
+            ? idToken.email
+            : typeof cognitoUser.signInDetails?.loginId === "string"
+            ? cognitoUser.signInDetails.loginId
+            : "";
+
+        let groups: string[] = [];
+        const rawGroups = idToken["cognito:groups"];
+        if (Array.isArray(rawGroups)) {
+          groups = rawGroups.filter((g) => typeof g === "string") as string[];
+        } else if (typeof rawGroups === "string") {
+          groups = [rawGroups];
+        }
+
+        const userRole =
+          typeof idToken["custom:role"] === "string"
+            ? idToken["custom:role"]
+            : undefined;
+
+        if (!cancelled) {
+          setUser({ id, name, email, groups, userRole });
+        }
+      } catch {
+        if (!cancelled) setUser(null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  return { user, setUser, loading };
+  return { user, loading };
 };

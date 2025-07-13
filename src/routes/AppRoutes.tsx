@@ -1,142 +1,108 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-
-// Admin
-import AdminLayout from "../layouts/AdminLayout";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import ManageStudentsPage from "../pages/admin/ManageStudentsPage";
-import ManageTeachersPage from "../pages/admin/ManageTeachersPage";
-import ManageClassesPage from "../pages/admin/ManageClassesPage";
-import AnnouncementsPage from "../pages/admin/AnnouncementsPage";
-import ReportsPage from "../pages/admin/ReportsPage";
-
-// Teacher
-import TeacherLayout from "../layouts/TeacherLayout";
-import TeacherDashboard from "../pages/teacher/TeacherDashboard";
-import AttendancePage from "../pages/teacher/AttendancePage";
-import TeacherAnnouncementsPage from "../pages/teacher/TeacherAnnouncementsPage";
-
-// Student
-import StudentLayout from "../layouts/StudentLayout";
-import StudentDashboard from "../pages/student/StudentDashboard";
-import StudentAnnouncementsPage from "../pages/student/StudentAnnouncementsPage";
-import AttendanceHistoryPage from "../pages/student/AttendanceHistoryPage";
-
-// Parent
-import ParentLayout from "../layouts/ParentLayout";
-import ParentDashboard from "../pages/parent/ParentDashboard";
-import ParentAnnouncementsPage from "../pages/parent/ParentAnnouncementsPage";
-import FeeBalancePage from "../pages/parent/FeeBalancePage";
-
-// Application Admin (Super Admin)
-import AppAdminLayout from "../layouts/AppAdminLayout";
-import AppAdminDashboard from "../pages/appadmin/AppAdminDashboard";
-import AppAdminSchoolsPage from "../pages/appadmin/AppAdminSchoolsPage";
-import AppAdminUsersPage from "../pages/appadmin/AppAdminUsersPage";
-import CreateSchoolPage from "../pages/appadmin/CreateSchoolPage";
-import AssignAdminPage from "../pages/appadmin/AssignAdminPage";
-
-// School Landing Page (NEW)
-import SchoolLandingPage from "../pages/school/SchoolLandingPage";
-
-import RoleBasedRedirect from "../components/RoleBasedRedirect";
+import { Routes, Route } from "react-router-dom";
+import { Authenticator } from "@aws-amplify/ui-react";
+import HomePage from "../pages/HomePage";
+import LoginPage from "../pages/LoginPage";
 import Unauthorized from "../components/Unauthorized";
 import RequireAuth from "../components/RequireAuth";
+import AutoRedirect from "../components/AutoRedirect";
+import SchoolLandingPage from "../pages/school/SchoolLandingPage"; // Add this import
 
-const AppRoutes: React.FC = () => (
-  <Routes>
-    {/* School Public Landing Page */}
-    <Route path="/school/:schoolDomain" element={<SchoolLandingPage />} />
+// Import your dashboard components
+import AppAdminDashboard from "../pages/appadmin/AppAdminDashboard";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import TeacherDashboard from "../pages/teacher/TeacherDashboard";
+import StudentDashboard from "../pages/student/StudentDashboard";
+import ParentDashboard from "../pages/parent/ParentDashboard";
 
-    {/* Application Admin (Super Admin) Routes */}
-    <Route
-      path="/app-admin/*"
-      element={
-        <RequireAuth allowedRoles={["applicationadmins"]}>
-          <AppAdminLayout />
-        </RequireAuth>
-      }
-    >
-      <Route index element={<AppAdminDashboard />} />
-      <Route path="schools" element={<AppAdminSchoolsPage />} />
-      <Route path="users" element={<AppAdminUsersPage />} />
-      <Route path="create-school" element={<CreateSchoolPage />} />
-      <Route path="assign-admin" element={<AssignAdminPage />} />
-      <Route path="*" element={<Navigate to="/app-admin" replace />} />
-    </Route>
+// Import your layout components
+import AppAdminLayout from "../layouts/AppAdminLayout";
+import AdminLayout from "../layouts/AdminLayout";
+import TeacherLayout from "../layouts/TeacherLayout";
+import StudentLayout from "../layouts/StudentLayout";
+import ParentLayout from "../layouts/ParentLayout";
 
-    {/* Admin Routes */}
-    <Route
-      path="/admin/*"
-      element={
-        <RequireAuth allowedRoles={["admins"]}>
-          <AdminLayout />
-        </RequireAuth>
-      }
-    >
-      <Route index element={<AdminDashboard />} />
-      <Route path="students" element={<ManageStudentsPage />} />
-      <Route path="teachers" element={<ManageTeachersPage />} />
-      <Route path="classes" element={<ManageClassesPage />} />
-      <Route path="announcements" element={<AnnouncementsPage />} />
-      <Route path="reports" element={<ReportsPage />} />
-      <Route path="*" element={<Navigate to="/admin" replace />} />
-    </Route>
+const AppRoutes: React.FC = () => {
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
 
-    {/* Teacher Routes */}
-    <Route
-      path="/teacher/*"
-      element={
-        <RequireAuth allowedRoles={["teachers"]}>
-          <TeacherLayout />
-        </RequireAuth>
-      }
-    >
-      <Route index element={<TeacherDashboard />} />
-      <Route path="attendance" element={<AttendancePage />} />
-      <Route path="announcements" element={<TeacherAnnouncementsPage />} />
-      <Route path="*" element={<Navigate to="/teacher" replace />} />
-    </Route>
+      {/* Public school landing pages */}
+      <Route path="/school/:schoolDomain" element={<SchoolLandingPage />} />
 
-    {/* Student Routes */}
-    <Route
-      path="/student/*"
-      element={
-        <RequireAuth allowedRoles={["students"]}>
-          <StudentLayout />
-        </RequireAuth>
-      }
-    >
-      <Route index element={<StudentDashboard />} />
-      <Route path="announcements" element={<StudentAnnouncementsPage />} />
-      <Route path="attendance-history" element={<AttendanceHistoryPage />} />
-      <Route path="*" element={<Navigate to="/student" replace />} />
-    </Route>
+      {/* Home route with auto-redirect */}
+      <Route
+        path="/"
+        element={
+          <>
+            <HomePage />
+            <AutoRedirect />
+          </>
+        }
+      />
 
-    {/* Parent Routes */}
-    <Route
-      path="/parent/*"
-      element={
-        <RequireAuth allowedRoles={["parents"]}>
-          <ParentLayout />
-        </RequireAuth>
-      }
-    >
-      <Route index element={<ParentDashboard />} />
-      <Route path="announcements" element={<ParentAnnouncementsPage />} />
-      <Route path="fee-balance" element={<FeeBalancePage />} />
-      <Route path="*" element={<Navigate to="/parent" replace />} />
-    </Route>
+      {/* Protected routes */}
+      <Route
+        path="/app-admin"
+        element={
+          <RequireAuth allowedRoles={["applicationadmins"]}>
+            <AppAdminLayout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<AppAdminDashboard />} />
+      </Route>
 
-    {/* Root path with role-based redirect */}
-    <Route path="/" element={<RoleBasedRedirect />} />
+      <Route
+        path="/admin"
+        element={
+          <RequireAuth allowedRoles={["admins"]}>
+            <AdminLayout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+      </Route>
 
-    {/* Unauthorized access page */}
-    <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route
+        path="/teacher"
+        element={
+          <RequireAuth allowedRoles={["teachers"]}>
+            <TeacherLayout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<TeacherDashboard />} />
+      </Route>
 
-    {/* Catch-all */}
-    <Route path="*" element={<Navigate to="/" replace />} />
-  </Routes>
-);
+      <Route
+        path="/student"
+        element={
+          <RequireAuth allowedRoles={["students"]}>
+            <StudentLayout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<StudentDashboard />} />
+      </Route>
+
+      <Route
+        path="/parent"
+        element={
+          <RequireAuth allowedRoles={["parents"]}>
+            <ParentLayout />
+          </RequireAuth>
+        }
+      >
+        <Route index element={<ParentDashboard />} />
+      </Route>
+
+      {/* Catch all route */}
+      <Route path="*" element={<Unauthorized />} />
+    </Routes>
+  );
+};
 
 export default AppRoutes;

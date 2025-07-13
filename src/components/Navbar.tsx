@@ -1,41 +1,23 @@
+// src/components/Navbar.tsx
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { signOut } from "aws-amplify/auth";
-import { useCurrentUser } from "../hooks/useCurrentUser"; // adjust path as needed
+import { useCurrentUser } from "../hooks/useCurrentUser";
+import { Button } from "@mui/material";
 
-interface NavbarProps {
-  title: string;
+interface AuthContentProps {
+  children: React.ReactNode;
+  signOut: () => Promise<void>;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ title }) => {
-  const navigate = useNavigate();
+const Navbar: React.FC<AuthContentProps> = ({ children, signOut }) => {
   const { user } = useCurrentUser();
 
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      localStorage.clear();
-      window.location.assign("/"); // forces full reload and resets state
-    } catch {
-      console.error("Error signing out");
-    }
-  };
-
   return (
-    <header className="flex items-center justify-between bg-white px-6 py-4 border-b shadow-sm">
-      <h1 className="text-2xl font-semibold text-gray-800">{title}</h1>
-      <div className="flex items-center space-x-4">
-        <span className="text-gray-600">
-          {user?.name ?? user?.email ?? "User"}
-        </span>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-        >
-          Logout
-        </button>
-      </div>
-    </header>
+    <nav>
+      <span>{user?.name ?? user?.email ?? "User"}</span>
+      <Button variant="contained" color="secondary" onClick={signOut}>
+        Sign Out
+      </Button>{" "}
+    </nav>
   );
 };
 
