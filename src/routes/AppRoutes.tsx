@@ -56,7 +56,7 @@ const AppRoutes: React.FC = () => {
       </Route>
 
       <Route
-        path="/admin"
+        path="/admin/*"
         element={
           <RequireAuth allowedRoles={["admins"]}>
             <AdminLayout />
@@ -64,6 +64,7 @@ const AppRoutes: React.FC = () => {
         }
       >
         <Route index element={<AdminDashboard />} />
+        {/* other admin routes */}
       </Route>
 
       <Route

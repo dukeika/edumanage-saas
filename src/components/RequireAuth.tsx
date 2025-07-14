@@ -16,52 +16,20 @@ const RequireAuth: React.FC<RequireAuthProps> = ({
   const location = useLocation();
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-        <Typography variant="body1" sx={{ mt: 2 }}>
-          Verifying permissions...
-        </Typography>
-      </Box>
-    );
+    return <div>Loading...</div>;
   }
-
   if (!user) {
-    // Not signed in - redirect to login with return path
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check groups and (optionally) userRole for access
   const userGroups = (user.groups ?? []).map((g) => g.toLowerCase());
-  const userRole = user.userRole?.toLowerCase?.() || "";
-
   const normalizedAllowedRoles = allowedRoles.map((r) => r.toLowerCase());
-
-  const hasRequiredRole =
-    normalizedAllowedRoles.some((role) => userGroups.includes(role)) ||
-    (userRole && normalizedAllowedRoles.includes(userRole));
-
+  const hasRequiredRole = normalizedAllowedRoles.some((role) =>
+    userGroups.includes(role)
+  );
   if (!hasRequiredRole) {
-    // Signed in but doesn't have required role
-    console.log(
-      "Access denied. User groups:",
-      userGroups,
-      "UserRole:",
-      userRole,
-      "Required roles:",
-      normalizedAllowedRoles
-    );
     return <Navigate to="/unauthorized" replace />;
   }
-
   return <>{children}</>;
 };
 

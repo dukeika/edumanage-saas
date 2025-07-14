@@ -1,81 +1,150 @@
-import React from "react";
-import { useNavigate, NavLink } from "react-router-dom";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+// src/components/admin/AdminSidebar.tsx
+import React, { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Typography,
+  Divider,
+  Paper,
+  Badge,
+} from "@mui/material";
+import { generateClient } from "@aws-amplify/api";
+import {
+  listStudents,
+  listUsers, // Used to get Teachers
+  listClasses,
+  listAnnouncements,
+} from "../../graphql/queries";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
-const drawerWidth = 240;
-
-const links = [
-  { to: "/admin/students", label: "Students" },
-  { to: "/admin/teachers", label: "Teachers" },
-  { to: "/admin/classes", label: "Classes" },
-  { to: "/admin/announcements", label: "Announcements" },
+const navLinks = [
+  { to: "/admin", label: "Dashboard" },
+  { to: "/admin/students", label: "Students", key: "students" },
+  { to: "/admin/teachers", label: "Teachers", key: "teachers" },
+  { to: "/admin/classes", label: "Classes", key: "classes" },
+  { to: "/admin/announcements", label: "Announcements", key: "announcements" },
   { to: "/admin/reports", label: "Reports" },
 ];
 
 const AdminSidebar: React.FC = () => {
-  const navigate = useNavigate();
+  const { user } = useCurrentUser();
+  const [counts, setCounts] = useState({
+    students: 0,
+    teachers: 0,
+    classes: 0,
+    announcements: 0,
+  });
+  const location = useLocation();
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      if (!user?.schoolId) return;
+      const client = generateClient();
+
+      try {
+        const [studentsRes, teachersRes, classesRes, announcementsRes] =
+          await Promise.all([
+            client.graphql({
+              query: listStudents,
+              variables: { filter: { schoolID: { eq: user.schoolId } } },
+            }),
+            client.graphql({
+              query: listUsers,
+              variables: {
+                filter: {
+                  schoolID: { eq: user.schoolId },
+                  role: { eq: "Teacher" },
+                },
+              },
+            }),
+            client.graphql({
+              query: listClasses,
+              variables: { filter: { schoolID: { eq: user.schoolId } } },
+            }),
+            client.graphql({
+              query: listAnnouncements,
+              variables: { filter: { schoolID: { eq: user.schoolId } } },
+            }),
+          ]);
+
+        setCounts({
+          students: studentsRes.data.listStudents.items.length,
+          teachers: teachersRes.data.listUsers.items.length,
+          classes: classesRes.data.listClasses.items.length,
+          announcements: announcementsRes.data.listAnnouncements.items.length,
+        });
+      } catch (err) {
+        setCounts({
+          students: 0,
+          teachers: 0,
+          classes: 0,
+          announcements: 0,
+        });
+      }
+    };
+
+    fetchCounts();
+  }, [user?.schoolId]);
 
   return (
-    <Drawer
-      variant="permanent"
+    <Paper
+      elevation={3}
       sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        [`& .MuiDrawer-paper`]: {
-          width: drawerWidth,
-          boxSizing: "border-box",
-          bgcolor: "primary.main",
-          color: "white",
-          display: "flex",
-          flexDirection: "column",
-        },
+        width: 260,
+        height: "100vh",
+        p: 0,
+        bgcolor: "primary.main",
+        color: "#fff",
+        borderRight: 0,
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <Box sx={{ px: 2, py: 3, minHeight: 64 }}>
-        <Typography variant="h6" fontWeight="bold" color="inherit">
-          EduManage Admin
+      <Box sx={{ p: 3, textAlign: "center" }}>
+        <Typography variant="h5" fontWeight={700} sx={{ letterSpacing: 1 }}>
+          Admin Panel
         </Typography>
       </Box>
-      <List sx={{ flexGrow: 1 }}>
-        {links.map(({ to, label }) => (
-          <ListItem key={to} disablePadding>
+      <Divider sx={{ bgcolor: "primary.light", mb: 1 }} />
+      <List>
+        {navLinks.map(({ to, label, key }) => (
+          <ListItem disablePadding key={to}>
             <ListItemButton
               component={NavLink}
               to={to}
+              selected={location.pathname === to}
               sx={{
-                color: "inherit",
-                "&.active": {
-                  bgcolor: "primary.light",
-                  fontWeight: "bold",
+                color: "#fff",
+                "&.active, &.Mui-selected": {
+                  bgcolor: "primary.dark",
                 },
               }}
             >
-              <ListItemText primary={label} />
+              <ListItemText
+                primary={
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {label}
+                    {key &&
+                      typeof counts[key as keyof typeof counts] ===
+                        "number" && (
+                        <Badge
+                          color="secondary"
+                          badgeContent={counts[key as keyof typeof counts]}
+                          sx={{ ml: 1 }}
+                        />
+                      )}
+                  </Box>
+                }
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-      <Box sx={{ px: 2, pb: 3 }}>
-        <Button
-          fullWidth
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            localStorage.clear();
-            window.location.assign("/");
-          }}
-        >
-          Sign Out
-        </Button>
-      </Box>
-    </Drawer>
+    </Paper>
   );
 };
 
