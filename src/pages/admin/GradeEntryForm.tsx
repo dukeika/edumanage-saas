@@ -3,7 +3,7 @@ import { Box, Typography, Button, TextField } from "@mui/material";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 import RequireRole from "../../components/RequireRole";
 import { generateClient } from "@aws-amplify/api";
-import { customCreateGrade } from "../../graphql/customMutations";
+import { createGrade } from "../../graphql/mutations";
 
 interface Props {
   students: { id: string; name: string }[];
@@ -24,12 +24,12 @@ const GradeEntryForm: React.FC<Props> = ({ students }) => {
     await Promise.all(
       students.map((s) =>
         client.graphql({
-          query: customCreateGrade,
+          query: createGrade,
           variables: {
             input: {
               studentID: s.id,
-              classID: user.classID,
-              assessmentID: user.assessmentID,
+              classID: user.classID ?? "",
+              assessmentID: user.assessmentID ?? "",
               score: scores[s.id] ?? 0,
             },
           },

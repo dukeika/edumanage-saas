@@ -1,6 +1,6 @@
 {
   "aws_project_region": "eu-west-2",
-  "aws_cognito_identity_pool_id": "eu-west-2:67ed7571-ddfb-4fef-a876-33ab8a36d670",
+  "aws_cognito_identity_pool_id": "eu-west-2:69bbae3a-99bc-4616-ad30-211a0850b877",
   "aws_cognito_region": "eu-west-2",
   "aws_user_pools_id": "eu-west-2_OuXc4ZpsU",
   "aws_user_pools_web_client_id": "2ojmkpj241a2jmsd02scen1eck",
@@ -39,5 +39,7 @@
   "aws_appsync_graphqlEndpoint": "https://gj3enzgrgvhufk5imqqbf442ny.appsync-api.eu-west-2.amazonaws.com/graphql",
   "aws_appsync_region": "eu-west-2",
   "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
-  "aws_appsync_apiKey": "da2-rrmo22oclfhfhmyoqgzanq4e2u"
+  "aws_appsync_apiKey": "da2-rrmo22oclfhfhmyoqgzanq4e2u",
+  "aws_user_files_s3_bucket": "classpoint-school-media-1234ca37e-dev",
+  "aws_user_files_s3_bucket_region": "eu-west-2"
 }

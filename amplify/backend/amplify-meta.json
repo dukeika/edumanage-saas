@@ -42,19 +42,19 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/auth/edumanagesaasda694ea8-cloudformation-template.json",
         "logicalId": "authedumanagesaasda694ea8"
       },
-      "lastPushTimeStamp": "2025-07-12T11:59:28.818Z",
+      "lastPushTimeStamp": "2025-07-15T10:14:51.252Z",
       "output": {
         "UserPoolId": "eu-west-2_OuXc4ZpsU",
         "AppClientIDWeb": "2ojmkpj241a2jmsd02scen1eck",
         "AppClientID": "4ogtnu9523ipoh0i589futjbbp",
         "HostedUIDomain": "edumanagesaasda694ea8-da694ea8-dev",
-        "IdentityPoolId": "eu-west-2:67ed7571-ddfb-4fef-a876-33ab8a36d670",
+        "IdentityPoolId": "eu-west-2:69bbae3a-99bc-4616-ad30-211a0850b877",
         "UserPoolArn": "arn:aws:cognito-idp:eu-west-2:624914081304:userpool/eu-west-2_OuXc4ZpsU",
-        "IdentityPoolName": "edumanagesaasda694ea8_identitypool_da694ea8__dev",
+        "IdentityPoolName": "edumanagesaasda694ea8_identitypool_c88e677b__dev",
         "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"implicit\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost/\"],\"LogoutURLs\":[\"https://localhost/\"]}",
         "UserPoolName": "edumanagesaasda694ea8_userpool_da694ea8"
       },
-      "lastPushDirHash": "mmzVIEmVW3I23UjIsfEefmPo4wQ="
+      "lastPushDirHash": "hrWO1MQ4jCm+IzAQIXnNDmbTSO0="
     }
   },
   "api": {
@@ -86,6 +86,12 @@
                 "apiKeyExpirationDate": "2025-07-19T04:42:06.768Z",
                 "description": "EduManageAPIKey"
               }
+            },
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authedumanagesaasda694ea8"
+              }
             }
           ]
         },
@@ -97,8 +103,8 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiedumanagesaas"
       },
-      "lastPushTimeStamp": "2025-07-12T11:59:28.821Z",
-      "lastPushDirHash": "r0YiFRdw5GY3fBeKn38vzu5CGhM="
+      "lastPushTimeStamp": "2025-07-15T10:14:55.805Z",
+      "lastPushDirHash": "iuYLL/GCjyKfV2Uhvc4S0yE8HEM="
     }
   },
   "function": {
@@ -118,7 +124,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/function/adminCreateUser-cloudformation-template.json",
         "logicalId": "functionadminCreateUser"
       },
-      "lastPushTimeStamp": "2025-07-12T11:59:28.824Z",
+      "lastPushTimeStamp": "2025-07-15T10:14:51.259Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::624914081304:role/edumanagesaasLambdaRole754f667f-dev",
         "Region": "eu-west-2",
@@ -127,6 +133,23 @@
         "LambdaExecutionRole": "edumanagesaasLambdaRole754f667f-dev"
       },
       "lastPushDirHash": "38DbFogPN4jPgJTVmG1AfbmkYI4="
+    }
+  },
+  "storage": {
+    "schoolimages": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "lastPushTimeStamp": "2025-07-15T10:14:51.262Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "logicalId": "storageschoolimages"
+      },
+      "output": {
+        "BucketName": "classpoint-school-media-1234ca37e-dev",
+        "Region": "eu-west-2"
+      },
+      "lastPushDirHash": "KKi1bGBEvwHmu4UfcCdS39L/zAc="
     }
   }
 }

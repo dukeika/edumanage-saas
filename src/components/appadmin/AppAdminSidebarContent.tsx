@@ -12,7 +12,7 @@ const links = [
   { to: "/app-admin", label: "Dashboard" },
   { to: "/app-admin/schools", label: "Schools" },
   { to: "/app-admin/users", label: "Users" },
-  { to: "/app-admin/create-school", label: "Create School" },
+  // { to: "/app-admin/create-school", label: "Create School" },
   { to: "/app-admin/assign-admin", label: "Assign Admin" },
 ];
 

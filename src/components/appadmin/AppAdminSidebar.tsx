@@ -15,7 +15,7 @@ const navLinks = [
   { label: "Dashboard", to: "/app-admin" },
   { label: "Schools", to: "/app-admin/schools" },
   { label: "Users", to: "/app-admin/users" },
-  { label: "Create School", to: "/app-admin/create-school" },
+  // { label: "Create School", to: "/app-admin/create-school" },
   { label: "Assign Admin", to: "/app-admin/assign-admin" },
 ];
 

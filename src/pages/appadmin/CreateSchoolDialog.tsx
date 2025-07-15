@@ -1,23 +1,34 @@
 import React, { useState } from "react";
 import {
-  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button,
-  Typography,
-  Paper,
   Stack,
   TextField,
   Alert,
   CircularProgress,
   InputLabel,
+  Box,
+  Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { uploadData, getUrl } from "@aws-amplify/storage";
 import { generateClient } from "@aws-amplify/api";
 import { createSchool } from "../../graphql/mutations";
-import { uploadData, getUrl } from "@aws-amplify/storage";
-import { useNavigate } from "react-router-dom";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
-export default function CreateSchoolPage() {
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  onCreate: () => Promise<void>;
+}
+
+export default function CreateSchoolDialog({ open, onClose, onCreate }: Props) {
+  const { user } = useCurrentUser();
+
   const [form, setForm] = useState({
     name: "",
     subdomain: "",
@@ -30,36 +41,47 @@ export default function CreateSchoolPage() {
     calendarEnd: null as Date | null,
     calendarMessage: "",
     news: "",
+    schoolAdmin: user?.email ?? "",
+    logoURL: "",
+    heroImageURL: "",
   });
+
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [heroFile, setHeroFile] = useState<File | null>(null);
-  const [logoStatus, setLogoStatus] = useState<
-    "none" | "selected" | "uploading" | "uploaded" | "error"
-  >("none");
-  const [heroStatus, setHeroStatus] = useState<
-    "none" | "selected" | "uploading" | "uploaded" | "error"
-  >("none");
-
-  const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  const navigate = useNavigate();
-
-  // File selection handlers
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setLogoFile(e.target.files[0]);
-      setLogoStatus("selected");
+  // Reset form/dialog state when opened
+  React.useEffect(() => {
+    if (open) {
+      setForm({
+        name: "",
+        subdomain: "",
+        address: "",
+        contactEmail: "",
+        phone: "",
+        website: "",
+        description: "",
+        calendarStart: null,
+        calendarEnd: null,
+        calendarMessage: "",
+        news: "",
+        schoolAdmin: user?.email ?? "",
+        logoURL: "",
+        heroImageURL: "",
+      });
+      setLogoFile(null);
+      setHeroFile(null);
+      setError(null);
+      setSaving(false);
+      setUploadingLogo(false);
+      setUploadingHero(false);
     }
-  };
-  const handleHeroChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setHeroFile(e.target.files[0]);
-      setHeroStatus("selected");
-    }
-  };
+    // eslint-disable-next-line
+  }, [open]);
 
-  // Form input change handler
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -69,72 +91,62 @@ export default function CreateSchoolPage() {
     }));
   };
 
-  // Helper: Uploads file to S3, returns URL string.
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setLogoFile(e.target.files[0]);
+    }
+  };
+
+  const handleHeroChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setHeroFile(e.target.files[0]);
+    }
+  };
+
   async function uploadImage(file: File, prefix: string) {
     const ext = file.name.split(".").pop();
     const key = `${prefix}/${Date.now()}-${Math.random()
       .toString(36)
       .slice(2)}.${ext}`;
-    // uploadData({ data, path, options? })
     await uploadData({
+      key,
       data: file,
-      path: `public/${key}`,
-      // options: { contentType: file.type, accessLevel: "guest" },
-    });
-    const { url } = await getUrl({
-      path: `public/${key}`,
-      // options: { accessLevel: "guest" },
-    });
+      options: { contentType: file.type, accessLevel: "guest" },
+    }).result;
+    const { url } = await getUrl({ key, options: { accessLevel: "guest" } });
     return url.toString();
   }
 
-  // Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    // Validate required fields
-    if (!form.name || !form.subdomain || !form.address) {
-      setError("Please fill in all required fields: Name, Subdomain, Address.");
-      return;
-    }
-
     setSaving(true);
-    let logoURL = "";
-    let heroImageURL = "";
+
     try {
-      // Upload logo
+      let logoURL = form.logoURL;
+      let heroImageURL = form.heroImageURL;
+
       if (logoFile) {
-        setLogoStatus("uploading");
+        setUploadingLogo(true);
         logoURL = await uploadImage(logoFile, "school-logos");
-        setLogoStatus("uploaded");
+        setUploadingLogo(false);
       }
-      // Upload hero
       if (heroFile) {
-        setHeroStatus("uploading");
+        setUploadingHero(true);
         heroImageURL = await uploadImage(heroFile, "school-hero");
-        setHeroStatus("uploaded");
+        setUploadingHero(false);
       }
-    } catch (uploadErr: any) {
-      setError("Failed to upload image(s).");
-      setLogoStatus("error");
-      setHeroStatus("error");
-      setSaving(false);
-      return;
-    }
 
-    // Format calendar info as JSON string
-    const calendarInfo = JSON.stringify({
-      start: form.calendarStart
-        ? form.calendarStart.toISOString().slice(0, 10)
-        : null,
-      end: form.calendarEnd
-        ? form.calendarEnd.toISOString().slice(0, 10)
-        : null,
-      message: form.calendarMessage,
-    });
+      const calendarInfo = JSON.stringify({
+        start: form.calendarStart
+          ? form.calendarStart.toISOString().slice(0, 10)
+          : null,
+        end: form.calendarEnd
+          ? form.calendarEnd.toISOString().slice(0, 10)
+          : null,
+        message: form.calendarMessage,
+      });
 
-    try {
       const client = generateClient();
       await client.graphql({
         query: createSchool,
@@ -151,40 +163,37 @@ export default function CreateSchoolPage() {
             news: form.news,
             logoURL,
             heroImageURL,
-            // REQUIRED: You must provide schoolAdmin and admins!
-            // For now, use blank string or get from current user/admins
-            schoolAdmin: "", // <-- You MUST provide this value!
+            schoolAdmin: form.schoolAdmin || user?.email || "",
             admins: [],
           },
         },
       });
-      navigate("/app-admin/schools");
+
+      onClose();
+      await onCreate(); // Refresh school list after creation
     } catch (err: any) {
       setError(err.message || "Failed to create school");
     } finally {
       setSaving(false);
+      setUploadingLogo(false);
+      setUploadingHero(false);
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 650, mx: "auto", p: 3 }}>
-      <Paper sx={{ p: 4 }}>
-        <Typography variant="h5" mb={3}>
-          Create School
-        </Typography>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={2}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <form onSubmit={handleSubmit}>
+        <DialogTitle>Create School</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            {error && <Alert severity="error">{error}</Alert>}
             <TextField
               label="School Name"
               name="name"
               value={form.name}
               onChange={handleInputChange}
               required
+              fullWidth
             />
             <TextField
               label="Subdomain"
@@ -193,6 +202,7 @@ export default function CreateSchoolPage() {
               onChange={handleInputChange}
               required
               helperText="Unique subdomain (e.g., a3 for a3.classpoint.com)"
+              fullWidth
             />
             <TextField
               label="Address"
@@ -200,6 +210,7 @@ export default function CreateSchoolPage() {
               value={form.address}
               onChange={handleInputChange}
               required
+              fullWidth
             />
             <TextField
               label="Contact Email"
@@ -207,6 +218,7 @@ export default function CreateSchoolPage() {
               value={form.contactEmail}
               onChange={handleInputChange}
               type="email"
+              fullWidth
             />
             <TextField
               label="Phone"
@@ -214,12 +226,14 @@ export default function CreateSchoolPage() {
               value={form.phone}
               onChange={handleInputChange}
               type="tel"
+              fullWidth
             />
             <TextField
               label="Website"
               name="website"
               value={form.website}
               onChange={handleInputChange}
+              fullWidth
             />
             <TextField
               label="Description"
@@ -228,9 +242,9 @@ export default function CreateSchoolPage() {
               onChange={handleInputChange}
               multiline
               minRows={2}
+              fullWidth
             />
 
-            {/* Calendar Info */}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <DatePicker
@@ -259,9 +273,9 @@ export default function CreateSchoolPage() {
               multiline
               minRows={2}
               helperText="e.g. School opens in September, breaks in December."
+              fullWidth
             />
 
-            {/* News/Announcements */}
             <TextField
               label="Latest News / Announcement"
               name="news"
@@ -270,6 +284,17 @@ export default function CreateSchoolPage() {
               multiline
               minRows={2}
               helperText="Optional: Show on the public school page."
+              fullWidth
+            />
+
+            <TextField
+              label="School Admin Email"
+              name="schoolAdmin"
+              value={form.schoolAdmin}
+              onChange={handleInputChange}
+              required
+              helperText="Set who will be the school admin (email or user ID)."
+              fullWidth
             />
 
             {/* Logo Upload */}
@@ -283,25 +308,12 @@ export default function CreateSchoolPage() {
                 accept="image/png, image/jpeg"
                 onChange={handleLogoChange}
                 style={{ display: "block", marginBottom: 8 }}
+                disabled={uploadingLogo}
               />
               {logoFile && (
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  Selected: {logoFile.name}{" "}
-                  {logoStatus === "uploading" && (
-                    <>
-                      <CircularProgress size={14} sx={{ ml: 1 }} /> Uploading…
-                    </>
-                  )}
-                  {logoStatus === "uploaded" && (
-                    <span style={{ color: "green", marginLeft: 8 }}>
-                      Uploaded!
-                    </span>
-                  )}
-                  {logoStatus === "error" && (
-                    <span style={{ color: "red", marginLeft: 8 }}>
-                      Upload failed
-                    </span>
-                  )}
+                <Typography variant="caption">
+                  {logoFile.name}
+                  {uploadingLogo ? " (Uploading…)" : " (Ready)"}
                 </Typography>
               )}
             </Box>
@@ -317,53 +329,31 @@ export default function CreateSchoolPage() {
                 accept="image/png, image/jpeg"
                 onChange={handleHeroChange}
                 style={{ display: "block", marginBottom: 8 }}
+                disabled={uploadingHero}
               />
               {heroFile && (
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  Selected: {heroFile.name}{" "}
-                  {heroStatus === "uploading" && (
-                    <>
-                      <CircularProgress size={14} sx={{ ml: 1 }} /> Uploading…
-                    </>
-                  )}
-                  {heroStatus === "uploaded" && (
-                    <span style={{ color: "green", marginLeft: 8 }}>
-                      Uploaded!
-                    </span>
-                  )}
-                  {heroStatus === "error" && (
-                    <span style={{ color: "red", marginLeft: 8 }}>
-                      Upload failed
-                    </span>
-                  )}
+                <Typography variant="caption">
+                  {heroFile.name}
+                  {uploadingHero ? " (Uploading…)" : " (Ready)"}
                 </Typography>
               )}
             </Box>
-
-            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={
-                  saving ||
-                  logoStatus === "uploading" ||
-                  heroStatus === "uploading"
-                }
-              >
-                {saving ? "Creating…" : "Create School"}
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={() => navigate(-1)}
-                disabled={saving}
-              >
-                Cancel
-              </Button>
-            </Stack>
           </Stack>
-        </form>
-      </Paper>
-    </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={saving || uploadingLogo || uploadingHero}
+          >
+            {saving ? "Creating..." : "Create School"}
+          </Button>
+          <Button onClick={onClose} variant="outlined" disabled={saving}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 }

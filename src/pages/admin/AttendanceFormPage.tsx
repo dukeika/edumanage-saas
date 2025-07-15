@@ -3,7 +3,7 @@ import { Box, Typography, Button, MenuItem, Select } from "@mui/material";
 import RequireRole from "../../components/RequireRole";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 import { generateClient } from "@aws-amplify/api";
-import { customCreateAttendance } from "../../graphql/customMutations";
+import { createAttendance } from "../../graphql/mutations";
 
 interface Props {
   students: { id: string; name: string }[];
@@ -22,11 +22,11 @@ const AttendanceFormPage: React.FC<Props> = ({ students, date }) => {
     await Promise.all(
       students.map((s) =>
         client.graphql({
-          query: customCreateAttendance,
+          query: createAttendance,
           variables: {
             input: {
               studentID: s.id,
-              classID: user.classID,
+              classID: user.classID ?? "",
               date,
               status: statusMap[s.id] || "Present",
             },

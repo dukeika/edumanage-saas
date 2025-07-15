@@ -34,6 +34,9 @@
           "s3Key": "amplify-builds/adminUpdateUserAttribute-3759783966344c314c68-build.zip",
           "authEdumanagesaasda694Ea8Userpoolid": "eu-west-2_OuXc4ZpsU"
         }
+      },
+      "storage": {
+        "schoolimages": {}
       }
     }
   }

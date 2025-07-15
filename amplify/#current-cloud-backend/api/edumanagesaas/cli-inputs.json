@@ -4,16 +4,16 @@
     "apiName": "edumanagesaas",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authedumanagesaasda694ea8"
+      "mode": "API_KEY",
+      "expirationTime": 30,
+      "apiKeyExpirationDate": "2025-08-14T06:41:33.897Z",
+      "keyDescription": "Class Point API Key"
     },
     "conflictResolution": {},
     "additionalAuthTypes": [
       {
-        "mode": "API_KEY",
-        "expirationTime": 7,
-        "apiKeyExpirationDate": "2025-07-19T04:42:06.768Z",
-        "keyDescription": "EduManageAPIKey"
+        "mode": "AMAZON_COGNITO_USER_POOLS",
+        "cognitoUserPoolId": "authedumanagesaasda694ea8"
       }
     ]
   }

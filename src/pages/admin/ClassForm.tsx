@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Paper, Box, Typography } from "@mui/material";
 import { generateClient } from "aws-amplify/api";
-import { customCreateClass } from "../../graphql/customMutations"; // ✅ custom mutation
+import { createClass } from "../../graphql/mutations";
 
 const client = generateClient();
 
@@ -22,7 +22,7 @@ const ClassForm = ({ schoolID }: ClassFormProps) => {
 
     try {
       const result = await client.graphql({
-        query: customCreateClass, // ✅ use safe mutation
+        query: createClass, // ✅ use safe mutation
         variables: {
           input: {
             name,

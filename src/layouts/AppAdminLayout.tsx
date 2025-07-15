@@ -9,8 +9,8 @@ const appAdminLinks: SidebarLink[] = [
   { to: "/app-admin", label: "Dashboard" },
   { to: "/app-admin/schools", label: "Schools" },
   { to: "/app-admin/users", label: "Users" },
-  { to: "/app-admin/create-school", label: "Create School" },
-  { to: "/app-admin/assign-admin", label: "Assign Admin" },
+  //{ to: "/app-admin/create-school", label: "Create School" },
+  // { to: "/app-admin/assign-admin", label: "Assign Admin" },
 ];
 
 const AppAdminLayout: React.FC = () => {

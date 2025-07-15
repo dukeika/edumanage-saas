@@ -20,6 +20,12 @@
                 "description": "EduManageAPIKey"
               },
               "authenticationType": "API_KEY"
+            },
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authedumanagesaasda694ea8"
+              }
             }
           ],
           "defaultAuthentication": {
@@ -125,6 +131,13 @@
           "resourceName": "adminUpdateUserAttributes"
         }
       ]
+    }
+  },
+  "storage": {
+    "schoolimages": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
     }
   }
 }

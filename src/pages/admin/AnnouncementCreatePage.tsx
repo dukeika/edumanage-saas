@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { generateClient } from "aws-amplify/api";
-import { customCreateAnnouncement } from "../../graphql/customMutations";
+import { createAnnouncement } from "../../graphql/mutations";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 
 const AnnouncementCreatePage: React.FC = () => {
@@ -16,14 +16,14 @@ const AnnouncementCreatePage: React.FC = () => {
     const client = generateClient();
     try {
       await client.graphql({
-        query: customCreateAnnouncement,
+        query: createAnnouncement,
         variables: {
           input: {
             title,
-            body,
+            message,
             audience,
             createdBy: user.id,
-            createdAt: new Date().toISOString(),
+            // createdAt: new Date().toISOString(),
             schoolID: user.schoolID,
           },
         },

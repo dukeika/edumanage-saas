@@ -1,6 +1,8 @@
 {
   "version": "1",
   "cognitoConfig": {
+    "identityPoolName": "edumanagesaasda694ea8_identitypool_c88e677b",
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "edumanda694ea8",
     "userPoolName": "edumanagesaasda694ea8_userpool_da694ea8",
     "autoVerifiedAttributes": [
@@ -33,7 +35,7 @@
     "userpoolClientSetAttributes": true,
     "sharedId": "da694ea8",
     "resourceName": "edumanagesaasda694ea8",
-    "authSelections": "userPoolOnly",
+    "authSelections": "identityPoolAndUserPool",
     "useDefault": "manual",
     "hostedUI": false,
     "usernameAttributes": [

@@ -25,6 +25,7 @@ export const createSchool = /* GraphQL */ `mutation CreateSchool(
     contactEmail
     phone
     website
+    news
     calendarInfo
     academicYears {
       nextToken
@@ -72,6 +73,7 @@ export const updateSchool = /* GraphQL */ `mutation UpdateSchool(
     contactEmail
     phone
     website
+    news
     calendarInfo
     academicYears {
       nextToken
@@ -119,6 +121,7 @@ export const deleteSchool = /* GraphQL */ `mutation DeleteSchool(
     contactEmail
     phone
     website
+    news
     calendarInfo
     academicYears {
       nextToken
@@ -170,6 +173,7 @@ export const createAcademicYear = /* GraphQL */ `mutation CreateAcademicYear(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -210,6 +214,7 @@ export const updateAcademicYear = /* GraphQL */ `mutation UpdateAcademicYear(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -250,6 +255,7 @@ export const deleteAcademicYear = /* GraphQL */ `mutation DeleteAcademicYear(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -389,6 +395,7 @@ export const createClass = /* GraphQL */ `mutation CreateClass(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -446,6 +453,7 @@ export const updateClass = /* GraphQL */ `mutation UpdateClass(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -503,6 +511,7 @@ export const deleteClass = /* GraphQL */ `mutation DeleteClass(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -571,6 +580,7 @@ export const createStudent = /* GraphQL */ `mutation CreateStudent(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -626,6 +636,7 @@ export const updateStudent = /* GraphQL */ `mutation UpdateStudent(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -681,6 +692,7 @@ export const deleteStudent = /* GraphQL */ `mutation DeleteStudent(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -727,6 +739,7 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -765,6 +778,7 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt
@@ -803,6 +817,7 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
       contactEmail
       phone
       website
+      news
       calendarInfo
       createdAt
       updatedAt

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Paper, Typography, Box } from "@mui/material";
 import { generateClient } from "aws-amplify/api";
-import { customCreateSubject } from "../../graphql/customMutations";
+import { createSubject } from "../../graphql/mutations";
 
 const client = generateClient();
 
@@ -23,7 +23,7 @@ const SubjectForm: React.FC<SubjectFormProps> = ({ classID }) => {
 
     try {
       const result = await client.graphql({
-        query: customCreateSubject,
+        query: createSubject,
         variables: {
           input: {
             name,

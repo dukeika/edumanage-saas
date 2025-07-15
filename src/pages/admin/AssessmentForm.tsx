@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { TextField, Button, Paper, Box, Typography } from "@mui/material";
 import { generateClient } from "aws-amplify/api";
-import { customCreateAssessment } from "../../graphql/customMutations";
+import { createAssessment } from "../../graphql/mutations";
 import { useCurrentUser } from "../../utils/useCurrentUser";
 
 const client = generateClient();
@@ -26,7 +26,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({
 
     try {
       const result: any = await client.graphql({
-        query: customCreateAssessment,
+        query: createAssessment,
         variables: {
           input: {
             title,
