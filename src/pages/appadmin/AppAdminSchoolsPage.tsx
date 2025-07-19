@@ -4,97 +4,120 @@ import {
   Button,
   Typography,
   Paper,
-  TextField,
-  CircularProgress,
   Stack,
   IconButton,
+  TextField,
+  CircularProgress,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { generateClient } from "@aws-amplify/api";
 import { listSchools } from "../../graphql/queries";
-import { useNavigate } from "react-router-dom";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { deleteSchool } from "../../graphql/mutations";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
+import CreateEditSchoolDialog from "../../components/appadmin/CreateEditSchoolDialog";
 
 export default function AppAdminSchoolsPage() {
   const [schools, setSchools] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const navigate = useNavigate();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editing, setEditing] = useState<any>(null);
+
+  // Fetch schools from API
+  async function fetchSchools() {
+    setLoading(true);
+    try {
+      const client = generateClient();
+      const res: any = await client.graphql({ query: listSchools });
+      setSchools(res.data.listSchools.items || []);
+    } catch (err) {
+      console.error("Failed to fetch schools:", err);
+      setSchools([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     fetchSchools();
   }, []);
 
-  const fetchSchools = async () => {
+  const filteredSchools = schools.filter(
+    (s) =>
+      s?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      s?.subdomain?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Delete
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Delete this school?")) return;
     setLoading(true);
     try {
       const client = generateClient();
-      const res: any = await client.graphql({
-        query: listSchools,
-        authMode: "apiKey", // ← force public read
+      await client.graphql({
+        query: deleteSchool,
+        variables: { input: { id } },
       });
-      setSchools(res.data?.listSchools?.items || []);
-    } catch (e) {
-      console.error("fetchSchools error:", e);
-      setSchools([]);
+      await fetchSchools();
+    } catch {
+      // Optionally handle error
     }
     setLoading(false);
   };
 
-  const filtered = schools.filter(
-    (s) =>
-      s.name?.toLowerCase().includes(search.toLowerCase()) ||
-      s.subdomain?.toLowerCase().includes(search.toLowerCase()) ||
-      s.address?.toLowerCase().includes(search.toLowerCase())
-  );
-
+  // Columns
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Name", flex: 1, minWidth: 140 },
+    { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
     { field: "subdomain", headerName: "Subdomain", flex: 1, minWidth: 120 },
     {
-      field: "address",
-      headerName: "Address",
-      flex: 1.5,
-      minWidth: 160,
-      valueGetter: (params: any) => params.row?.address ?? "—",
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      minWidth: 120,
+      renderCell: (params: any) => (
+        <Typography
+          color={params.value === "ACTIVE" ? "green" : "orange"}
+          fontWeight={500}
+        >
+          {params.value}
+        </Typography>
+      ),
     },
-    { field: "schoolAdmin", headerName: "Admin", flex: 1, minWidth: 120 },
     {
       field: "actions",
       headerName: "Actions",
-      minWidth: 160,
       flex: 1,
+      minWidth: 180,
       sortable: false,
       filterable: false,
-      renderCell: ({ row }) => (
+      renderCell: (params: any) => (
         <Stack direction="row" spacing={1}>
           <IconButton
-            size="small"
             color="primary"
-            onClick={() => window.open(`/school/${row.subdomain}`, "_blank")}
-          >
-            <VisibilityIcon />
-          </IconButton>
-          <IconButton
             size="small"
-            color="info"
-            onClick={() => navigate(`/app-admin/edit-school/${row.id}`)}
+            onClick={() => setEditing(params.row)}
+            title="Edit"
           >
             <EditIcon />
           </IconButton>
           <IconButton
-            size="small"
             color="error"
-            onClick={() => {
-              if (window.confirm(`Delete ${row.name}?`)) {
-                /* TODO: delete mutation + refetch */
-              }
-            }}
+            size="small"
+            onClick={() => handleDelete(params.row.id)}
+            title="Delete"
           >
             <DeleteIcon />
+          </IconButton>
+          <IconButton
+            color="info"
+            size="small"
+            href={`/school/${params.row.subdomain}`}
+            title="View"
+          >
+            <VisibilityIcon />
           </IconButton>
         </Stack>
       ),
@@ -105,34 +128,31 @@ export default function AppAdminSchoolsPage() {
     <Box sx={{ p: { xs: 1, md: 3 } }}>
       <Paper
         sx={{
-          p: 3,
-          mb: 3,
+          mb: 2,
+          p: 2,
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
         }}
       >
-        <Typography variant="h5" fontWeight={600}>
+        <Typography variant="h6" fontWeight={600}>
           All Schools
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => navigate("/app-admin/create-school")}
+          onClick={() => setCreateOpen(true)}
         >
           Create School
         </Button>
       </Paper>
 
-      <Box sx={{ mb: 2 }}>
-        <TextField
-          size="small"
-          label="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ width: 300, maxWidth: "100%" }}
-        />
-      </Box>
+      <TextField
+        label="Search"
+        size="small"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        sx={{ mb: 2, width: 300 }}
+      />
 
       <Paper sx={{ p: 2 }}>
         {loading ? (
@@ -141,15 +161,36 @@ export default function AppAdminSchoolsPage() {
           </Box>
         ) : (
           <DataGrid
-            rows={filtered}
+            rows={filteredSchools}
             columns={columns}
             getRowId={(r) => r.id}
             autoHeight
-            pageSizeOptions={[10, 25, 50]}
+            pageSizeOptions={[10, 20, 50]}
             disableRowSelectionOnClick
           />
         )}
       </Paper>
+
+      {/* Create Dialog */}
+      <CreateEditSchoolDialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onSaved={() => {
+          fetchSchools();
+          setCreateOpen(false);
+        }}
+      />
+
+      {/* Edit Dialog */}
+      <CreateEditSchoolDialog
+        open={!!editing}
+        initialData={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => {
+          setEditing(null);
+          fetchSchools();
+        }}
+      />
     </Box>
   );
 }

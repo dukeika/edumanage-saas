@@ -12,18 +12,30 @@ export const getSchool = /* GraphQL */ `query GetSchool($id: ID!) {
   getSchool(id: $id) {
     id
     name
-    address
     subdomain
-    schoolAdmin
-    admins
+    status
     logoURL
     heroImageURL
-    description
+    address
     contactEmail
     phone
     website
-    news
-    calendarInfo
+    description
+    calendar {
+      label
+      start
+      end
+      message
+      __typename
+    }
+    news {
+      title
+      message
+      date
+      __typename
+    }
+    schoolAdmin
+    admins
     academicYears {
       nextToken
       __typename
@@ -51,34 +63,25 @@ export const getSchool = /* GraphQL */ `query GetSchool($id: ID!) {
 }
 ` as GeneratedQuery<APITypes.GetSchoolQueryVariables, APITypes.GetSchoolQuery>;
 export const listSchools = /* GraphQL */ `query ListSchools(
-  $id: ID
   $filter: ModelSchoolFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listSchools(
-    id: $id
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listSchools(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -91,47 +94,6 @@ export const listSchools = /* GraphQL */ `query ListSchools(
   APITypes.ListSchoolsQueryVariables,
   APITypes.ListSchoolsQuery
 >;
-export const schoolsBySubdomain = /* GraphQL */ `query SchoolsBySubdomain(
-  $subdomain: String!
-  $sortDirection: ModelSortDirection
-  $filter: ModelSchoolFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  schoolsBySubdomain(
-    subdomain: $subdomain
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      name
-      address
-      subdomain
-      schoolAdmin
-      admins
-      logoURL
-      heroImageURL
-      description
-      contactEmail
-      phone
-      website
-      news
-      calendarInfo
-      createdAt
-      updatedAt
-      __typename
-    }
-    nextToken
-    __typename
-  }
-}
-` as GeneratedQuery<
-  APITypes.SchoolsBySubdomainQueryVariables,
-  APITypes.SchoolsBySubdomainQuery
->;
 export const getAcademicYear = /* GraphQL */ `query GetAcademicYear($id: ID!) {
   getAcademicYear(id: $id) {
     id
@@ -140,18 +102,17 @@ export const getAcademicYear = /* GraphQL */ `query GetAcademicYear($id: ID!) {
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -250,18 +211,17 @@ export const getClass = /* GraphQL */ `query GetClass($id: ID!) {
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -337,18 +297,17 @@ export const getStudent = /* GraphQL */ `query GetStudent($id: ID!) {
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -405,18 +364,17 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename

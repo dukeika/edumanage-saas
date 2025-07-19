@@ -15,18 +15,30 @@ export const onCreateSchool = /* GraphQL */ `subscription OnCreateSchool(
   onCreateSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
     id
     name
-    address
     subdomain
-    schoolAdmin
-    admins
+    status
     logoURL
     heroImageURL
-    description
+    address
     contactEmail
     phone
     website
-    news
-    calendarInfo
+    description
+    calendar {
+      label
+      start
+      end
+      message
+      __typename
+    }
+    news {
+      title
+      message
+      date
+      __typename
+    }
+    schoolAdmin
+    admins
     academicYears {
       nextToken
       __typename
@@ -63,18 +75,30 @@ export const onUpdateSchool = /* GraphQL */ `subscription OnUpdateSchool(
   onUpdateSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
     id
     name
-    address
     subdomain
-    schoolAdmin
-    admins
+    status
     logoURL
     heroImageURL
-    description
+    address
     contactEmail
     phone
     website
-    news
-    calendarInfo
+    description
+    calendar {
+      label
+      start
+      end
+      message
+      __typename
+    }
+    news {
+      title
+      message
+      date
+      __typename
+    }
+    schoolAdmin
+    admins
     academicYears {
       nextToken
       __typename
@@ -111,18 +135,30 @@ export const onDeleteSchool = /* GraphQL */ `subscription OnDeleteSchool(
   onDeleteSchool(filter: $filter, schoolAdmin: $schoolAdmin) {
     id
     name
-    address
     subdomain
-    schoolAdmin
-    admins
+    status
     logoURL
     heroImageURL
-    description
+    address
     contactEmail
     phone
     website
-    news
-    calendarInfo
+    description
+    calendar {
+      label
+      start
+      end
+      message
+      __typename
+    }
+    news {
+      title
+      message
+      date
+      __typename
+    }
+    schoolAdmin
+    admins
     academicYears {
       nextToken
       __typename
@@ -163,18 +199,17 @@ export const onCreateAcademicYear = /* GraphQL */ `subscription OnCreateAcademic
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -204,18 +239,17 @@ export const onUpdateAcademicYear = /* GraphQL */ `subscription OnUpdateAcademic
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -245,18 +279,17 @@ export const onDeleteAcademicYear = /* GraphQL */ `subscription OnDeleteAcademic
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -385,18 +418,17 @@ export const onCreateClass = /* GraphQL */ `subscription OnCreateClass(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -443,18 +475,17 @@ export const onUpdateClass = /* GraphQL */ `subscription OnUpdateClass(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -501,18 +532,17 @@ export const onDeleteClass = /* GraphQL */ `subscription OnDeleteClass(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -570,18 +600,17 @@ export const onCreateStudent = /* GraphQL */ `subscription OnCreateStudent(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -626,18 +655,17 @@ export const onUpdateStudent = /* GraphQL */ `subscription OnUpdateStudent(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -682,18 +710,17 @@ export const onDeleteStudent = /* GraphQL */ `subscription OnDeleteStudent(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -729,18 +756,17 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -768,18 +794,17 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -807,18 +832,17 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename

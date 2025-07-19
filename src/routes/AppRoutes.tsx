@@ -24,7 +24,6 @@ import ParentLayout from "../layouts/ParentLayout";
 // App Admin pages
 import AppAdminSchoolsPage from "../pages/appadmin/AppAdminSchoolsPage";
 import AppAdminUsersPage from "../pages/appadmin/AppAdminUsersPage";
-import CreateSchoolPage from "../pages/appadmin/CreateSchoolPage";
 import AssignAdminPage from "../pages/appadmin/AssignAdminPage";
 import EditSchoolPage from "../pages/appadmin/EditSchoolPage";
 
@@ -58,7 +57,6 @@ const AppRoutes: React.FC = () => (
       <Route index element={<AppAdminDashboard />} />
       <Route path="schools" element={<AppAdminSchoolsPage />} />
       <Route path="users" element={<AppAdminUsersPage />} />
-      <Route path="create-school" element={<CreateSchoolPage />} />
       <Route path="assign-admin" element={<AssignAdminPage />} />
       <Route path="edit-school/:schoolId" element={<EditSchoolPage />} />
 

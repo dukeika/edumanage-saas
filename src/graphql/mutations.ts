@@ -15,18 +15,30 @@ export const createSchool = /* GraphQL */ `mutation CreateSchool(
   createSchool(input: $input, condition: $condition) {
     id
     name
-    address
     subdomain
-    schoolAdmin
-    admins
+    status
     logoURL
     heroImageURL
-    description
+    address
     contactEmail
     phone
     website
-    news
-    calendarInfo
+    description
+    calendar {
+      label
+      start
+      end
+      message
+      __typename
+    }
+    news {
+      title
+      message
+      date
+      __typename
+    }
+    schoolAdmin
+    admins
     academicYears {
       nextToken
       __typename
@@ -63,18 +75,30 @@ export const updateSchool = /* GraphQL */ `mutation UpdateSchool(
   updateSchool(input: $input, condition: $condition) {
     id
     name
-    address
     subdomain
-    schoolAdmin
-    admins
+    status
     logoURL
     heroImageURL
-    description
+    address
     contactEmail
     phone
     website
-    news
-    calendarInfo
+    description
+    calendar {
+      label
+      start
+      end
+      message
+      __typename
+    }
+    news {
+      title
+      message
+      date
+      __typename
+    }
+    schoolAdmin
+    admins
     academicYears {
       nextToken
       __typename
@@ -111,18 +135,30 @@ export const deleteSchool = /* GraphQL */ `mutation DeleteSchool(
   deleteSchool(input: $input, condition: $condition) {
     id
     name
-    address
     subdomain
-    schoolAdmin
-    admins
+    status
     logoURL
     heroImageURL
-    description
+    address
     contactEmail
     phone
     website
-    news
-    calendarInfo
+    description
+    calendar {
+      label
+      start
+      end
+      message
+      __typename
+    }
+    news {
+      title
+      message
+      date
+      __typename
+    }
+    schoolAdmin
+    admins
     academicYears {
       nextToken
       __typename
@@ -163,18 +199,17 @@ export const createAcademicYear = /* GraphQL */ `mutation CreateAcademicYear(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -204,18 +239,17 @@ export const updateAcademicYear = /* GraphQL */ `mutation UpdateAcademicYear(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -245,18 +279,17 @@ export const deleteAcademicYear = /* GraphQL */ `mutation DeleteAcademicYear(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -385,18 +418,17 @@ export const createClass = /* GraphQL */ `mutation CreateClass(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -443,18 +475,17 @@ export const updateClass = /* GraphQL */ `mutation UpdateClass(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -501,18 +532,17 @@ export const deleteClass = /* GraphQL */ `mutation DeleteClass(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -570,18 +600,17 @@ export const createStudent = /* GraphQL */ `mutation CreateStudent(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -626,18 +655,17 @@ export const updateStudent = /* GraphQL */ `mutation UpdateStudent(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -682,18 +710,17 @@ export const deleteStudent = /* GraphQL */ `mutation DeleteStudent(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -729,18 +756,17 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -768,18 +794,17 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename
@@ -807,18 +832,17 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     school {
       id
       name
-      address
       subdomain
-      schoolAdmin
-      admins
+      status
       logoURL
       heroImageURL
-      description
+      address
       contactEmail
       phone
       website
-      news
-      calendarInfo
+      description
+      schoolAdmin
+      admins
       createdAt
       updatedAt
       __typename

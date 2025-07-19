@@ -42,7 +42,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/auth/edumanagesaasda694ea8-cloudformation-template.json",
         "logicalId": "authedumanagesaasda694ea8"
       },
-      "lastPushTimeStamp": "2025-07-15T10:14:51.252Z",
+      "lastPushTimeStamp": "2025-07-19T04:24:03.737Z",
       "output": {
         "UserPoolId": "eu-west-2_OuXc4ZpsU",
         "AppClientIDWeb": "2ojmkpj241a2jmsd02scen1eck",
@@ -103,8 +103,8 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiedumanagesaas"
       },
-      "lastPushTimeStamp": "2025-07-15T10:14:55.805Z",
-      "lastPushDirHash": "iuYLL/GCjyKfV2Uhvc4S0yE8HEM="
+      "lastPushTimeStamp": "2025-07-19T04:24:03.737Z",
+      "lastPushDirHash": "fW661h2SthQhrtL6jnnog7ZobLE="
     }
   },
   "function": {
@@ -112,9 +112,9 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
-      "lastBuildTimeStamp": "2025-06-24T08:02:25.427Z",
+      "lastBuildTimeStamp": "2025-07-19T04:22:43.292Z",
       "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2025-06-24T08:02:25.459Z",
+      "lastPackageTimeStamp": "2025-07-19T04:22:43.331Z",
       "distZipFilename": "adminCreateUser-384352356e4e6c79394e-build.zip",
       "s3Bucket": {
         "deploymentBucketName": "amplify-edumanagesaas-dev-ca37e-deployment",
@@ -124,7 +124,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/function/adminCreateUser-cloudformation-template.json",
         "logicalId": "functionadminCreateUser"
       },
-      "lastPushTimeStamp": "2025-07-15T10:14:51.259Z",
+      "lastPushTimeStamp": "2025-07-19T04:24:03.737Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::624914081304:role/edumanagesaasLambdaRole754f667f-dev",
         "Region": "eu-west-2",
@@ -140,7 +140,7 @@
       "service": "S3",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
-      "lastPushTimeStamp": "2025-07-15T10:14:51.262Z",
+      "lastPushTimeStamp": "2025-07-19T04:24:03.737Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-edumanagesaas-dev-ca37e-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
         "logicalId": "storageschoolimages"
