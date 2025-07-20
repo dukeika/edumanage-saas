@@ -94,6 +94,46 @@ export const listSchools = /* GraphQL */ `query ListSchools(
   APITypes.ListSchoolsQueryVariables,
   APITypes.ListSchoolsQuery
 >;
+export const schoolsBySubdomain = /* GraphQL */ `query SchoolsBySubdomain(
+  $subdomain: String!
+  $sortDirection: ModelSortDirection
+  $filter: ModelSchoolFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  schoolsBySubdomain(
+    subdomain: $subdomain
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      name
+      subdomain
+      status
+      logoURL
+      heroImageURL
+      address
+      contactEmail
+      phone
+      website
+      description
+      schoolAdmin
+      admins
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SchoolsBySubdomainQueryVariables,
+  APITypes.SchoolsBySubdomainQuery
+>;
 export const getAcademicYear = /* GraphQL */ `query GetAcademicYear($id: ID!) {
   getAcademicYear(id: $id) {
     id

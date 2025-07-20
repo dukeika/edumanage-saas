@@ -1,3 +1,4 @@
+// ----------- src/pages/appadmin/AppAdminSchoolsPage.tsx -----------
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -12,7 +13,7 @@ import {
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { generateClient } from "@aws-amplify/api";
 import { listSchools } from "../../graphql/queries";
-import { deleteSchool } from "../../graphql/mutations";
+import { deleteSchool, updateSchool } from "../../graphql/mutations";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -23,35 +24,56 @@ export default function AppAdminSchoolsPage() {
   const [schools, setSchools] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [createOpen, setCreateOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [editing, setEditing] = useState<any>(null);
-
-  // Fetch schools from API
-  async function fetchSchools() {
-    setLoading(true);
-    try {
-      const client = generateClient();
-      const res: any = await client.graphql({ query: listSchools });
-      setSchools(res.data.listSchools.items || []);
-    } catch (err) {
-      console.error("Failed to fetch schools:", err);
-      setSchools([]);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [statusLoadingId, setStatusLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSchools();
   }, []);
 
-  const filteredSchools = schools.filter(
+  async function fetchSchools() {
+    setLoading(true);
+    try {
+      const client = generateClient();
+      const res: any = await client.graphql({ query: listSchools });
+      // filter out null items and any that failed schema
+      const items = (res.data?.listSchools?.items || []).filter(Boolean);
+      setSchools(items);
+    } catch (err: any) {
+      console.error("Fetch schools error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const filtered = schools.filter(
     (s) =>
-      s?.name?.toLowerCase().includes(search.toLowerCase()) ||
-      s?.subdomain?.toLowerCase().includes(search.toLowerCase())
+      s.name?.toLowerCase().includes(search.toLowerCase()) ||
+      s.subdomain?.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Delete
+  const toggleStatus = async (row: any) => {
+    setStatusLoadingId(row.id);
+    try {
+      const client = generateClient();
+      await client.graphql({
+        query: updateSchool,
+        variables: {
+          input: {
+            id: row.id,
+            status: row.status === "ACTIVE" ? "NOT_ACTIVE" : "ACTIVE",
+          },
+        },
+      });
+      await fetchSchools();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setStatusLoadingId(null);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this school?")) return;
     setLoading(true);
@@ -62,13 +84,13 @@ export default function AppAdminSchoolsPage() {
         variables: { input: { id } },
       });
       await fetchSchools();
-    } catch {
-      // Optionally handle error
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  // Columns
   const columns: GridColDef[] = [
     { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
     { field: "subdomain", headerName: "Subdomain", flex: 1, minWidth: 120 },
@@ -76,21 +98,28 @@ export default function AppAdminSchoolsPage() {
       field: "status",
       headerName: "Status",
       flex: 1,
-      minWidth: 120,
+      minWidth: 130,
       renderCell: (params: any) => (
-        <Typography
-          color={params.value === "ACTIVE" ? "green" : "orange"}
-          fontWeight={500}
+        <Button
+          size="small"
+          variant="contained"
+          color={params.value === "ACTIVE" ? "success" : "warning"}
+          disabled={statusLoadingId === params.row.id}
+          onClick={() => toggleStatus(params.row)}
         >
-          {params.value}
-        </Typography>
+          {statusLoadingId === params.row.id ? (
+            <CircularProgress color="inherit" size={18} />
+          ) : (
+            params.value
+          )}
+        </Button>
       ),
     },
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      minWidth: 180,
+      minWidth: 150,
       sortable: false,
       filterable: false,
       renderCell: (params: any) => (
@@ -125,7 +154,7 @@ export default function AppAdminSchoolsPage() {
   ];
 
   return (
-    <Box sx={{ p: { xs: 1, md: 3 } }}>
+    <Box sx={{ p: 3 }}>
       <Paper
         sx={{
           mb: 2,
@@ -134,13 +163,14 @@ export default function AppAdminSchoolsPage() {
           justifyContent: "space-between",
         }}
       >
-        <Typography variant="h6" fontWeight={600}>
-          All Schools
-        </Typography>
+        <Typography variant="h6">All Schools</Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setCreateOpen(true)}
+          onClick={() => {
+            setEditing(null);
+            setOpenDialog(true);
+          }}
         >
           Create School
         </Button>
@@ -161,7 +191,7 @@ export default function AppAdminSchoolsPage() {
           </Box>
         ) : (
           <DataGrid
-            rows={filteredSchools}
+            rows={filtered}
             columns={columns}
             getRowId={(r) => r.id}
             autoHeight
@@ -171,24 +201,14 @@ export default function AppAdminSchoolsPage() {
         )}
       </Paper>
 
-      {/* Create Dialog */}
       <CreateEditSchoolDialog
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        onSaved={() => {
-          fetchSchools();
-          setCreateOpen(false);
-        }}
-      />
-
-      {/* Edit Dialog */}
-      <CreateEditSchoolDialog
-        open={!!editing}
+        open={openDialog || Boolean(editing)}
         initialData={editing}
-        onClose={() => setEditing(null)}
+        onClose={() => setOpenDialog(false)}
         onSaved={() => {
-          setEditing(null);
           fetchSchools();
+          setOpenDialog(false);
+          setEditing(null);
         }}
       />
     </Box>

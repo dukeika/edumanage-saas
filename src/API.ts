@@ -737,6 +737,12 @@ export type ModelSchoolConnection = {
   nextToken?: string | null,
 };
 
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type ModelAcademicYearFilterInput = {
   id?: ModelIDInput | null,
   yearLabel?: ModelStringInput | null,
@@ -2547,6 +2553,39 @@ export type ListSchoolsQueryVariables = {
 
 export type ListSchoolsQuery = {
   listSchools?:  {
+    __typename: "ModelSchoolConnection",
+    items:  Array< {
+      __typename: "School",
+      id: string,
+      name: string,
+      subdomain: string,
+      status: string,
+      logoURL?: string | null,
+      heroImageURL?: string | null,
+      address?: string | null,
+      contactEmail?: string | null,
+      phone?: string | null,
+      website?: string | null,
+      description?: string | null,
+      schoolAdmin: string,
+      admins: Array< string >,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type SchoolsBySubdomainQueryVariables = {
+  subdomain: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelSchoolFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SchoolsBySubdomainQuery = {
+  schoolsBySubdomain?:  {
     __typename: "ModelSchoolConnection",
     items:  Array< {
       __typename: "School",

@@ -1,208 +1,283 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   Stack,
+  Button,
+  MenuItem,
+  CircularProgress,
+  InputLabel,
   Typography,
   IconButton,
-  InputLabel,
-  CircularProgress,
+  Box,
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { uploadData } from "@aws-amplify/storage";
 import { generateClient } from "@aws-amplify/api";
 import { createSchool, updateSchool } from "../../graphql/mutations";
-import { uploadData, getUrl } from "@aws-amplify/storage";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-// --- Types for form state ---
-type CalendarEntryForm = {
-  label: string;
-  start: Date | null;
-  end: Date | null;
-  message: string;
-};
-type NewsEntryForm = {
-  title: string;
-  message: string;
-  date: Date | null;
-};
-type SchoolForm = {
-  id?: string;
-  name: string;
-  subdomain: string;
-  status: string;
-  logoURL: string;
-  heroImageURL: string;
-  address: string;
-  contactEmail: string;
-  phone: string;
-  website: string;
-  description: string;
-  calendar: CalendarEntryForm[];
-  news: NewsEntryForm[];
-  schoolAdmin: string;
-  admins: string[];
-};
-
-interface CreateEditSchoolDialogProps {
+interface Props {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  initialData?: Partial<SchoolForm> | null;
+  initialData?: any;
 }
+
+const STATUS_OPTIONS = [
+  { value: "ACTIVE", label: "Active" },
+  { value: "NOT_ACTIVE", label: "Not Active" },
+];
+
+const emptyCalendar = { label: "", start: null, end: null, message: "" };
+const emptyNews = { title: "", message: "", date: null };
 
 export default function CreateEditSchoolDialog({
   open,
   onClose,
   onSaved,
-  initialData = null,
-}: CreateEditSchoolDialogProps) {
-  const editing = !!(initialData && initialData.id);
+  initialData,
+}: Props) {
+  const editing = !!initialData;
 
-  // Form state
-  const [form, setForm] = useState<SchoolForm>({
+  const [form, setForm] = useState<any>({
     name: "",
     subdomain: "",
-    status: "ACTIVE",
-    logoURL: "",
-    heroImageURL: "",
     address: "",
     contactEmail: "",
     phone: "",
     website: "",
     description: "",
-    calendar: [{ label: "", start: null, end: null, message: "" }],
-    news: [{ title: "", message: "", date: null }],
+    logoURL: "",
+    heroImageURL: "",
     schoolAdmin: "",
     admins: [],
+    status: "ACTIVE",
+    calendar: [emptyCalendar],
+    news: [emptyNews],
   });
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [heroFile, setHeroFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load for edit mode
+  // Parse DynamoDB Map arrays if present
+  function parseDynamoArr(arr: any[]): any[] {
+    if (!Array.isArray(arr)) return [];
+    return arr.map((item) => {
+      if (item && typeof item === "object" && !item.M) return item;
+      if (!item?.M) return {};
+      const out: any = {};
+      for (const [k, v] of Object.entries(item.M)) {
+        const vv = v as any;
+        out[k] = vv.S ?? vv.N ?? vv.BOOL ?? null;
+      }
+      return out;
+    });
+  }
+
   useEffect(() => {
     if (editing && initialData) {
       setForm({
-        ...form, // for defaults
         ...initialData,
-        calendar:
-          Array.isArray(initialData.calendar) && initialData.calendar.length
-            ? initialData.calendar.map((c) => ({
-                label: c.label || "",
-                start: c.start
-                  ? typeof c.start === "string"
-                    ? new Date(c.start)
-                    : c.start
-                  : null,
-
-                end: c.end
-                  ? typeof c.end === "string"
-                    ? new Date(c.end)
-                    : c.end
-                  : null,
-                message: c.message || "",
-              }))
-            : [{ label: "", start: null, end: null, message: "" }],
-        news:
-          Array.isArray(initialData.news) && initialData.news.length
-            ? initialData.news.map((n) => ({
-                title: n.title || "",
-                message: n.message || "",
-                date: n.date
-                  ? typeof n.date === "string"
-                    ? new Date(n.date)
-                    : n.date
-                  : null,
-              }))
-            : [{ title: "", message: "", date: null }],
+        calendar: parseDynamoArr(initialData.calendar).length
+          ? parseDynamoArr(initialData.calendar)
+          : [emptyCalendar],
+        news: parseDynamoArr(initialData.news).length
+          ? parseDynamoArr(initialData.news)
+          : [emptyNews],
       });
     } else {
       setForm({
         name: "",
         subdomain: "",
-        status: "ACTIVE",
-        logoURL: "",
-        heroImageURL: "",
         address: "",
         contactEmail: "",
         phone: "",
         website: "",
         description: "",
-        calendar: [{ label: "", start: null, end: null, message: "" }],
-        news: [{ title: "", message: "", date: null }],
+        logoURL: "",
+        heroImageURL: "",
         schoolAdmin: "",
         admins: [],
+        status: "ACTIVE",
+        calendar: [emptyCalendar],
+        news: [emptyNews],
       });
       setLogoFile(null);
       setHeroFile(null);
     }
-    // eslint-disable-next-line
-  }, [open, editing, initialData]);
+  }, [editing, initialData, open]);
 
-  const handleInput = (field: keyof SchoolForm, value: any) =>
-    setForm((f) => ({ ...f, [field]: value }));
+  // Handlers
+  const handleInput = (e: any) => {
+    const { name, value } = e.target;
+    setForm((f: any) => ({
+      ...f,
+      [name]: value,
+    }));
+  };
 
-  // Upload file
+  const handleCalendarChange = (idx: number, field: string, value: any) => {
+    setForm((f: any) => {
+      const arr = [...f.calendar];
+      arr[idx] = { ...arr[idx], [field]: value };
+      return { ...f, calendar: arr };
+    });
+  };
+
+  const handleNewsChange = (idx: number, field: string, value: any) => {
+    setForm((f: any) => {
+      const arr = [...f.news];
+      arr[idx] = { ...arr[idx], [field]: value };
+      return { ...f, news: arr };
+    });
+  };
+
+  const addCalendar = () =>
+    setForm((f: any) => ({
+      ...f,
+      calendar: [...f.calendar, { ...emptyCalendar }],
+    }));
+
+  const removeCalendar = (idx: number) =>
+    setForm((f: any) => ({
+      ...f,
+      calendar:
+        f.calendar.length > 1
+          ? f.calendar.filter((_: any, i: number) => i !== idx)
+          : f.calendar,
+    }));
+
+  const addNews = () =>
+    setForm((f: any) => ({
+      ...f,
+      news: [...f.news, { ...emptyNews }],
+    }));
+
+  const removeNews = (idx: number) =>
+    setForm((f: any) => ({
+      ...f,
+      news:
+        f.news.length > 1
+          ? f.news.filter((_: any, i: number) => i !== idx)
+          : f.news,
+    }));
+
+  // Upload file to S3 and return the public URL (not a signed URL)
   async function uploadImage(file: File, prefix: string) {
-    const key = `${prefix}/${Date.now()}-${file.name}`;
+    const ext = file.name.split(".").pop();
+    const filename = `${prefix}/${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2)}.${ext}`;
     setUploading(true);
-    await uploadData({ data: file, path: `public/${key}` });
-    const { url } = await getUrl({ path: `public/${key}` });
+    await uploadData({
+      path: `public/${filename}`,
+      data: file,
+    });
     setUploading(false);
-    return url.toString();
+    // Direct public URL:
+    const s3Bucket =
+      process.env.REACT_APP_S3_BUCKET ||
+      "classpoint-school-media-1234ca37e-dev"; // fallback: change to your bucket!
+    const s3Region = process.env.REACT_APP_S3_REGION || "eu-west-2"; // fallback: change if needed
+    return `https://${s3Bucket}.s3.${s3Region}.amazonaws.com/public/${filename}`;
   }
 
   // Submit
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setError(null);
+    setSaving(true);
+
     let logoURL = form.logoURL;
     let heroImageURL = form.heroImageURL;
-    if (logoFile) logoURL = await uploadImage(logoFile, "school-logos");
-    if (heroFile) heroImageURL = await uploadImage(heroFile, "school-hero");
+    try {
+      if (logoFile) {
+        logoURL = await uploadImage(logoFile, "school-logos");
+      }
+      if (heroFile) {
+        heroImageURL = await uploadImage(heroFile, "school-hero");
+      }
+    } catch (err) {
+      setError("Image upload failed");
+      setSaving(false);
+      return;
+    }
 
-    const calendarArr = form.calendar.map((c) => ({
-      label: c.label,
-      start: c.start ? c.start.toISOString().slice(0, 10) : null,
-      end: c.end ? c.end.toISOString().slice(0, 10) : null,
-      message: c.message,
+    // Prepare calendar/news arrays for API
+    const calendarArr = form.calendar.map((c: any) => ({
+      label: c.label || "",
+      start: c.start
+        ? c.start instanceof Date
+          ? c.start.toISOString().slice(0, 10)
+          : c.start
+        : null,
+      end: c.end
+        ? c.end instanceof Date
+          ? c.end.toISOString().slice(0, 10)
+          : c.end
+        : null,
+      message: c.message || "",
     }));
 
-    const newsArr = form.news.map((n) => ({
+    const newsArr = form.news.map((n: any) => ({
       title: n.title,
       message: n.message,
-      date: n.date ? n.date.toISOString().slice(0, 10) : null,
+      date: n.date
+        ? n.date instanceof Date
+          ? n.date.toISOString().slice(0, 10)
+          : n.date
+        : null,
     }));
 
     const input: any = {
-      ...form,
+      name: form.name,
+      subdomain: form.subdomain,
+      address: form.address,
+      contactEmail: form.contactEmail,
+      phone: form.phone,
+      website: form.website,
+      description: form.description,
       logoURL,
       heroImageURL,
       calendar: calendarArr,
       news: newsArr,
+      schoolAdmin: form.schoolAdmin || "admin@example.com",
+      admins: form.admins?.length
+        ? form.admins
+        : [form.schoolAdmin || "admin@example.com"],
+      status: form.status,
     };
-    if (editing && initialData?.id) input.id = initialData.id;
+    if (editing) input.id = initialData.id;
 
-    // Required: schoolAdmin/admins
-    if (!input.schoolAdmin) input.schoolAdmin = "admin@example.com";
-    if (!input.admins || !input.admins.length)
-      input.admins = [input.schoolAdmin];
-
-    const client = generateClient();
-    if (editing) {
-      await client.graphql({ query: updateSchool, variables: { input } });
-    } else {
-      await client.graphql({ query: createSchool, variables: { input } });
+    try {
+      const client = generateClient();
+      if (editing) {
+        await client.graphql({
+          query: updateSchool,
+          variables: { input },
+        });
+      } else {
+        await client.graphql({
+          query: createSchool,
+          variables: { input },
+        });
+      }
+      onSaved();
+      onClose();
+    } catch (err: any) {
+      setError(err.message || "Failed to save school");
+    } finally {
+      setSaving(false);
     }
-    onSaved && onSaved();
-    onClose && onClose();
   };
 
   return (
@@ -211,229 +286,256 @@ export default function CreateEditSchoolDialog({
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Stack spacing={2} mt={1}>
+            {error && (
+              <Typography color="error" variant="body2">
+                {error}
+              </Typography>
+            )}
             <TextField
               label="School Name"
+              name="name"
               value={form.name}
-              onChange={(e) => handleInput("name", e.target.value)}
+              onChange={handleInput}
               required
+              fullWidth
             />
             <TextField
               label="Subdomain"
+              name="subdomain"
               value={form.subdomain}
-              onChange={(e) => handleInput("subdomain", e.target.value)}
+              onChange={handleInput}
               required
+              helperText="e.g. fls for fls.classpoint.com"
+              fullWidth
             />
             <TextField
               label="Address"
+              name="address"
               value={form.address}
-              onChange={(e) => handleInput("address", e.target.value)}
+              onChange={handleInput}
+              fullWidth
             />
             <TextField
               label="Contact Email"
+              name="contactEmail"
               value={form.contactEmail}
-              onChange={(e) => handleInput("contactEmail", e.target.value)}
+              onChange={handleInput}
+              fullWidth
             />
             <TextField
               label="Phone"
+              name="phone"
               value={form.phone}
-              onChange={(e) => handleInput("phone", e.target.value)}
+              onChange={handleInput}
+              fullWidth
             />
             <TextField
               label="Website"
+              name="website"
               value={form.website}
-              onChange={(e) => handleInput("website", e.target.value)}
+              onChange={handleInput}
+              fullWidth
             />
             <TextField
               label="Description"
+              name="description"
               value={form.description}
-              onChange={(e) => handleInput("description", e.target.value)}
+              onChange={handleInput}
               multiline
               minRows={2}
+              fullWidth
             />
-
-            {/* Calendar */}
-            <Typography variant="subtitle1" sx={{ mt: 1 }}>
-              Calendar Entries
-              <IconButton
-                onClick={() =>
-                  setForm((f) => ({
-                    ...f,
-                    calendar: [
-                      ...f.calendar,
-                      { label: "", start: null, end: null, message: "" },
-                    ],
-                  }))
-                }
-              >
-                <AddIcon />
-              </IconButton>
-            </Typography>
-            {form.calendar.map((c, idx) => (
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                key={idx}
-              >
-                <TextField
-                  label="Label"
-                  value={c.label}
-                  onChange={(e) => {
-                    const arr = [...form.calendar];
-                    arr[idx].label = e.target.value;
-                    setForm((f) => ({ ...f, calendar: arr }));
-                  }}
-                />
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    label="Start"
-                    value={c.start}
-                    onChange={(date) => {
-                      const arr = [...form.calendar];
-                      arr[idx].start = date as Date;
-                      setForm((f) => ({ ...f, calendar: arr }));
-                    }}
-                  />
-                  <DatePicker
-                    label="End"
-                    value={c.end}
-                    onChange={(date) => {
-                      const arr = [...form.calendar];
-                      arr[idx].end = date as Date;
-                      setForm((f) => ({ ...f, calendar: arr }));
-                    }}
-                  />
-                </LocalizationProvider>
-                <TextField
-                  label="Message"
-                  value={c.message}
-                  onChange={(e) => {
-                    const arr = [...form.calendar];
-                    arr[idx].message = e.target.value;
-                    setForm((f) => ({ ...f, calendar: arr }));
-                  }}
-                />
-                <IconButton
-                  onClick={() =>
-                    setForm((f) => ({
-                      ...f,
-                      calendar: f.calendar.filter((_, i) => i !== idx),
-                    }))
-                  }
-                  disabled={form.calendar.length === 1}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Stack>
-            ))}
-
-            {/* News */}
-            <Typography variant="subtitle1" sx={{ mt: 1 }}>
-              News / Announcements
-              <IconButton
-                onClick={() =>
-                  setForm((f) => ({
-                    ...f,
-                    news: [...f.news, { title: "", message: "", date: null }],
-                  }))
-                }
-              >
-                <AddIcon />
-              </IconButton>
-            </Typography>
-            {form.news.map((n, idx) => (
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                key={idx}
-              >
-                <TextField
-                  label="Title"
-                  value={n.title}
-                  onChange={(e) => {
-                    const arr = [...form.news];
-                    arr[idx].title = e.target.value;
-                    setForm((f) => ({ ...f, news: arr }));
-                  }}
-                />
-                <TextField
-                  label="Message"
-                  value={n.message}
-                  onChange={(e) => {
-                    const arr = [...form.news];
-                    arr[idx].message = e.target.value;
-                    setForm((f) => ({ ...f, news: arr }));
-                  }}
-                />
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    label="Date"
-                    value={n.date}
-                    onChange={(date) => {
-                      const arr = [...form.news];
-                      arr[idx].date = date as Date;
-                      setForm((f) => ({ ...f, news: arr }));
-                    }}
-                  />
-                </LocalizationProvider>
-                <IconButton
-                  onClick={() =>
-                    setForm((f) => ({
-                      ...f,
-                      news: f.news.filter((_, i) => i !== idx),
-                    }))
-                  }
-                  disabled={form.news.length === 1}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Stack>
-            ))}
-
-            {/* Image Uploads */}
-            <Stack direction="row" spacing={2} alignItems="center">
-              <InputLabel htmlFor="logo-upload">School Logo</InputLabel>
+            {/* Logo */}
+            <Box>
+              <InputLabel sx={{ mb: 0.5 }}>
+                School Logo (PNG/JPG, 1:1)
+              </InputLabel>
               <input
-                id="logo-upload"
                 type="file"
                 accept="image/png, image/jpeg"
-                onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+                onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
               />
               {form.logoURL && (
                 <img
                   src={form.logoURL}
-                  alt="logo"
-                  height={32}
-                  style={{ borderRadius: 4, marginLeft: 8 }}
+                  alt="Logo"
+                  style={{ height: 40, marginLeft: 8, verticalAlign: "middle" }}
                 />
               )}
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <InputLabel htmlFor="hero-upload">Hero Image</InputLabel>
+            </Box>
+            {/* Hero */}
+            <Box>
+              <InputLabel sx={{ mb: 0.5 }}>
+                Hero Image (PNG/JPG, wide banner)
+              </InputLabel>
               <input
-                id="hero-upload"
                 type="file"
                 accept="image/png, image/jpeg"
-                onChange={(e) => setHeroFile(e.target.files?.[0] || null)}
+                onChange={(e) => setHeroFile(e.target.files?.[0] ?? null)}
               />
               {form.heroImageURL && (
                 <img
                   src={form.heroImageURL}
-                  alt="hero"
-                  height={32}
-                  style={{ borderRadius: 4, marginLeft: 8 }}
+                  alt="Hero"
+                  style={{ height: 40, marginLeft: 8, verticalAlign: "middle" }}
                 />
               )}
-            </Stack>
+            </Box>
+            {/* Calendar */}
+            <Box>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                Academic Calendar
+                <IconButton onClick={addCalendar} size="small" sx={{ ml: 1 }}>
+                  <AddIcon />
+                </IconButton>
+              </Typography>
+              <Stack spacing={2}>
+                {form.calendar.map((c: any, i: number) => (
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={2}
+                    alignItems="center"
+                    key={i}
+                  >
+                    <TextField
+                      label="Label"
+                      value={c.label}
+                      onChange={(e) =>
+                        handleCalendarChange(i, "label", e.target.value)
+                      }
+                      fullWidth
+                    />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        label="Start"
+                        value={c.start ? new Date(c.start) : null}
+                        onChange={(date) =>
+                          handleCalendarChange(i, "start", date)
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                      <DatePicker
+                        label="End"
+                        value={c.end ? new Date(c.end) : null}
+                        onChange={(date) =>
+                          handleCalendarChange(i, "end", date)
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    </LocalizationProvider>
+                    <TextField
+                      label="Message"
+                      value={c.message}
+                      onChange={(e) =>
+                        handleCalendarChange(i, "message", e.target.value)
+                      }
+                      fullWidth
+                    />
+                    <IconButton
+                      onClick={() => removeCalendar(i)}
+                      color="error"
+                      size="small"
+                      disabled={form.calendar.length === 1}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Stack>
+                ))}
+              </Stack>
+            </Box>
+            {/* News */}
+            <Box>
+              <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                News / Announcements
+                <IconButton onClick={addNews} size="small" sx={{ ml: 1 }}>
+                  <AddIcon />
+                </IconButton>
+              </Typography>
+              <Stack spacing={2}>
+                {form.news.map((n: any, i: number) => (
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={2}
+                    alignItems="center"
+                    key={i}
+                  >
+                    <TextField
+                      label="Title"
+                      value={n.title}
+                      onChange={(e) =>
+                        handleNewsChange(i, "title", e.target.value)
+                      }
+                      fullWidth
+                    />
+                    <TextField
+                      label="Message"
+                      value={n.message}
+                      onChange={(e) =>
+                        handleNewsChange(i, "message", e.target.value)
+                      }
+                      fullWidth
+                    />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        label="Date"
+                        value={n.date ? new Date(n.date) : null}
+                        onChange={(date) => handleNewsChange(i, "date", date)}
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    </LocalizationProvider>
+                    <IconButton
+                      onClick={() => removeNews(i)}
+                      color="error"
+                      size="small"
+                      disabled={form.news.length === 1}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Stack>
+                ))}
+              </Stack>
+            </Box>
+            <TextField
+              select
+              label="Status"
+              name="status"
+              value={form.status}
+              onChange={handleInput}
+              fullWidth
+            >
+              {STATUS_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              label="School Admin Email"
+              name="schoolAdmin"
+              value={form.schoolAdmin}
+              onChange={handleInput}
+              required
+              fullWidth
+            />
           </Stack>
         </form>
-        {uploading && <CircularProgress sx={{ mt: 2 }} />}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={uploading}>
+        <Button onClick={onClose} disabled={saving || uploading}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit} variant="contained" disabled={uploading}>
-          Save
+        <Button
+          onClick={handleSubmit}
+          disabled={saving || uploading}
+          variant="contained"
+        >
+          {saving || uploading ? (
+            <CircularProgress size={22} />
+          ) : editing ? (
+            "Save Changes"
+          ) : (
+            "Create School"
+          )}
         </Button>
       </DialogActions>
     </Dialog>
