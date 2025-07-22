@@ -4,7 +4,7 @@ import { schema } from './schema';
 
 
 
-const { School, AcademicYear, Term, Class, Student, User, Subject, Assessment, Grade, Attendance, Announcement } = initSchema(schema);
+const { School, AcademicYear, Term, Class, Student, User, Subject, Assessment, Grade, Attendance, Announcement, CalendarEntry, NewsEntry } = initSchema(schema);
 
 export {
   School,
@@ -17,5 +17,7 @@ export {
   Assessment,
   Grade,
   Attendance,
-  Announcement
+  Announcement,
+  CalendarEntry,
+  NewsEntry
 };

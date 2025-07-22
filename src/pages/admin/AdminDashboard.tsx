@@ -68,7 +68,7 @@ const AdminDashboard: React.FC = () => {
           ["Classes", stats.classes],
           ["Announcements", stats.announcements],
         ].map(([label, val]) => (
-          <Grid size={{ xs: 12, md: 6 }} key={label as string}>
+          <Grid item xs={12} md={6} key={label as string}>
             <Paper sx={{ p: 3, textAlign: "center" }}>
               <Typography variant="h3">{val}</Typography>
               <Typography>{label}</Typography>

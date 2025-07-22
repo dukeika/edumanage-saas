@@ -1,7 +1,7 @@
 // src/routes/AppRoutes.tsx
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom"; // <-- Add Navigate here!
-import HomePage from "../pages/HomePage";
+import { Routes, Route, Navigate } from "react-router-dom";
+import HomePage from "../pages/HomePage"; // Although HomePage might be redirected by AutoRedirect
 import LoginPage from "../pages/LoginPage";
 import Unauthorized from "../components/Unauthorized";
 import RequireAuth from "../components/RequireAuth";
@@ -29,27 +29,20 @@ import EditSchoolPage from "../pages/appadmin/EditSchoolPage";
 
 const AppRoutes: React.FC = () => (
   <Routes>
-    {/* Public */}
+    {/* Public Routes */}
     <Route path="/login" element={<LoginPage />} />
     <Route path="/unauthorized" element={<Unauthorized />} />
-    <Route path="/school/:schoolDomain" element={<SchoolLandingPage />} />
+    <Route path="/" element={<AutoRedirect />} />
 
-    {/* Home + auto-redirect for authenticated users */}
-    <Route
-      path="/"
-      element={
-        <>
-          <HomePage />
-          <AutoRedirect />
-        </>
-      }
-    />
+    {/* School Landing Page - CORRECTED ROUTE HERE */}
+    {/* This route will now specifically match URLs like /school/fls */}
+    <Route path="/school/:subdomain" element={<SchoolLandingPage />} />
 
-    {/* App Admin */}
+    {/* App Admin Routes */}
     <Route
       path="/app-admin/*"
       element={
-        <RequireAuth allowedRoles={["applicationadmins"]}>
+        <RequireAuth allowedRoles={["ApplicationAdmins"]}>
           <AppAdminLayout />
         </RequireAuth>
       }
@@ -59,11 +52,10 @@ const AppRoutes: React.FC = () => (
       <Route path="users" element={<AppAdminUsersPage />} />
       <Route path="assign-admin" element={<AssignAdminPage />} />
       <Route path="edit-school/:schoolId" element={<EditSchoolPage />} />
-
       <Route path="*" element={<Navigate to="/app-admin" replace />} />
     </Route>
 
-    {/* Admin */}
+    {/* Admin Routes */}
     <Route
       path="/admin/*"
       element={
@@ -73,11 +65,10 @@ const AppRoutes: React.FC = () => (
       }
     >
       <Route index element={<AdminDashboard />} />
-      {/* Add other admin subroutes here */}
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Route>
 
-    {/* Teacher */}
+    {/* Teacher Routes */}
     <Route
       path="/teacher/*"
       element={
@@ -90,7 +81,7 @@ const AppRoutes: React.FC = () => (
       <Route path="*" element={<Navigate to="/teacher" replace />} />
     </Route>
 
-    {/* Student */}
+    {/* Student Routes */}
     <Route
       path="/student/*"
       element={
@@ -103,7 +94,7 @@ const AppRoutes: React.FC = () => (
       <Route path="*" element={<Navigate to="/student" replace />} />
     </Route>
 
-    {/* Parent */}
+    {/* Parent Routes */}
     <Route
       path="/parent/*"
       element={
@@ -116,8 +107,8 @@ const AppRoutes: React.FC = () => (
       <Route path="*" element={<Navigate to="/parent" replace />} />
     </Route>
 
-    {/* Catch-all: go to Unauthorized */}
-    <Route path="*" element={<Unauthorized />} />
+    {/* Fallback for unmatched routes */}
+    <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes>
 );
 

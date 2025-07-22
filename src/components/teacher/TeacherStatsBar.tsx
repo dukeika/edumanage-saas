@@ -14,7 +14,7 @@ const stats = [
 const TeacherStatsBar: React.FC = () => (
   <Grid container spacing={2}>
     {stats.map(({ title, value }) => (
-      <Grid size={{ xs: 12, sm: 6, md: 3 }} key={title}>
+      <Grid item xs={12} sm={6} md={3} key={title}>
         <Card variant="outlined" sx={{ bgcolor: "white" }}>
           <CardContent>
             <Typography variant="h5" fontWeight="bold" color="primary.main">

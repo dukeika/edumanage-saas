@@ -44,7 +44,7 @@ const RecordAttendance: React.FC<{
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid item xs={12} md={6}>
           <TextField
             select
             label="Student"
@@ -60,7 +60,7 @@ const RecordAttendance: React.FC<{
             ))}
           </TextField>
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid item xs={12} md={3}>
           <TextField
             type="date"
             label="Date"
@@ -71,7 +71,7 @@ const RecordAttendance: React.FC<{
             fullWidth
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid item xs={12} md={3}>
           <TextField
             select
             label="Status"

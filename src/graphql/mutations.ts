@@ -59,6 +59,7 @@ export const createSchool = /* GraphQL */ `mutation CreateSchool(
       nextToken
       __typename
     }
+    tempUpdateField
     createdAt
     updatedAt
     __typename
@@ -119,6 +120,7 @@ export const updateSchool = /* GraphQL */ `mutation UpdateSchool(
       nextToken
       __typename
     }
+    tempUpdateField
     createdAt
     updatedAt
     __typename
@@ -179,6 +181,7 @@ export const deleteSchool = /* GraphQL */ `mutation DeleteSchool(
       nextToken
       __typename
     }
+    tempUpdateField
     createdAt
     updatedAt
     __typename
@@ -210,6 +213,7 @@ export const createAcademicYear = /* GraphQL */ `mutation CreateAcademicYear(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -250,6 +254,7 @@ export const updateAcademicYear = /* GraphQL */ `mutation UpdateAcademicYear(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -290,6 +295,7 @@ export const deleteAcademicYear = /* GraphQL */ `mutation DeleteAcademicYear(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -429,6 +435,7 @@ export const createClass = /* GraphQL */ `mutation CreateClass(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -486,6 +493,7 @@ export const updateClass = /* GraphQL */ `mutation UpdateClass(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -543,6 +551,7 @@ export const deleteClass = /* GraphQL */ `mutation DeleteClass(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -611,6 +620,7 @@ export const createStudent = /* GraphQL */ `mutation CreateStudent(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -666,6 +676,7 @@ export const updateStudent = /* GraphQL */ `mutation UpdateStudent(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -721,6 +732,7 @@ export const deleteStudent = /* GraphQL */ `mutation DeleteStudent(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -767,6 +779,7 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -805,6 +818,7 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -843,6 +857,7 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename

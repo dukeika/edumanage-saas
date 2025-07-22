@@ -48,6 +48,8 @@ type School
   students: [Student] @hasMany(fields: ["id"])
   users: [User] @hasMany(fields: ["id"])
   announcements: [Announcement] @hasMany(fields: ["id"])
+
+  tempUpdateField: String # Or add some default auth rules if your schema requires it
 }
 
 type AcademicYear

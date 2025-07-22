@@ -41,7 +41,7 @@ const TermForm: React.FC<{ academicYearID: string }> = ({ academicYearID }) => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid item xs={12} md={6}>
           <TextField
             label="Term Label"
             value={termLabel}
@@ -50,7 +50,7 @@ const TermForm: React.FC<{ academicYearID: string }> = ({ academicYearID }) => {
             fullWidth
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid item xs={12} md={3}>
           <TextField
             label="Start Date"
             type="date"
@@ -61,7 +61,7 @@ const TermForm: React.FC<{ academicYearID: string }> = ({ academicYearID }) => {
             fullWidth
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid item xs={12} md={3}>
           <TextField
             label="End Date"
             type="date"

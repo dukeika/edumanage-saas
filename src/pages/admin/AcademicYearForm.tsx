@@ -39,7 +39,7 @@ const AcademicYearForm: React.FC<{ schoolID: string }> = ({ schoolID }) => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Grid container spacing={2}>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid item xs={12} md={6}>
           <TextField
             label="Academic Year Label"
             value={yearLabel}

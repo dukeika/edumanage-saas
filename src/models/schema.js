@@ -17,13 +17,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "address": {
-                    "name": "address",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "subdomain": {
                     "name": "subdomain",
                     "isArray": false,
@@ -31,20 +24,12 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "schoolAdmin": {
-                    "name": "schoolAdmin",
+                "status": {
+                    "name": "status",
                     "isArray": false,
                     "type": "String",
                     "isRequired": true,
                     "attributes": []
-                },
-                "admins": {
-                    "name": "admins",
-                    "isArray": true,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": [],
-                    "isArrayNullable": false
                 },
                 "logoURL": {
                     "name": "logoURL",
@@ -60,8 +45,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "description": {
-                    "name": "description",
+                "address": {
+                    "name": "address",
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
@@ -88,12 +73,47 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "calendarInfo": {
-                    "name": "calendarInfo",
+                "description": {
+                    "name": "description",
                     "isArray": false,
-                    "type": "AWSJSON",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
+                },
+                "calendar": {
+                    "name": "calendar",
+                    "isArray": true,
+                    "type": {
+                        "nonModel": "CalendarEntry"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "news": {
+                    "name": "news",
+                    "isArray": true,
+                    "type": {
+                        "nonModel": "NewsEntry"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "schoolAdmin": {
+                    "name": "schoolAdmin",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "admins": {
+                    "name": "admins",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": false
                 },
                 "academicYears": {
                     "name": "academicYears",
@@ -202,15 +222,7 @@ export const schema = {
                 {
                     "type": "key",
                     "properties": {
-                        "fields": [
-                            "id"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "bySubdomain",
+                        "name": "BySubdomain",
                         "queryField": "schoolsBySubdomain",
                         "fields": [
                             "subdomain"
@@ -221,6 +233,13 @@ export const schema = {
                     "type": "auth",
                     "properties": {
                         "rules": [
+                            {
+                                "allow": "public",
+                                "provider": "apiKey",
+                                "operations": [
+                                    "read"
+                                ]
+                            },
                             {
                                 "groupClaim": "cognito:groups",
                                 "provider": "userPools",
@@ -386,12 +405,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -531,12 +544,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -733,12 +740,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -902,12 +903,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -1018,12 +1013,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "identityClaim": "cognito:username"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -1149,12 +1138,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -1331,12 +1314,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -1490,12 +1467,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -1634,12 +1605,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -1778,12 +1743,6 @@ export const schema = {
                                     "update"
                                 ],
                                 "groupField": "groups"
-                            },
-                            {
-                                "allow": "private",
-                                "operations": [
-                                    "read"
-                                ]
                             }
                         ]
                     }
@@ -1792,7 +1751,67 @@ export const schema = {
         }
     },
     "enums": {},
-    "nonModels": {},
+    "nonModels": {
+        "CalendarEntry": {
+            "name": "CalendarEntry",
+            "fields": {
+                "label": {
+                    "name": "label",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "start": {
+                    "name": "start",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "end": {
+                    "name": "end",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "message": {
+                    "name": "message",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            }
+        },
+        "NewsEntry": {
+            "name": "NewsEntry",
+            "fields": {
+                "title": {
+                    "name": "title",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "message": {
+                    "name": "message",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "date": {
+                    "name": "date",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            }
+        }
+    },
     "codegenVersion": "3.4.4",
-    "version": "fcc02b3a4833b1156093afcb675292cb"
+    "version": "54cd6303d7d96edb2e9b4fee99a3eebf"
 };

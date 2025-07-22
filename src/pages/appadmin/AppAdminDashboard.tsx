@@ -70,7 +70,7 @@ export default function AppAdminDashboard() {
 
       <Grid container spacing={3}>
         {/* Summary Cards */}
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Paper sx={{ p: 3, bgcolor: "#f0f9ff" }}>
             <Typography variant="subtitle1" color="primary">
               Total Schools
@@ -78,7 +78,7 @@ export default function AppAdminDashboard() {
             <Typography variant="h3">{stats.schools}</Typography>
           </Paper>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Paper sx={{ p: 3, bgcolor: "#f9fafb" }}>
             <Typography variant="subtitle1" color="primary">
               Total Users
@@ -86,7 +86,7 @@ export default function AppAdminDashboard() {
             <Typography variant="h3">{stats.users}</Typography>
           </Paper>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Paper sx={{ p: 3, bgcolor: "#f1f7ed" }}>
             <Typography variant="subtitle1" color="primary">
               Active Users
@@ -94,7 +94,7 @@ export default function AppAdminDashboard() {
             <Typography variant="h3">{stats.active}</Typography>
           </Paper>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Paper sx={{ p: 3, bgcolor: "#fff7ed" }}>
             <Typography variant="subtitle1" color="primary">
               Pending Users
@@ -108,7 +108,7 @@ export default function AppAdminDashboard() {
 
       <Grid container spacing={4}>
         {/* Recent Schools */}
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid item xs={12} sm={6}>
           <Paper sx={{ p: 3 }}>
             <Box
               display="flex"
@@ -144,7 +144,7 @@ export default function AppAdminDashboard() {
         </Grid>
 
         {/* Recent Users */}
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid item xs={12} sm={6}>
           <Paper sx={{ p: 3 }}>
             <Box
               display="flex"

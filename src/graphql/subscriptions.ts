@@ -59,6 +59,7 @@ export const onCreateSchool = /* GraphQL */ `subscription OnCreateSchool(
       nextToken
       __typename
     }
+    tempUpdateField
     createdAt
     updatedAt
     __typename
@@ -119,6 +120,7 @@ export const onUpdateSchool = /* GraphQL */ `subscription OnUpdateSchool(
       nextToken
       __typename
     }
+    tempUpdateField
     createdAt
     updatedAt
     __typename
@@ -179,6 +181,7 @@ export const onDeleteSchool = /* GraphQL */ `subscription OnDeleteSchool(
       nextToken
       __typename
     }
+    tempUpdateField
     createdAt
     updatedAt
     __typename
@@ -210,6 +213,7 @@ export const onCreateAcademicYear = /* GraphQL */ `subscription OnCreateAcademic
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -250,6 +254,7 @@ export const onUpdateAcademicYear = /* GraphQL */ `subscription OnUpdateAcademic
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -290,6 +295,7 @@ export const onDeleteAcademicYear = /* GraphQL */ `subscription OnDeleteAcademic
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -429,6 +435,7 @@ export const onCreateClass = /* GraphQL */ `subscription OnCreateClass(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -486,6 +493,7 @@ export const onUpdateClass = /* GraphQL */ `subscription OnUpdateClass(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -543,6 +551,7 @@ export const onDeleteClass = /* GraphQL */ `subscription OnDeleteClass(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -611,6 +620,7 @@ export const onCreateStudent = /* GraphQL */ `subscription OnCreateStudent(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -666,6 +676,7 @@ export const onUpdateStudent = /* GraphQL */ `subscription OnUpdateStudent(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -721,6 +732,7 @@ export const onDeleteStudent = /* GraphQL */ `subscription OnDeleteStudent(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -767,6 +779,7 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -805,6 +818,7 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -843,6 +857,7 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename

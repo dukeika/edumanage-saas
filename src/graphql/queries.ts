@@ -56,6 +56,7 @@ export const getSchool = /* GraphQL */ `query GetSchool($id: ID!) {
       nextToken
       __typename
     }
+    tempUpdateField
     createdAt
     updatedAt
     __typename
@@ -82,6 +83,7 @@ export const listSchools = /* GraphQL */ `query ListSchools(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -122,6 +124,7 @@ export const schoolsBySubdomain = /* GraphQL */ `query SchoolsBySubdomain(
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -153,6 +156,7 @@ export const getAcademicYear = /* GraphQL */ `query GetAcademicYear($id: ID!) {
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -262,6 +266,7 @@ export const getClass = /* GraphQL */ `query GetClass($id: ID!) {
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -348,6 +353,7 @@ export const getStudent = /* GraphQL */ `query GetStudent($id: ID!) {
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
@@ -415,6 +421,7 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
       description
       schoolAdmin
       admins
+      tempUpdateField
       createdAt
       updatedAt
       __typename
