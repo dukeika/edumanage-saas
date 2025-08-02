@@ -122,6 +122,19 @@ export const schoolsBySubdomain = /* GraphQL */ `query SchoolsBySubdomain(
       phone
       website
       description
+      calendar {
+        label
+        start
+        end
+        message
+        __typename
+      }
+      news {
+        title
+        message
+        date
+        __typename
+      }
       schoolAdmin
       admins
       tempUpdateField
