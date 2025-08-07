@@ -1,4 +1,4 @@
-// src/layouts/AdminLayout.tsx (same for AppAdmin, Teacher, etc)
+// src/layouts/AdminLayout.tsx
 import React from "react";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
@@ -9,6 +9,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 const adminLinks: SidebarLink[] = [
   { to: "/admin", label: "Dashboard" },
   { to: "/admin/students", label: "Students" },
+  { to: "/admin/parents", label: "Parents" }, // Added Parents tab
   { to: "/admin/teachers", label: "Teachers" },
   { to: "/admin/classes", label: "Classes" },
   { to: "/admin/announcements", label: "Announcements" },

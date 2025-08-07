@@ -1,12 +1,13 @@
 // src/routes/AppRoutes.tsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import HomePage from "../pages/HomePage"; // Although HomePage might be redirected by AutoRedirect
+import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import Unauthorized from "../components/Unauthorized";
 import RequireAuth from "../components/RequireAuth";
 import AutoRedirect from "../components/AutoRedirect";
 import SchoolLandingPage from "../pages/school/SchoolLandingPage";
+import DataTableDemo from "../pages/admin/DataTableDemo";
 
 // Dashboard and layouts
 import AppAdminDashboard from "../pages/appadmin/AppAdminDashboard";
@@ -26,6 +27,10 @@ import AppAdminSchoolsPage from "../pages/appadmin/AppAdminSchoolsPage";
 import AppAdminUsersPage from "../pages/appadmin/AppAdminUsersPage";
 import AssignAdminPage from "../pages/appadmin/AssignAdminPage";
 import EditSchoolPage from "../pages/appadmin/EditSchoolPage";
+import TeacherManagement from "../pages/admin/TeacherManagement";
+import StudentManagement from "../pages/admin/StudentManagement";
+import ParentManagement from "../pages/admin/ParentManagement";
+import ClassManagement from "../pages/admin/ClassManagement";
 
 const AppRoutes: React.FC = () => (
   <Routes>
@@ -34,9 +39,11 @@ const AppRoutes: React.FC = () => (
     <Route path="/unauthorized" element={<Unauthorized />} />
     <Route path="/" element={<AutoRedirect />} />
 
-    {/* School Landing Page - CORRECTED ROUTE HERE */}
-    {/* This route will now specifically match URLs like /school/fls */}
+    {/* School Landing Page */}
     <Route path="/school/:subdomain" element={<SchoolLandingPage />} />
+
+    {/* DataTable Demo - Public for testing */}
+    <Route path="/datatable-demo" element={<DataTableDemo />} />
 
     {/* App Admin Routes */}
     <Route
@@ -65,7 +72,12 @@ const AppRoutes: React.FC = () => (
       }
     >
       <Route index element={<AdminDashboard />} />
+      <Route path="datatable-demo" element={<DataTableDemo />} />
       <Route path="*" element={<Navigate to="/admin" replace />} />
+      <Route path="teachers" element={<TeacherManagement />} />
+      <Route path="students" element={<StudentManagement />} />
+      <Route path="parents" element={<ParentManagement />} />
+      <Route path="classes" element={<ClassManagement />} />
     </Route>
 
     {/* Teacher Routes */}

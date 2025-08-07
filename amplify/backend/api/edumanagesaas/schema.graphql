@@ -43,13 +43,14 @@ type School
   schoolAdmin: String!
   admins: [String!]!
 
-  academicYears: [AcademicYear] @hasMany(fields: ["id"])
-  classes: [Class] @hasMany(fields: ["id"])
-  students: [Student] @hasMany(fields: ["id"])
-  users: [User] @hasMany(fields: ["id"])
-  announcements: [Announcement] @hasMany(fields: ["id"])
+  academicYears: [AcademicYear] @hasMany(indexName: "bySchool", fields: ["id"])
+  classes: [Class] @hasMany(indexName: "bySchool", fields: ["id"])
+  students: [Student] @hasMany(indexName: "bySchool", fields: ["id"])
+  parents: [Parent] @hasMany(indexName: "bySchool", fields: ["id"])
+  users: [User] @hasMany(indexName: "bySchool", fields: ["id"])
+  announcements: [Announcement] @hasMany(indexName: "bySchool", fields: ["id"])
 
-  tempUpdateField: String # Or add some default auth rules if your schema requires it
+  tempUpdateField: String
 }
 
 type AcademicYear
@@ -71,9 +72,11 @@ type AcademicYear
   ) {
   id: ID!
   yearLabel: String!
-  schoolID: ID!
+  schoolID: ID! @index(name: "bySchool")
   school: School @belongsTo(fields: ["schoolID"])
-  terms: [Term] @hasMany(fields: ["id"])
+  terms: [Term] @hasMany(indexName: "byAcademicYear", fields: ["id"])
+  owner: String
+  admins: [String]
 }
 
 type Term
@@ -97,9 +100,11 @@ type Term
   termLabel: String!
   startDate: AWSDate
   endDate: AWSDate
-  academicYearID: ID!
+  academicYearID: ID! @index(name: "byAcademicYear")
   academicYear: AcademicYear @belongsTo(fields: ["academicYearID"])
-  assessments: [Assessment] @hasMany(fields: ["id"])
+  assessments: [Assessment] @hasMany(indexName: "byTerm", fields: ["id"])
+  owner: String
+  admins: [String]
 }
 
 type Class
@@ -121,14 +126,60 @@ type Class
   ) {
   id: ID!
   name: String!
-  schoolID: ID!
+  schoolID: ID! @index(name: "bySchool")
   school: School @belongsTo(fields: ["schoolID"])
   teacherID: ID
-  students: [Student] @hasMany(fields: ["id"])
-  attendances: [Attendance] @hasMany(fields: ["id"])
-  subjects: [Subject] @hasMany(fields: ["id"])
-  assessments: [Assessment] @hasMany(fields: ["id"])
-  grades: [Grade] @hasMany(fields: ["id"])
+  students: [Student] @hasMany(indexName: "byClass", fields: ["id"])
+  attendances: [Attendance] @hasMany(indexName: "byClass", fields: ["id"])
+  subjects: [Subject] @hasMany(indexName: "byClass", fields: ["id"])
+  assessments: [Assessment] @hasMany(indexName: "byClass", fields: ["id"])
+  grades: [Grade] @hasMany(indexName: "byClass", fields: ["id"])
+  announcements: [Announcement] @hasMany(indexName: "byClass", fields: ["id"])
+  owner: String
+  admins: [String]
+}
+
+type Parent
+  @model
+  @auth(
+    rules: [
+      {
+        allow: groups
+        groups: ["ApplicationAdmins"]
+        operations: [create, read, update, delete]
+      }
+      { allow: owner, ownerField: "userID", operations: [read, update] }
+      { allow: groups, groupsField: "schoolAdmins", operations: [read, update] }
+      { allow: private, operations: [read] }
+    ]
+  ) {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: AWSEmail! @index(name: "ByEmail", queryField: "parentsByEmail")
+  phone: String
+  alternatePhone: String
+  address: String
+  occupation: String
+  employer: String
+  relationshipType: String! # "Father", "Mother", "Guardian", "Other"
+  # Link to User account - using String for owner field
+  userID: String
+
+  # School association
+  schoolID: ID! @index(name: "bySchool")
+  school: School @belongsTo(fields: ["schoolID"])
+
+  # Parent-Student relationships through junction table
+  parentStudents: [ParentStudent]
+    @hasMany(indexName: "byParent", fields: ["id"])
+
+  # Emergency contact info
+  isEmergencyContact: Boolean
+  emergencyContactPriority: Int # 1 = primary, 2 = secondary, etc.
+  schoolAdmins: [String]
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
 
 type Student
@@ -146,16 +197,81 @@ type Student
         operations: [create, read, update, delete]
       }
       { allow: groups, groupsField: "admins", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
   name: String!
-  classID: ID!
-  schoolID: ID!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: AWSDate!
+  gender: String
+  studentID: String!  # School-specific student ID
+    @index(name: "ByStudentID", queryField: "studentsByStudentID")
+
+  # Class and School associations
+  classID: ID! @index(name: "byClass")
+  schoolID: ID! @index(name: "bySchool")
   class: Class @belongsTo(fields: ["classID"])
   school: School @belongsTo(fields: ["schoolID"])
-  attendances: [Attendance] @hasMany(fields: ["id"])
-  grades: [Grade] @hasMany(fields: ["id"])
+
+  # Parent-Student relationships through junction table
+  parentStudents: [ParentStudent]
+    @hasMany(indexName: "byStudent", fields: ["id"])
+
+  # Academic records
+  attendances: [Attendance] @hasMany(indexName: "byStudent", fields: ["id"])
+  grades: [Grade] @hasMany(indexName: "byStudent", fields: ["id"])
+
+  # Additional student information
+  medicalInfo: String # JSON stringified medical information
+  specialNeeds: String
+  dietaryRestrictions: String
+
+  # User account link - using String for potential user link
+  userID: String
+
+  owner: String
+  admins: [String]
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+# Junction table for many-to-many parent-student relationships
+type ParentStudent
+  @model
+  @auth(
+    rules: [
+      {
+        allow: groups
+        groups: ["ApplicationAdmins"]
+        operations: [create, read, update, delete]
+      }
+      { allow: groups, groupsField: "schoolAdmins", operations: [read, update] }
+      { allow: private, operations: [read] }
+    ]
+  ) {
+  id: ID!
+  parentID: ID! @index(name: "byParent")
+  studentID: ID! @index(name: "byStudent")
+
+  parent: Parent @belongsTo(fields: ["parentID"])
+  student: Student @belongsTo(fields: ["studentID"])
+
+  # Relationship details
+  relationship: String! # "Mother", "Father", "Guardian", "Step-parent", etc.
+  isPrimaryContact: Boolean!
+  hasPickupRights: Boolean!
+  hasAccessToGrades: Boolean!
+  hasAccessToAttendance: Boolean!
+  legalCustody: Boolean!
+
+  # Optional custody arrangement details
+  custodyNotes: String
+  courtOrderDocument: String # URL to uploaded document
+  schoolAdmins: [String]
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
 
 type User
@@ -168,14 +284,22 @@ type User
         operations: [create, read, update, delete]
       }
       { allow: owner, ownerField: "owner", operations: [read, update] }
+      { allow: private, operations: [read] }
     ]
   ) {
   id: ID!
-  email: AWSEmail!
+  email: AWSEmail! @index(name: "ByEmail", queryField: "usersByEmail")
   name: String!
   role: String! # "ApplicationAdmin"|"SchoolAdmin"|"Teacher"|"Student"|"Parent"
-  schoolID: ID!
+  schoolID: ID! @index(name: "bySchool")
   school: School @belongsTo(fields: ["schoolID"])
+
+  # User preferences
+  preferredLanguage: String
+  notificationPreferences: String # JSON stringified preferences
+  owner: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
 
 type Subject
@@ -197,9 +321,11 @@ type Subject
   ) {
   id: ID!
   name: String!
-  classID: ID!
+  classID: ID! @index(name: "byClass")
   class: Class @belongsTo(fields: ["classID"])
-  assessments: [Assessment] @hasMany(fields: ["id"])
+  assessments: [Assessment] @hasMany(indexName: "bySubject", fields: ["id"])
+  owner: String
+  admins: [String]
 }
 
 type Assessment
@@ -222,13 +348,15 @@ type Assessment
   id: ID!
   title: String!
   assessmentDate: AWSDate!
-  classID: ID!
+  classID: ID! @index(name: "byClass")
   class: Class @belongsTo(fields: ["classID"])
-  subjectID: ID!
+  subjectID: ID! @index(name: "bySubject")
   subject: Subject @belongsTo(fields: ["subjectID"])
-  termID: ID!
+  termID: ID! @index(name: "byTerm")
   term: Term @belongsTo(fields: ["termID"])
-  grades: [Grade] @hasMany(fields: ["id"])
+  grades: [Grade] @hasMany(indexName: "byAssessment", fields: ["id"])
+  owner: String
+  admins: [String]
 }
 
 type Grade
@@ -249,13 +377,15 @@ type Grade
     ]
   ) {
   id: ID!
-  studentID: ID!
+  studentID: ID! @index(name: "byStudent")
   student: Student @belongsTo(fields: ["studentID"])
-  assessmentID: ID!
+  assessmentID: ID! @index(name: "byAssessment")
   assessment: Assessment @belongsTo(fields: ["assessmentID"])
   score: Float!
-  classID: ID!
+  classID: ID! @index(name: "byClass")
   class: Class @belongsTo(fields: ["classID"])
+  owner: String
+  admins: [String]
 }
 
 type Attendance
@@ -276,12 +406,17 @@ type Attendance
     ]
   ) {
   id: ID!
-  studentID: ID!
-  classID: ID!
+  studentID: ID! @index(name: "byStudent")
+  classID: ID! @index(name: "byClass")
   date: AWSDate!
-  status: String!
+  status: String! # "Present", "Absent", "Late", "Excused"
+  checkInTime: AWSTime
+  checkOutTime: AWSTime
+  notes: String
   student: Student @belongsTo(fields: ["studentID"])
   class: Class @belongsTo(fields: ["classID"])
+  owner: String
+  admins: [String]
 }
 
 type Announcement
@@ -304,9 +439,23 @@ type Announcement
   id: ID!
   title: String!
   message: String!
-  audience: String
-  targetID: ID
+  audience: String! # "School", "Class", "Parents", "Students", "Staff"
+  targetID: ID # ID of specific class if audience is "Class"
+  priority: String # "Normal", "Important", "Urgent"
   createdBy: String!
-  schoolID: ID!
-  classID: ID
+  schoolID: ID! @index(name: "bySchool")
+  school: School @belongsTo(fields: ["schoolID"])
+  classID: ID @index(name: "byClass")
+  class: Class @belongsTo(fields: ["classID"])
+
+  # Tracking
+  viewCount: Int
+  acknowledgedBy: [String] # List of user IDs who acknowledged reading
+  # Scheduling
+  publishDate: AWSDateTime
+  expiryDate: AWSDateTime
+
+  admins: [String]
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
